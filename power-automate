@@ -1,16 +1,14 @@
-Create a manually triggered cloud flow that:
+Chunk 1 — paste this first:
+Create a manually triggered cloud flow. Initialize these variables at the start: varWarnings (String, empty), varRCCount (Integer, 0), varBPCount (Integer, 0), varCPNew (Integer, 0), varCPUpdated (Integer, 0), varCPRemoved (Integer, 0), varAppNew (Integer, 0), varAppUpdated (Integer, 0), varAppDecom (Integer, 0), varImportCycleID (String, empty), varRCFileID (String, empty), varBPFileID (String, empty), varCPFileID (String, empty), varAppFileID (String, empty). Then list files in 4 OneDrive for Business folders: /00.EMS/EMS/Inbox/ReferenceControls, /00.EMS/EMS/Inbox/BusinessProcesses, /00.EMS/EMS/Inbox/ControlProcedures, /00.EMS/EMS/Inbox/Applications. If all 4 folders are empty, terminate with success. Otherwise create a new row in Dataverse table Import Cycles with Cycle Name = current month and year, Status = Draft, Triggered By = Power Automate. Store the new record ID in varImportCycleID.
 
-1. Initializes these variables: varRCCount (Integer, 0), varImportCycleID (String, empty), varRCFileID (String, empty)
 
-2. Lists files in OneDrive for Business folder /00.EMS/EMS/Inbox/ReferenceControls
-
-3. If folder has files:
-   - Sets varRCFileID to first file ID
-   - Creates a new row in Dataverse table "Import Cycles" with Cycle Name = current month, Status = Draft, Triggered By = "Power Automate"
-   - Sets varImportCycleID to the new record ID
-   - Reads Excel file using Excel Online Business connector, table name "Referencecontrols" with columns: Reference Control ID, Reference Control Title, Reference Control Description
-   - For each row: Upserts into Dataverse table "Reference Controls" matching on Reference Control Identifier field
-   - Increments varRCCount
-   - Moves file to /00.EMS/EMS/Archive/ReferenceControls
-
-4. Updates Import Cycle row with Reference Controls Imported = varRCCount
+Chunk 2 — paste after Chunk 1:
+Now add Reference Controls processing. If the RC folder has files, set varRCFileID to the first file ID. Read the Excel file using Excel Online Business connector, list rows present in table named Referencecontrols. The Excel has 3 columns: Reference Control ID, Reference Control Title, Reference Control Description. For each row, upsert into Dataverse table Reference Controls using alternate key on Reference Control Identifier. Map: Reference Control Identifier = Reference Control ID, Reference Control Title = Reference Control Title, Reference Control Description = Reference Control Description, Lifecycle Status = Active. Increment varRCCount by 1. After the loop, move the file to /00.EMS/EMS/Archive/ReferenceControls using varRCFileID.
+Chunk 3 — paste after Chunk 2:
+Now add Business Processes processing. Same pattern as RC. If BP folder has files, set varBPFileID to first file ID. Read Excel table named BusinessProcesses. Columns: Business Process ID, Process Name, Business Process Owner, Business Process Manager(s). For each row upsert into Dataverse table Business Processes using alternate key on Business Process Identifier. Map: Business Process Identifier = Business Process ID, Process Name = Process Name, Business Process Owner = Business Process Owner, Business Process Managers = Business Process Manager(s), Lifecycle Status = Active. Increment varBPCount. Move file to /00.EMS/EMS/Archive/BusinessProcesses.
+Chunk 4 — paste after Chunk 3:
+Now add Control Procedures processing. This is different - it creates Staged Records. If CP folder has files, set varCPFileID to first file ID. Read Excel table named ControlProcedures. Columns: Control Procedure ID, Key Control No, Control Procedure Title, Control Procedure Description, Control Procedure Owner, Control Procedure Coordinator, Common Unit, Parent Business Process, Control Procedure Status, Reference Controls, SOX. For each row, first list rows in Dataverse table Control Procedures where pei_controlprocedureidentifier equals the Excel Control Procedure ID value.
+Chunk 5 — paste after Chunk 4:
+Continuing Control Procedures. If the list returns no rows (new CP): Create a new row in Control Procedures with all 11 fields mapped, Lifecycle Status = Active. Also create a new row in Staged Records table with Name = Control Procedure ID, Entity Type = Control Procedure, Display Title = Control Procedure Title, What Changed = New, Impact on Evidence = "New Control Procedure. Requires scope classification and applicability mapping.", Import Cycle = varImportCycleID. Increment varCPNew. If the list returns a row (existing CP): Compare existing Description and Reference Controls fields with Excel values. If either changed, update the Control Procedures row and create a Staged Record with What Changed = Updated. Increment varCPUpdated. If neither changed, update silently without Staged Record. Move file to /00.EMS/EMS/Archive/ControlProcedures.
+Chunk 6 — paste last:
+Finally, after all file processing, update the Import Cycle row using varImportCycleID. Set Reference Controls Imported = varRCCount, Business Processes Imported = varBPCount, Control Procedures New = varCPNew, Control Procedures Updated = varCPUpdated. All Dataverse tables use publisher prefix pei_. All Excel files are in OneDrive for Business with named tables inside them. Skip any row where the ID column is empty or blank.
