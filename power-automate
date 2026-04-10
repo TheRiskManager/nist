@@ -1,1 +1,19 @@
+Stage New App — add a new action:
 
+Dataverse → Add a new row
+Table: Staged Records
+Map these fields:
+
+Name — fx:
+items('Loop_App_Rows')?['Application ID']
+Entity Type — pick Application from the dropdown
+Display Title — fx:
+items('Loop_App_Rows')?['Display Name']
+What Changed — pick New from the dropdown
+Impact on Evidence — fx:
+concat('New Application from LeanIX. SOX: ', items('Loop_App_Rows')?['SOX Application'], ', Hosting: ', items('Loop_App_Rows')?['Hosting Type'], '. Requires applicability mapping against existing Control Procedures.')
+Import Cycle — use the lightning bolt (dynamic content), find Import Cycle unique identifier from the Create Import Cycle action (same as you did for CP Staged Records)
+
+Rename to: Stage New App
+
+Build it and say "done", or tell me if any field name doesn't match what you see.
