@@ -1,5 +1,1 @@
-or(not(equals(items('Loop_App_Rows')?['MFA Provider'],outputs('Get_Existing_App_Data')?['pei_mfaprovider'])),not(equals(items('Loop_App_Rows')?['Partner Facing'],outputs('Get_Existing_App_Data')?['pei_partnerfacing'])),not(equals(items('Loop_App_Rows')?['Privileged Access'],outputs('Get_Existing_App_Data')?['pei_privilegedaccess'])),not(equals(items('Loop_App_Rows')?['Single-Sign-On - Availability'],outputs('Get_Existing_App_Data')?['pei_singlesignonavailability'])),not(equals(items('Loop_App_Rows')?['SSO Pattern'],outputs('Get_Existing_App_Data')?['pei_ssopattern'])))
-
-
-
-or(not(equals(items('Loop_App_Rows')?['Target Hosting Class'],outputs('Get_Existing_App_Data')?['pei_targethostingclass'])),not(equals(items('Loop_App_Rows')?['Web Application'],outputs('Get_Existing_App_Data')?['pei_webapplication'])),not(equals(items('Loop_App_Rows')?['URL Is Accessible Externally'],outputs('Get_Existing_App_Data')?['pei_urlisaccessibleexternally'])),not(equals(items('Loop_App_Rows')?['Customer Facing'],outputs('Get_Existing_App_Data')?['pei_customerfacing'])),not(equals(items('Loop_App_Rows')?['Penetration Testing Required'],outputs('Get_Existing_App_Data')?['pei_penetrationtestingrequired'])))
+or(outputs('Key_Fields_Changed_Group_1'),outputs('Key_Fields_Changed_Group_2'),outputs('Key_Fields_Changed_Group_3'))
