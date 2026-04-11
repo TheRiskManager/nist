@@ -1,1 +1,8 @@
-concat('IT Owner:[', items('Loop_App_Rows')?['Responsible: IT Owner'], ']')
+items('Loop_App_Rows')?['Responsible Business Owner']
+items('Loop_App_Rows')?['Responsible IT Owner']
+items('Loop_App_Rows')?['Responsible Primary Asset Owner']
+items('Loop_App_Rows')?['Responsible Secondary Asset Owner (Delegate)']
+items('Loop_App_Rows')?['Responsible Secondary Business Owner']
+items('Loop_App_Rows')?['Responsible Secondary IT Owner']
+items('Loop_App_Rows')?['Lifecycle Current Lifecycle']
+items('Loop_App_Rows')?['Org Unit Display Name']
