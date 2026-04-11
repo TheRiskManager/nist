@@ -1,1 +1,1 @@
-concat('Excel IC:[', items('Loop_App_Rows')?['Information Classification'], '] DV IC:[', outputs('Get_Existing_App_Data')?['pei_informationclassification'], ']')
+concat('Excel:', length(coalesce(items('Loop_App_Rows')?['Information Classification'],'')), ' DV:', length(coalesce(outputs('Get_Existing_App_Data')?['pei_informationclassification'],'')))
