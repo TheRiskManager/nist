@@ -1,2 +1,14 @@
+Group 1 (replace existing):
 
-replace(replace(trim(coalesce(items('Loop_App_Rows')?['Display Name'],'')),'''',''''''),'"','')
+or(not(equals(coalesce(items('Loop_App_Rows')?['Hosting Type'],''),coalesce(outputs('Get_Existing_App_Data')?['pei_hostingtype'],''))),not(equals(coalesce(items('Loop_App_Rows')?['Application Criticality'],''),coalesce(outputs('Get_Existing_App_Data')?['pei_applicationcriticality'],''))),not(equals(coalesce(items('Loop_App_Rows')?['SOX Application'],''),coalesce(outputs('Get_Existing_App_Data')?['pei_soxrelevant'],''))),not(equals(coalesce(items('Loop_App_Rows')?['Information Classification'],''),coalesce(outputs('Get_Existing_App_Data')?['pei_informationclassification'],''))),not(equals(coalesce(items('Loop_App_Rows')?['Usage Type'],''),coalesce(outputs('Get_Existing_App_Data')?['pei_usagetype'],'')))))
+
+
+
+Group 2 (replace existing):
+or(not(equals(coalesce(items('Loop_App_Rows')?['MFA Provider'],''),coalesce(outputs('Get_Existing_App_Data')?['pei_mfaprovider'],''))),not(equals(coalesce(items('Loop_App_Rows')?['Partner Facing'],''),coalesce(outputs('Get_Existing_App_Data')?['pei_partnerfacing'],''))),not(equals(coalesce(items('Loop_App_Rows')?['Privileged Access'],''),coalesce(outputs('Get_Existing_App_Data')?['pei_privilegedaccess'],''))),not(equals(coalesce(items('Loop_App_Rows')?['Single-Sign-On - Availability'],''),coalesce(outputs('Get_Existing_App_Data')?['pei_singlesignonavailability'],''))),not(equals(coalesce(items('Loop_App_Rows')?['SSO Pattern'],''),coalesce(outputs('Get_Existing_App_Data')?['pei_ssopattern'],'')))))
+
+
+Group 3 (replace existing):
+or(not(equals(coalesce(items('Loop_App_Rows')?['Target Hosting Class'],''),coalesce(outputs('Get_Existing_App_Data')?['pei_targethostingclass'],''))),not(equals(coalesce(items('Loop_App_Rows')?['Web Application'],''),coalesce(outputs('Get_Existing_App_Data')?['pei_webapplication'],''))),not(equals(coalesce(items('Loop_App_Rows')?['URL Is Accessible Externally'],''),coalesce(outputs('Get_Existing_App_Data')?['pei_urlisaccessibleexternally'],''))),not(equals(coalesce(items('Loop_App_Rows')?['Customer Facing'],''),coalesce(outputs('Get_Existing_App_Data')?['pei_customerfacing'],''))),not(equals(coalesce(items('Loop_App_Rows')?['Penetration Testing Required'],''),coalesce(outputs('Get_Existing_App_Data')?['pei_penetrationtestingrequired'],'')))))
+
+
