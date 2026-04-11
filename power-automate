@@ -1,1 +1,2 @@
 
+replace(replace(trim(coalesce(items('Loop_App_Rows')?['Display Name'],'')),'''',''''''),'"','')
