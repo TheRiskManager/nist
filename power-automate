@@ -1,1 +1,35 @@
-concat('You are an AI assistant for a GRC Evidence Management System. Analyze the following monthly import results and provide a risk assessment. In a healthy environment, month-over-month changes are minimal. Reference Controls rarely change. Business Processes are very stable. Control Procedures may have 1-5 new per quarter. Applications change slowly, 1-3 new per quarter. Any removal is significant. Multiple evidence-affecting changes in one import is unusual. Here are the results: Reference Controls: ', string(variables('varRCNew')), ' new, ', string(variables('varRCUpdated')), ' updated, ', string(variables('varRCRemoved')), ' removed. Business Processes: ', string(variables('varBPNew')), ' new, ', string(variables('varBPUpdated')), ' updated, ', string(variables('varBPRemoved')), ' removed. Control Procedures: ', string(variables('varCPNew')), ' new, ', string(variables('varCPUpdated')), ' updated (evidence-affecting), ', string(variables('varCPRemoved')), ' removed. Applications: ', string(variables('varAppNew')), ' new, ', string(variables('varAppUpdated')), ' updated (evidence-affecting), ', string(variables('varAppDecom')), ' decommissioned. Provide a 2-3 sentence assessment. Start with NORMAL, REVIEW, or UNUSUAL. Flag any anomalies and suggest actions.')
+Step 1: Create the custom prompt FIRST
+Go to make.powerautomate.com → AI Hub → Prompts → Build your own prompt (or in the left nav, find AI Hub/Prompts).
+In the prompt builder:
+Prompt name: EMS Import Assessment
+Prompt instructions (type this in the prompt text area):
+You are an AI assistant for a GRC Evidence Management System that monitors monthly data imports from RSA Archer (controls) and LeanIX (applications). In a healthy environment, month-over-month changes are minimal. Reference Controls rarely change. Business Processes are very stable. Control Procedures may have 1-5 new per quarter. Applications change slowly, 1-3 new per quarter. Any removal is significant. Multiple evidence-affecting changes in one import is unusual. Analyze the import results provided and give a 2-3 sentence assessment. Start with NORMAL, REVIEW, or UNUSUAL. Flag any anomalies and suggest actions if needed.
+Add one input variable: Click + Add input (or the insert input button)
+
+Input name: ImportResults
+Sample data: Reference Controls: 0 new, 10 updated, 0 removed. Business Processes: 0 new, 19 updated, 0 removed. Control Procedures: 1 new, 0 updated, 0 removed. Applications: 0 new, 0 updated, 0 decommissioned.
+
+Make sure the input variable ImportResults is referenced in the prompt text. Add it at the end of the instructions:
+Here are the import results to analyze: [ImportResults]
+Test the prompt in the builder by clicking Test. Verify it returns a sensible assessment.
+Save the prompt.
+Step 2: Use the prompt in the flow
+Go back to your flow. Delete the current AI Import Assessment action if you added one. Add a new action:
+
+AI Builder → Run a prompt
+In the Prompt dropdown, select EMS Import Assessment (the one you just created)
+The ImportResults input field will appear. Click fx:
+
+concat('Reference Controls: ', string(variables('varRCNew')), ' new, ', string(variables('varRCUpdated')), ' updated, ', string(variables('varRCRemoved')), ' removed. Business Processes: ', string(variables('varBPNew')), ' new, ', string(variables('varBPUpdated')), ' updated, ', string(variables('varBPRemoved')), ' removed. Control Procedures: ', string(variables('varCPNew')), ' new, ', string(variables('varCPUpdated')), ' updated (evidence-affecting), ', string(variables('varCPRemoved')), ' removed. Applications: ', string(variables('varAppNew')), ' new, ', string(variables('varAppUpdated')), ' updated (evidence-affecting), ', string(variables('varAppDecom')), ' decommissioned.')
+
+Rename to: AI Import Assessment
+
+Step 3: Store the result
+After AI Import Assessment, add Dataverse → Update a row:
+
+Table: Import Cycles
+Row ID — fx: variables('varImportCycleID')
+AI Assessment field: use lightning bolt → select Text from the AI Import Assessment output
+Rename to: Save AI Assessment
+
+Start with Step 1 — create the prompt in AI Hub. Tell me what you see when you get there.
