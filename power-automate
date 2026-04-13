@@ -1,15 +1,15 @@
-Actually — that's too complex. Simpler approach. Add a Select action (Data Operations):
+Inside Check RC Removals, add a Condition:
 
-Add action → search Select (under Data Operations)
-From — click fx:
+Left box — click fx:
 
-body('Read_RC_Excel')?['value']
+contains(body('Extract_RC_IDs_From_Excel'), items('Check_RC_Removals')?['pei_referencecontrolidentifier'])
 
+Operator: is equal to
+Right box — click fx:
 
+false
 
-Map mode — click Switch to text mode (the small icon on the right)
-Map — click fx:
+Rename to: RC Not In File
 
-item()?['Reference Control ID']
-
-Rename to: Extract RC IDs From Excel
+This checks: "Is this active RC's identifier NOT found in the Excel data?" If true, it was removed.
+Say "done".
