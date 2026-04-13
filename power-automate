@@ -1,1 +1,1 @@
-concat(coalesce(items('Loop_CP_Rows')?['Control Procedure Description'],''),'|',coalesce(items('Loop_CP_Rows')?['Reference Controls'],''))
+length(trim(coalesce(items('Loop_RC_Rows')?['Reference Control ID'],'')))
