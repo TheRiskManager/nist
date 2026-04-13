@@ -1,1 +1,15 @@
-length(trim(coalesce(items('Loop_RC_Rows')?['Reference Control ID'],'')))
+Actually — that's too complex. Simpler approach. Add a Select action (Data Operations):
+
+Add action → search Select (under Data Operations)
+From — click fx:
+
+body('Read_RC_Excel')?['value']
+
+
+
+Map mode — click Switch to text mode (the small icon on the right)
+Map — click fx:
+
+item()?['Reference Control ID']
+
+Rename to: Extract RC IDs From Excel
