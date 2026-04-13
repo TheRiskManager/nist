@@ -1,39 +1,106 @@
-BP Removal Detection — all actions in order:
+Now back to CP Removal Detection. All actions go after Loop CP Rows, before Get CP File For Archive:
 Action 1: Select (Data Operations)
 
-From — fx: body('Read_BP_Excel')?['value']
+From — fx: body('Read_CP_Excel')?['value']
 Switch to text mode
-Map — fx: item()?['Business Process ID']
-Rename to: Extract BP IDs From Excel
+Map — fx: item()?['Control Procedure ID']
+Rename to: Extract CP IDs From Excel
 
 Action 2: Dataverse → List rows
 
-Table: Parent Business Processes
+Table: Control Procedures
 Filter rows — fx: 'pei_emslifecyclestatus eq 890920000'
-Rename to: List Active BPs
+Rename to: List Active CPs
 
 Action 3: Apply to each
 
-Select output — fx: outputs('List_Active_BPs')?['body/value']
-Rename to: Check BP Removals
+Select output — fx: outputs('List_Active_CPs')?['body/value']
+Rename to: Check CP Removals
 
-Inside Check BP Removals:
+Inside Check CP Removals:
 Action 4: Condition
 
-Left — fx: contains(body('Extract_BP_IDs_From_Excel'), items('Check_BP_Removals')?['pei_businessprocessidentifier'])
+Left — fx: contains(body('Extract_CP_IDs_From_Excel'), items('Check_CP_Removals')?['pei_controlprocedureidentifier'])
 Operator: is equal to
 Right — fx: false
-Rename to: BP Not In File
+Rename to: CP Not In File
 
-Inside BP Not In File → If Yes:
+Inside CP Not In File → If Yes:
 Action 5: Dataverse → Update a row
 
-Table: Parent Business Processes
-Row ID — fx: items('Check_BP_Removals')?['pei_parentbusinessprocessid']
+Table: Control Procedures
+Row ID — fx: items('Check_CP_Removals')?['pei_controlprocedureid']
 EMS Lifecycle Status: pick Removed from dropdown
-Rename to: Mark BP Removed
+Rename to: Mark CP Removed
 
-Action 6: Increment variable
+Action 6: Dataverse → Add a new row
 
-Name: varBPRemoved
+Table: Staged Records
+Name — fx: items('Check_CP_Removals')?['pei_controlprocedureidentifier']
+Entity Type: Control Procedure (dropdown)
+Display Title — fx: items('Check_CP_Removals')?['pei_controlproceduretitle']
+What Changed: Removed from Archer (dropdown)
+Impact on Evidence: type text → Control Procedure removed from Archer. Existing evidence retained. Future collection will stop.
+Import Cycle — fx: concat('pei_importcycles(', variables('varImportCycleID'), ')')
+Rename to: Stage Removed CP
+
+Action 7: Increment variable
+
+Name: varCPRemoved
 Value: 1
+
+Build all 7 and say "done".
+
+
+APP Removal Detection — all actions go after Loop App Rows, before Get App File For Archive:
+Action 1: Select (Data Operations)
+
+From — fx: body('Read_App_Excel')?['value']
+Switch to text mode
+Map — fx: item()?['Display Name']
+Rename to: Extract App Names From Excel
+
+Action 2: Dataverse → List rows
+
+Table: Applications
+Filter rows — fx: 'pei_emslifecyclestatus eq 890920000 and pei_displayname ne ''Enterprise'''
+Rename to: List Active Apps
+
+Action 3: Apply to each
+
+Select output — fx: outputs('List_Active_Apps')?['body/value']
+Rename to: Check App Removals
+
+Inside Check App Removals:
+Action 4: Condition
+
+Left — fx: contains(body('Extract_App_Names_From_Excel'), items('Check_App_Removals')?['pei_displayname'])
+Operator: is equal to
+Right — fx: false
+Rename to: App Not In File
+
+Inside App Not In File → If Yes:
+Action 5: Dataverse → Update a row
+
+Table: Applications
+Row ID — fx: items('Check_App_Removals')?['pei_applicationid']
+EMS Lifecycle Status: pick Removed from dropdown (or Decommissioned if that's a separate value — check your choice. If the choice only has Active/Removed, use Removed)
+Rename to: Mark App Decommissioned
+
+Action 6: Dataverse → Add a new row
+
+Table: Staged Records
+Name — fx: items('Check_App_Removals')?['pei_displayname']
+Entity Type: Application (dropdown)
+Display Title — fx: items('Check_App_Removals')?['pei_displayname']
+What Changed: Decommissioned (dropdown)
+Impact on Evidence: type text → Application no longer in LeanIX export. Existing evidence retained. Future collection will stop.
+Import Cycle — fx: concat('pei_importcycles(', variables('varImportCycleID'), ')')
+Rename to: Stage Decommissioned App
+
+Action 7: Increment variable
+
+Name: varAppDecom
+Value: 1
+
+Build both CP (7 actions) and App (7 actions) and say "done".
