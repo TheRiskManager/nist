@@ -1,52 +1,15 @@
-APP Removal Detection — all actions go after Loop App Rows, before Get App File For Archive:
-Action 1: Select (Data Operations)
-
-From — fx: body('Read_App_Excel')?['value']
-Switch to text mode
-Map — fx: item()?['Display Name']
-Rename to: Extract App Names From Excel
-
-Action 2: Dataverse → List rows
-
-Table: Applications
-Filter rows — fx: 'pei_emslifecyclestatus eq 890920000 and pei_displayname ne ''Enterprise'''
-Rename to: List Active Apps
-
-Action 3: Apply to each
-
-Select output — fx: outputs('List_Active_Apps')?['body/value']
-Rename to: Check App Removals
-
-Inside Check App Removals:
-Action 4: Condition
-
-Left — fx: contains(body('Extract_App_Names_From_Excel'), items('Check_App_Removals')?['pei_displayname'])
-Operator: is equal to
-Right — fx: false
-Rename to: App Not In File
-
-Inside App Not In File → If Yes:
-Action 5: Dataverse → Update a row
-
-Table: Applications
-Row ID — fx: items('Check_App_Removals')?['pei_applicationid']
-EMS Lifecycle Status: pick Removed from dropdown (or Decommissioned if that's a separate value — check your choice. If the choice only has Active/Removed, use Removed)
-Rename to: Mark App Decommissioned
-
-Action 6: Dataverse → Add a new row
-
-Table: Staged Records
-Name — fx: items('Check_App_Removals')?['pei_displayname']
-Entity Type: Application (dropdown)
-Display Title — fx: items('Check_App_Removals')?['pei_displayname']
-What Changed: Decommissioned (dropdown)
-Impact on Evidence: type text → Application no longer in LeanIX export. Existing evidence retained. Future collection will stop.
-Import Cycle — fx: concat('pei_importcycles(', variables('varImportCycleID'), ')')
-Rename to: Stage Decommissioned App
-
-Action 7: Increment variable
-
-Name: varAppDecom
-Value: 1
-
-Build both CP (7 actions) and App (7 actions) and say "done".
+Add these — find each field in the dropdown and set the value as fx:
+variables('varCPRemoved')
+→ field: Control Procedures Removed
+variables('varAppNew')
+→ field: Applications New
+variables('varAppUpdated')
+→ field: Applications Updated
+variables('varAppDecom')
+→ field: Applications Decommissioned
+variables('varRCRemoved')
+→ field: Reference Controls Removed
+variables('varBPRemoved')
+→ field: Business Processes Removed
+variables('varWarnings')
+→ field: Import Warnings
