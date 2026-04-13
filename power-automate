@@ -1,1 +1,18 @@
-
+RC changes:
+Step 1: Inside RC Exists → If No, add a Compose before Create RC:
+Inputs — fx:
+concat(coalesce(items('Loop_RC_Rows')?['Reference Control Title'],''),'|',coalesce(items('Loop_RC_Rows')?['Reference Control Description'],''))
+Rename to: Build New RC Hash
+Step 2: In Create RC, add Source Data Hash → fx:
+outputs('Build_New_RC_Hash')
+Step 3: Inside RC Exists → If Yes, add a Compose before Update RC:
+Inputs — fx:
+concat(coalesce(items('Loop_RC_Rows')?['Reference Control Title'],''),'|',coalesce(items('Loop_RC_Rows')?['Reference Control Description'],''))
+Rename to: Build Excel RC Hash
+Step 4: Add a Condition after Build Excel RC Hash, before Update RC:
+Left — fx: outputs('Build_Excel_RC_Hash')
+Operator: is not equal to
+Right — fx: coalesce(first(outputs('Find_Existing_RC')?['body/value'])?['pei_sourcedatahash'],'')
+Rename to: RC Data Changed
+Step 5: Move Update RC and Increment varRCUpdated into RC Data Changed → If Yes. Add Source Data Hash to Update RC → fx: outputs('Build_Excel_RC_Hash')
+Step 6: In RC Data Changed → If No — leave empty. No update, no increment. Record is unchanged.
