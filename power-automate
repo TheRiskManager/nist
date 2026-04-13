@@ -1,15 +1,12 @@
-Inside Check RC Removals, add a Condition:
+Inside RC Not In File → If Yes, add:
+Dataverse → Update a row
 
-Left box — click fx:
+Table: Reference Controls
+Row ID — click fx:
 
-contains(body('Extract_RC_IDs_From_Excel'), items('Check_RC_Removals')?['pei_referencecontrolidentifier'])
+items('Check_RC_Removals')?['pei_referencecontrolid']
 
-Operator: is equal to
-Right box — click fx:
+EMS Lifecycle Status: pick Removed from dropdown
+Rename to: Mark RC Removed
 
-false
-
-Rename to: RC Not In File
-
-This checks: "Is this active RC's identifier NOT found in the Excel data?" If true, it was removed.
 Say "done".
