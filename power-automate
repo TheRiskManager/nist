@@ -1,15 +1,47 @@
-Add these — find each field in the dropdown and set the value as fx:
-variables('varCPRemoved')
-→ field: Control Procedures Removed
-variables('varAppNew')
-→ field: Applications New
-variables('varAppUpdated')
-→ field: Applications Updated
-variables('varAppDecom')
-→ field: Applications Decommissioned
-variables('varRCRemoved')
-→ field: Reference Controls Removed
-variables('varBPRemoved')
-→ field: Business Processes Removed
-variables('varWarnings')
-→ field: Import Warnings
+Step 1: Add 4 Dataverse columns
+Go to Tables → Import Cycle → + New column for each:
+
+Reference Controls New — Whole number, default 0
+Reference Controls Updated — Whole number, default 0
+Business Processes New — Whole number, default 0
+Business Processes Updated — Whole number, default 0
+
+Save and Publish.
+Step 2: Add 4 variables in the flow
+At the top of the flow where all Initialize variable actions are, add:
+
+Initialize variable — Name: varRCNew, Type: Integer, Value: 0
+Initialize variable — Name: varRCUpdated, Type: Integer, Value: 0
+Initialize variable — Name: varBPNew, Type: Integer, Value: 0
+Initialize variable — Name: varBPUpdated, Type: Integer, Value: 0
+
+Step 3: Update RC loop
+Delete Increment varRCCount (currently after the RC Exists condition).
+Inside RC Exists → If No, after Create RC, add:
+
+Increment variable — Name: varRCNew, Value: 1
+
+Inside RC Exists → If Yes, after Update RC, add:
+
+Increment variable — Name: varRCUpdated, Value: 1
+
+Step 4: Update BP loop
+Delete Increment varBPCount (currently after the BP Exists condition).
+Inside BP Exists → If No, after Create BP, add:
+
+Increment variable — Name: varBPNew, Value: 1
+
+Inside BP Exists → If Yes, after Update BP, add:
+
+Increment variable — Name: varBPUpdated, Value: 1
+
+Step 5: Update Import Cycle Counts action
+Remove the old varRCCount and varBPCount mappings. Add:
+
+Reference Controls New → fx: variables('varRCNew')
+Reference Controls Updated → fx: variables('varRCUpdated')
+Business Processes New → fx: variables('varBPNew')
+Business Processes Updated → fx: variables('varBPUpdated')
+
+Step 6: Delete old variables
+Delete the varRCCount and varBPCount Initialize variable actions at the top (we no longer use them).
