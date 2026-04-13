@@ -1,12 +1,39 @@
-Inside RC Not In File → If Yes, add:
-Dataverse → Update a row
+BP Removal Detection — all actions in order:
+Action 1: Select (Data Operations)
 
-Table: Reference Controls
-Row ID — click fx:
+From — fx: body('Read_BP_Excel')?['value']
+Switch to text mode
+Map — fx: item()?['Business Process ID']
+Rename to: Extract BP IDs From Excel
 
-items('Check_RC_Removals')?['pei_referencecontrolid']
+Action 2: Dataverse → List rows
 
+Table: Parent Business Processes
+Filter rows — fx: 'pei_emslifecyclestatus eq 890920000'
+Rename to: List Active BPs
+
+Action 3: Apply to each
+
+Select output — fx: outputs('List_Active_BPs')?['body/value']
+Rename to: Check BP Removals
+
+Inside Check BP Removals:
+Action 4: Condition
+
+Left — fx: contains(body('Extract_BP_IDs_From_Excel'), items('Check_BP_Removals')?['pei_businessprocessidentifier'])
+Operator: is equal to
+Right — fx: false
+Rename to: BP Not In File
+
+Inside BP Not In File → If Yes:
+Action 5: Dataverse → Update a row
+
+Table: Parent Business Processes
+Row ID — fx: items('Check_BP_Removals')?['pei_parentbusinessprocessid']
 EMS Lifecycle Status: pick Removed from dropdown
-Rename to: Mark RC Removed
+Rename to: Mark BP Removed
 
-Say "done".
+Action 6: Increment variable
+
+Name: varBPRemoved
+Value: 1
