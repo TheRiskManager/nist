@@ -1,28 +1,22 @@
-Inside Loop Old Cycles, before Supersede Old Cycle:
-Action A:
+Next batch — inside Loop Old Cycle IDs, after List Old Staged Records:
+Action E: Condition
 
-Variable → Append to array variable
-Name: varOldCycleIDs
-Value: fx → items('Loop_Old_Cycles')?['pei_importcycleid']
-Rename to: Save Old Cycle ID
-
-Then — the Carry Forward block. This goes after ALL 4 entity processing blocks (after App File Exists) but BEFORE Update Import Cycle Counts. Same level as the File Exists conditions.
-Action B: Condition
-
-Left: fx → length(variables('varOldCycleIDs'))
+Left: fx → length(outputs('List_Old_Staged_Records')?['body/value'])
 Operator: is greater than
 Right: 0
-Rename to: Old Cycles Had Staged Records
+Rename to: Old Cycle Has Records
 
-Inside Old Cycles Had Staged Records → If Yes:
-Action C: Apply to each
+Inside Old Cycle Has Records → If Yes:
+Action F: Apply to each
 
-Select output: fx → variables('varOldCycleIDs')
-Rename to: Loop Old Cycle IDs
+Select output: fx → outputs('List_Old_Staged_Records')?['body/value']
+Rename to: Loop Old Staged Records
 
-Inside Loop Old Cycle IDs:
-Action D: Dataverse → List rows
+Inside Loop Old Staged Records:
+Action G: Dataverse → List rows
 
 Table: Staged Records
-Filter rows: fx → concat('_pei_importcycle_value eq ', items('Loop_Old_Cycle_IDs'))
-Rename to: List Old Staged Records
+Filter rows: fx → concat('_pei_importcycle_value eq ', variables('varImportCycleID'), ' and pei_name eq ''', items('Loop_Old_Staged_Records')?['pei_name'], ''' and pei_entitytype eq ', items('Loop_Old_Staged_Records')?['pei_entitytype'])
+Rename to: Check Duplicate In New Cycle
+
+This checks if the new cycle already has a Staged Record with the same Name and Entity Type. Tell me when E, F, G are done.
