@@ -24,3 +24,25 @@ IMPORTANT: Format your response in plain text only. Use clear section headers on
 
 
 contains(string(first(body('Read_RC_Excel')?['value'])), 'Reference Control ID')
+
+
+
+Name: varWarnings
+Value: RC file has invalid headers. Expected 'Reference Control ID' column. File skipped.
+Rename to: Warn RC Invalid Header
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
