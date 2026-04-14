@@ -75,5 +75,21 @@ Rename to: Warn CP Invalid Header
 
 
 
+App Header Validation — last one.
+Inside App File Exists → If Yes, right after Read App Excel and before Loop App Rows, add:
+
+Condition
+Left: fx → contains(string(first(body('Read_App_Excel')?['value'])), 'Display Name')
+Operator: is equal to
+Right: fx → true
+Rename to: App Header Valid
+
+Move everything (Loop App Rows, Archive, Decommission Detection) into If Yes.
+If No branch:
+
+Append to string variable → varWarnings
+Value: App file has invalid headers. Expected 'Display Name' column. File skipped.
+Rename to: Warn App Invalid Header
+
 
 
