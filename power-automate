@@ -37,6 +37,20 @@ Rename to: Warn RC Invalid Header
 
 
 
+Inside BP File Exists → If Yes, right after Read BP Excel and before Loop BP Rows, add:
+
+Condition
+Left: fx → contains(string(first(body('Read_BP_Excel')?['value'])), 'Business Process ID')
+Operator: is equal to
+Right: fx → true
+Rename to: BP Header Valid
+
+Then move everything (Loop BP Rows, Archive, Removal Detection) into the If Yes branch.
+In the If No branch, add:
+
+Append to string variable → varWarnings
+Value: BP file has invalid headers. Expected 'Business Process ID' column. File skipped.
+Rename to: Warn BP Invalid Header
 
 
 
