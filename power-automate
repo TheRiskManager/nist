@@ -23,5 +23,4 @@ Do all 4 steps and test. Tell me how both look.
 IMPORTANT: Format your response in plain text only. Use clear section headers on their own line followed by a blank line. Use "- " for bullet points. Do not use any HTML tags, markdown formatting, or special characters like ** or ##. The output must be readable as plain text in both emails and form fields.
 
 
-
-
+contains(string(first(body('Read_RC_Excel')?['value'])), 'Reference Control ID')
