@@ -93,3 +93,5 @@ Rename to: Warn App Invalid Header
 
 
 
+concat('Reference Controls: ', string(variables('varRCNew')), ' new, ', string(variables('varRCUpdated')), ' updated, ', string(variables('varRCRemoved')), ' removed. Business Processes: ', string(variables('varBPNew')), ' new, ', string(variables('varBPUpdated')), ' updated, ', string(variables('varBPRemoved')), ' removed. Control Procedures: ', string(variables('varCPNew')), ' new, ', string(variables('varCPUpdated')), ' updated (evidence-affecting), ', string(variables('varCPRemoved')), ' removed. Applications: ', string(variables('varAppNew')), ' new, ', string(variables('varAppUpdated')), ' updated (evidence-affecting), ', string(variables('varAppDecom')), ' decommissioned. Warnings: ', if(empty(variables('varWarnings')), 'None', variables('varWarnings')))
+
