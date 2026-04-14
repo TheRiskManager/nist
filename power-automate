@@ -1,22 +1,27 @@
-Next batch — inside Loop Old Cycle IDs, after List Old Staged Records:
-Action E: Condition
+Next batch — inside Loop Old Staged Records, after Check Duplicate In New Cycle:
+Action H: Condition
 
-Left: fx → length(outputs('List_Old_Staged_Records')?['body/value'])
-Operator: is greater than
+Left: fx → length(outputs('Check_Duplicate_In_New_Cycle')?['body/value'])
+Operator: is equal to
 Right: 0
-Rename to: Old Cycle Has Records
+Rename to: No Duplicate Exists
 
-Inside Old Cycle Has Records → If Yes:
-Action F: Apply to each
-
-Select output: fx → outputs('List_Old_Staged_Records')?['body/value']
-Rename to: Loop Old Staged Records
-
-Inside Loop Old Staged Records:
-Action G: Dataverse → List rows
+Inside No Duplicate Exists → If Yes (no duplicate, so carry forward):
+Action I: Dataverse → Add a new row
 
 Table: Staged Records
-Filter rows: fx → concat('_pei_importcycle_value eq ', variables('varImportCycleID'), ' and pei_name eq ''', items('Loop_Old_Staged_Records')?['pei_name'], ''' and pei_entitytype eq ', items('Loop_Old_Staged_Records')?['pei_entitytype'])
-Rename to: Check Duplicate In New Cycle
+Name: fx → items('Loop_Old_Staged_Records')?['pei_name']
+Entity Type: fx → items('Loop_Old_Staged_Records')?['pei_entitytype']
+Display Title: fx → items('Loop_Old_Staged_Records')?['pei_displaytitle']
+What Changed: fx → items('Loop_Old_Staged_Records')?['pei_whatchanged']
+Impact on Evidence: fx → concat(items('Loop_Old_Staged_Records')?['pei_impactonevidence'], ' [CARRIED FORWARD — originally detected in a previous import cycle that was superseded without review.]')
+Import Cycle: fx → concat('pei_importcycles(', variables('varImportCycleID'), ')')
+Rename to: Carry Forward Staged Record
 
-This checks if the new cycle already has a Staged Record with the same Name and Entity Type. Tell me when E, F, G are done.
+Action J: Variable → Increment variable
+
+Name: varCarriedForward
+Value: 1
+Rename to: Increment varCarriedForward
+
+Tell me when H, I, J are done.
