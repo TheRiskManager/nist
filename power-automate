@@ -55,6 +55,23 @@ Rename to: Warn BP Invalid Header
 
 
 
+CP Header Validation — same pattern.
+Inside CP File Exists → If Yes, right after Read CP Excel and before Loop CP Rows, add:
+
+Condition
+Left: fx → contains(string(first(body('Read_CP_Excel')?['value'])), 'Control Procedure ID')
+Operator: is equal to
+Right: fx → true
+Rename to: CP Header Valid
+
+Move everything (Loop CP Rows, Archive, Removal Detection) into If Yes.
+If No branch:
+
+Append to string variable → varWarnings
+Value: CP file has invalid headers. Expected 'Control Procedure ID' column. File skipped.
+Rename to: Warn CP Invalid Header
+
+
 
 
 
