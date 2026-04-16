@@ -1,20 +1,13 @@
-Action 1: Condition
+STEP 3: ADD NEW CONDITION
+After Update App Silent (inside App Key Field Changed → If No), add:
 
+Condition
 Left: fx → outputs('Get_Existing_App_Data')?['pei_emslifecyclestatus']
 Operator: is equal to
 Right: fx → 890920001
-Rename to: App Was Removed
+Rename to: App Was Reactivated
 
-Inside App Was Removed → If Yes:
-Action 2:
-
-Dataverse → Update a row
-Table: Applications
-Row ID: fx → outputs('Get_Existing_App_Data')?['pei_applicationid']
-EMS Lifecycle Status: Active (dropdown)
-Rename to: Reactivate App
-
-Action 3:
+Inside App Was Reactivated → If Yes:
 
 Dataverse → Add a new row
 Table: Staged Records
@@ -25,13 +18,10 @@ What Changed: Reactivated (dropdown)
 Impact on Evidence: Application returned to LeanIX export. Requires applicability mapping against existing Control Procedures.
 Import Cycle: fx → concat('pei_importcycles(', variables('varImportCycleID'), ')')
 Rename to: Stage Reactivated App
-
-Action 4:
-
 Variable → Increment variable
 Name: varAppNew
 Value: 1
 
-Inside App Was Removed → If No:
+Inside App Was Reactivated → If No:
 
-Move the existing logic into here: Build Excel Hash → App Key Field Changed → Update/Stage branches
+Leave empty (nothing to do)
