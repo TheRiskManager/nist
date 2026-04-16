@@ -1,27 +1,12 @@
-STEP 3: ADD NEW CONDITION
-After Update App Silent (inside App Key Field Changed → If No), add:
+Row 1:
 
-Condition
-Left: fx → outputs('Get_Existing_App_Data')?['pei_emslifecyclestatus']
+Left: fx → length(trim(coalesce(items('Loop_App_Rows')?['Display Name'],'')))
+Operator: is greater than
+Right: 0
+
+
+Row 2 (click + Add row, set to AND if not already):
+
+Left: fx → toLower(items('Loop_App_Rows')?['Usage Type'])
 Operator: is equal to
-Right: fx → 890920001
-Rename to: App Was Reactivated
-
-Inside App Was Reactivated → If Yes:
-
-Dataverse → Add a new row
-Table: Staged Records
-Name: fx → items('Loop_App_Rows')?['Application ID']
-Entity Type: Application (dropdown)
-Display Title: fx → items('Loop_App_Rows')?['Display Name']
-What Changed: Reactivated (dropdown)
-Impact on Evidence: Application returned to LeanIX export. Requires applicability mapping against existing Control Procedures.
-Import Cycle: fx → concat('pei_importcycles(', variables('varImportCycleID'), ')')
-Rename to: Stage Reactivated App
-Variable → Increment variable
-Name: varAppNew
-Value: 1
-
-Inside App Was Reactivated → If No:
-
-Leave empty (nothing to do)
+Right: fx → 'owner'
