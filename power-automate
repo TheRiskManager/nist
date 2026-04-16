@@ -1,36 +1,52 @@
-Inside Has Unreviewed CPs → If Yes:
-Action 3: Apply to each
+Now the same pattern for Apps. After the Has Unreviewed CPs condition (at the same level), add:
+Action 8: Dataverse → List rows
 
-Select output: fx → outputs('List_Unreviewed_CPs')?['body/value']
-Rename to: Loop Unreviewed CPs
+Table: Applications
+Filter rows: fx → 'pei_reviewed eq false and pei_emslifecyclestatus eq 890920000'
+Rename to: List Unreviewed Apps
 
-Inside Loop Unreviewed CPs:
-Action 4: Dataverse → List rows (check if this CP already has a Staged Record in the current cycle)
+Action 9: Condition
+
+Left: fx → length(outputs('List_Unreviewed_Apps')?['body/value'])
+Operator: is greater than
+Right: 0
+Rename to: Has Unreviewed Apps
+
+Inside Has Unreviewed Apps → If Yes:
+Action 10: Apply to each
+
+Select output: fx → outputs('List_Unreviewed_Apps')?['body/value']
+Rename to: Loop Unreviewed Apps
+
+Inside Loop Unreviewed Apps:
+Action 11: Dataverse → List rows
 
 Table: Staged Records
-Filter rows: fx → concat('_pei_importcycle_value eq ', variables('varImportCycleID'), ' and pei_name eq ''', items('Loop_Unreviewed_CPs')?['pei_controlprocedureidentifier'], '''')
-Rename to: Check CP Already Staged
+Filter rows: fx → concat('_pei_importcycle_value eq ', variables('varImportCycleID'), ' and pei_name eq ''', items('Loop_Unreviewed_Apps')?['pei_displayname'], '''')
+Rename to: Check App Already Staged
 
-Action 5: Condition
+Action 12: Condition
 
-Left: fx → length(outputs('Check_CP_Already_Staged')?['body/value'])
+Left: fx → length(outputs('Check_App_Already_Staged')?['body/value'])
 Operator: is equal to
 Right: 0
-Rename to: CP Not Already Staged
+Rename to: App Not Already Staged
 
-Inside CP Not Already Staged → If Yes:
-Action 6: Dataverse → Add a new row
+Inside App Not Already Staged → If Yes:
+Action 13: Dataverse → Add a new row
 
 Table: Staged Records
-Name: fx → items('Loop_Unreviewed_CPs')?['pei_controlprocedureidentifier']
-Entity Type: Control Procedure (dropdown)
-Display Title: fx → items('Loop_Unreviewed_CPs')?['pei_controlproceduretitle']
+Name: fx → items('Loop_Unreviewed_Apps')?['pei_displayname']
+Entity Type: Application (dropdown)
+Display Title: fx → items('Loop_Unreviewed_Apps')?['pei_displayname']
 What Changed: New (dropdown)
-Impact on Evidence: Control Procedure exists but was never reviewed. Requires scope classification and applicability mapping.
+Impact on Evidence: Application exists but was never reviewed. Requires applicability mapping against existing Control Procedures.
 Import Cycle: fx → concat('pei_importcycles(', variables('varImportCycleID'), ')')
-Rename to: Stage Unreviewed CP
+Rename to: Stage Unreviewed App
 
-Action 7: Increment variable
+Action 14: Increment variable
 
-Name: varCPNew
+Name: varAppNew
 Value: 1
+
+Tell me when all done (Actions 8-14).
