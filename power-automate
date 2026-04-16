@@ -1,8 +1,36 @@
-Action 2: Condition
-Right after List Unreviewed CPs:
+Inside Has Unreviewed CPs → If Yes:
+Action 3: Apply to each
 
-Condition
-Left: fx → length(outputs('List_Unreviewed_CPs')?['body/value'])
-Operator: is greater than
+Select output: fx → outputs('List_Unreviewed_CPs')?['body/value']
+Rename to: Loop Unreviewed CPs
+
+Inside Loop Unreviewed CPs:
+Action 4: Dataverse → List rows (check if this CP already has a Staged Record in the current cycle)
+
+Table: Staged Records
+Filter rows: fx → concat('_pei_importcycle_value eq ', variables('varImportCycleID'), ' and pei_name eq ''', items('Loop_Unreviewed_CPs')?['pei_controlprocedureidentifier'], '''')
+Rename to: Check CP Already Staged
+
+Action 5: Condition
+
+Left: fx → length(outputs('Check_CP_Already_Staged')?['body/value'])
+Operator: is equal to
 Right: 0
-Rename to: Has Unreviewed CPs
+Rename to: CP Not Already Staged
+
+Inside CP Not Already Staged → If Yes:
+Action 6: Dataverse → Add a new row
+
+Table: Staged Records
+Name: fx → items('Loop_Unreviewed_CPs')?['pei_controlprocedureidentifier']
+Entity Type: Control Procedure (dropdown)
+Display Title: fx → items('Loop_Unreviewed_CPs')?['pei_controlproceduretitle']
+What Changed: New (dropdown)
+Impact on Evidence: Control Procedure exists but was never reviewed. Requires scope classification and applicability mapping.
+Import Cycle: fx → concat('pei_importcycles(', variables('varImportCycleID'), ')')
+Rename to: Stage Unreviewed CP
+
+Action 7: Increment variable
+
+Name: varCPNew
+Value: 1
