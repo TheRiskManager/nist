@@ -1,12 +1,10 @@
-Row 1:
+Step 4: Add App Was Removed condition
+Inside App Exists → If Yes, right after Get Existing App Data, before Build Excel Hash, add:
 
-Left: fx → length(trim(coalesce(items('Loop_App_Rows')?['Display Name'],'')))
-Operator: is greater than
-Right: 0
-
-
-Row 2 (click + Add row, set to AND if not already):
-
-Left: fx → toLower(items('Loop_App_Rows')?['Usage Type'])
+Condition
+Left: fx → outputs('Get_Existing_App_Data')?['pei_emslifecyclestatus']
 Operator: is equal to
-Right: fx → 'owner'
+Right: fx → 890920001
+Rename to: App Was Removed
+
+Did it let you add it without the nesting error this time?
