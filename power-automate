@@ -1,1 +1,40 @@
- concat('Reference Controls: ', string(variables('varRCNew')), ' new, ', string(variables('varRCUpdated')), ' updated, ', string(variables('varRCRemoved')), ' removed. Business Processes: ', string(variables('varBPNew')), ' new, ', string(variables('varBPUpdated')), ' updated, ', string(variables('varBPRemoved')), ' removed. Control Procedures: ', string(variables('varCPNew')), ' new, ', string(variables('varCPUpdated')), ' updated (evidence-affecting), ', string(variables('varCPRemoved')), ' removed. Applications: ', string(variables('varAppNew')), ' new, ', string(variables('varAppUpdated')), ' updated (evidence-affecting), ', string(variables('varAppDecom')), ' decommissioned. Carried Forward: ', string(variables('varCarriedForward')), ' items from previous unreviewed cycle. Warnings: ', if(empty(variables('varWarnings')), 'None', variables('varWarnings')))
+Inside CP Exists → If Yes, after Get Existing CP Data, before Build Excel CP Hash, add:
+
+Condition
+Left: fx → outputs('Get_Existing_CP_Data')?['pei_emslifecyclestatus']
+Operator: is equal to
+Right: fx → 890920001
+Rename to: CP Was Removed
+
+Inside CP Was Removed → If Yes:
+Action 2:
+
+Dataverse → Update a row
+Table: Control Procedures
+Row ID: fx → outputs('Get_Existing_CP_Data')?['pei_controlprocedureid']
+EMS Lifecycle Status: Active (dropdown)
+Rename to: Reactivate CP
+
+Action 3:
+
+Dataverse → Add a new row
+Table: Staged Records
+Name: fx → items('Loop_CP_Rows')?['Control Procedure ID']
+Entity Type: Control Procedure (dropdown)
+Display Title: fx → items('Loop_CP_Rows')?['Control Procedure Title']
+What Changed: Reactivated (dropdown)
+Impact on Evidence: Control Procedure returned to Archer export. Requires scope classification and applicability review.
+Import Cycle: fx → concat('pei_importcycles(', variables('varImportCycleID'), ')')
+Rename to: Stage Reactivated CP
+
+Action 4:
+
+Variable → Increment variable
+Name: varCPNew
+Value: 1
+
+Inside CP Was Removed → If No:
+
+Leave empty — the flow continues to Build Excel CP Hash and the normal hash comparison logic as before
+
+Important: Make sure the entire existing logic (Build Excel CP Hash → CP Evidence Change → Update/Stage) is inside the If No branch of CP Was Removed. Because if the CP was reactivated, we already handled it — we don't need the hash comparison.
