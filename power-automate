@@ -1,26 +1,8 @@
-Step 6: Build the If Yes branch (reactivation)
-Inside App Was Removed → If Yes:
-Action A: Update a row (Dataverse) — Reactivate App
+Action 2: Condition
+Right after List Unreviewed CPs:
 
-Table: Applications
-Row ID: fx → outputs('Get_Existing_App_Data')?['pei_applicationid']
-EMS Lifecycle Status: Active (dropdown)
-Rename to: Reactivate App
-
-Action B: Add a new row (Dataverse) — Stage Reactivated App
-
-Table: Staged Records
-Name: fx → items('Loop_App_Rows')?['Application ID']
-Entity Type: Application (dropdown)
-Display Title: fx → items('Loop_App_Rows')?['Display Name']
-What Changed: Reactivated (dropdown)
-Impact on Evidence: Application returned to LeanIX export. Requires applicability mapping against existing Control Procedures.
-Import Cycle: fx → concat('pei_importcycles(', variables('varImportCycleID'), ')')
-Rename to: Stage Reactivated App
-
-Action C: Increment variable
-
-Name: varAppNew
-Value: 1
-
-Tell me when all 3 done.
+Condition
+Left: fx → length(outputs('List_Unreviewed_CPs')?['body/value'])
+Operator: is greater than
+Right: 0
+Rename to: Has Unreviewed CPs
