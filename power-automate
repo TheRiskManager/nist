@@ -1,40 +1,37 @@
-Inside CP Exists → If Yes, after Get Existing CP Data, before Build Excel CP Hash, add:
+Action 1: Condition
 
-Condition
-Left: fx → outputs('Get_Existing_CP_Data')?['pei_emslifecyclestatus']
+Left: fx → outputs('Get_Existing_App_Data')?['pei_emslifecyclestatus']
 Operator: is equal to
 Right: fx → 890920001
-Rename to: CP Was Removed
+Rename to: App Was Removed
 
-Inside CP Was Removed → If Yes:
+Inside App Was Removed → If Yes:
 Action 2:
 
 Dataverse → Update a row
-Table: Control Procedures
-Row ID: fx → outputs('Get_Existing_CP_Data')?['pei_controlprocedureid']
+Table: Applications
+Row ID: fx → outputs('Get_Existing_App_Data')?['pei_applicationid']
 EMS Lifecycle Status: Active (dropdown)
-Rename to: Reactivate CP
+Rename to: Reactivate App
 
 Action 3:
 
 Dataverse → Add a new row
 Table: Staged Records
-Name: fx → items('Loop_CP_Rows')?['Control Procedure ID']
-Entity Type: Control Procedure (dropdown)
-Display Title: fx → items('Loop_CP_Rows')?['Control Procedure Title']
+Name: fx → items('Loop_App_Rows')?['Application ID']
+Entity Type: Application (dropdown)
+Display Title: fx → items('Loop_App_Rows')?['Display Name']
 What Changed: Reactivated (dropdown)
-Impact on Evidence: Control Procedure returned to Archer export. Requires scope classification and applicability review.
+Impact on Evidence: Application returned to LeanIX export. Requires applicability mapping against existing Control Procedures.
 Import Cycle: fx → concat('pei_importcycles(', variables('varImportCycleID'), ')')
-Rename to: Stage Reactivated CP
+Rename to: Stage Reactivated App
 
 Action 4:
 
 Variable → Increment variable
-Name: varCPNew
+Name: varAppNew
 Value: 1
 
-Inside CP Was Removed → If No:
+Inside App Was Removed → If No:
 
-Leave empty — the flow continues to Build Excel CP Hash and the normal hash comparison logic as before
-
-Important: Make sure the entire existing logic (Build Excel CP Hash → CP Evidence Change → Update/Stage) is inside the If No branch of CP Was Removed. Because if the CP was reactivated, we already handled it — we don't need the hash comparison.
+Move the existing logic into here: Build Excel Hash → App Key Field Changed → Update/Stage branches
