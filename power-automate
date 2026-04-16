@@ -1,10 +1,26 @@
-Step 4: Add App Was Removed condition
-Inside App Exists → If Yes, right after Get Existing App Data, before Build Excel Hash, add:
+Step 6: Build the If Yes branch (reactivation)
+Inside App Was Removed → If Yes:
+Action A: Update a row (Dataverse) — Reactivate App
 
-Condition
-Left: fx → outputs('Get_Existing_App_Data')?['pei_emslifecyclestatus']
-Operator: is equal to
-Right: fx → 890920001
-Rename to: App Was Removed
+Table: Applications
+Row ID: fx → outputs('Get_Existing_App_Data')?['pei_applicationid']
+EMS Lifecycle Status: Active (dropdown)
+Rename to: Reactivate App
 
-Did it let you add it without the nesting error this time?
+Action B: Add a new row (Dataverse) — Stage Reactivated App
+
+Table: Staged Records
+Name: fx → items('Loop_App_Rows')?['Application ID']
+Entity Type: Application (dropdown)
+Display Title: fx → items('Loop_App_Rows')?['Display Name']
+What Changed: Reactivated (dropdown)
+Impact on Evidence: Application returned to LeanIX export. Requires applicability mapping against existing Control Procedures.
+Import Cycle: fx → concat('pei_importcycles(', variables('varImportCycleID'), ')')
+Rename to: Stage Reactivated App
+
+Action C: Increment variable
+
+Name: varAppNew
+Value: 1
+
+Tell me when all 3 done.
