@@ -1,60 +1,16 @@
-PART 1: Top-level actions — Configure run after (✅ successful, ✅ failed, ✅ skipped)
-Set this on each of these actions (three dots → Configure run after → check successful + failed + skipped):
+Flow 2, Action 1: Create the flow and set the trigger
 
-BP File Exists ← already done ✅
-CP File Exists
-App File Exists
-Old Cycles Had Staged Records
-List Unreviewed CPs
-Has Unreviewed Apps
-Update Import Cycle Counts
-Build AI Prompt
-AI Import Assessment
-Strip HTML For Form
-Format AI For Email
-Save AI Assessment
-Notify Risk Manager
-Any Changes Detected
+Go to make.powerautomate.com → + New flow → Automated cloud flow
+Flow name: EMS Gate Validation
+Choose trigger: Microsoft Dataverse → When a row is modified
+Configure the trigger:
+
+Table name: Import Cycles
+Scope: Organization
+Filter columns: pei_impactreviewed,pei_classificationcomplete,pei_applicabilityconfirmed,pei_evidencereviewed,pei_importcycleconfirmed
+Filter rows: leave empty (we handle filtering in the flow logic)
 
 
-PART 2: Add Warn Read Failed inside BP, CP, App (same pattern as RC)
-BP — inside BP File Exists → If Yes:
-After Read BP Excel, add:
 
-Variable → Append to string variable
-Name: varWarnings
-Value: BP file could not be read. File may have wrong format or missing table 'Business Process'. BP processing skipped.
-Rename to: Warn BP Read Failed
-Configure run after: ☐ successful, ✅ failed, ☐ skipped, ✅ timed out
-
-Then on BP Header Valid (the action after Warn BP Read Failed), set Configure run after:
-
-✅ successful, ☐ failed, ✅ skipped, ☐ timed out
-
-
-CP — inside CP File Exists → If Yes:
-After Read CP Excel, add:
-
-Variable → Append to string variable
-Name: varWarnings
-Value: CP file could not be read. File may have wrong format or missing table 'ControlProcedures'. CP processing skipped.
-Rename to: Warn CP Read Failed
-Configure run after: ☐ successful, ✅ failed, ☐ skipped, ✅ timed out
-
-Then on CP Header Valid, set Configure run after:
-
-✅ successful, ☐ failed, ✅ skipped, ☐ timed out
-
-
-App — inside App File Exists → If Yes:
-After Read App Excel, add:
-
-Variable → Append to string variable
-Name: varWarnings
-Value: App file could not be read. File may have wrong format or missing table 'ApplicationsList'. App processing skipped.
-Rename to: Warn App Read Failed
-Configure run after: ☐ successful, ✅ failed, ☐ skipped, ✅ timed out
-
-Then on App Header Valid, set Configure run after:
-
-✅ successful, ☐ failed, ✅ skipped, ☐ timed out
+Important: The Filter columns field takes a comma-separated list with NO spaces. This tells Dataverse to only fire the trigger when one of these 5 columns changes — not on every Import Cycle edit.
+Tell me when done.
