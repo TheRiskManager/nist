@@ -1,16 +1,18 @@
-Flow 2, Action 1: Create the flow and set the trigger
+Flow 2, Action 2: Condition — Gate Set To Yes
+This is the Option B loop prevention. Before doing anything, check if ANY gate is currently Yes. If all gates are No (meaning the trigger fired from a revert), exit immediately.
 
-Go to make.powerautomate.com → + New flow → Automated cloud flow
-Flow name: EMS Gate Validation
-Choose trigger: Microsoft Dataverse → When a row is modified
-Configure the trigger:
+Add a Condition action
+Left side — click fx and enter:
 
-Table name: Import Cycles
-Scope: Organization
-Filter columns: pei_impactreviewed,pei_classificationcomplete,pei_applicabilityconfirmed,pei_evidencereviewed,pei_importcycleconfirmed
-Filter rows: leave empty (we handle filtering in the flow logic)
+or(triggerOutputs()?['body/pei_impactreviewed'],triggerOutputs()?['body/pei_classificationcomplete'],triggerOutputs()?['body/pei_applicabilityconfirmed'],triggerOutputs()?['body/pei_evidencereviewed'],triggerOutputs()?['body/pei_importcycleconfirmed'])
 
+Operator: is equal to
+Right side — click fx and enter: true
+Rename to: Any Gate Is Yes
 
+If No → add a Terminate action:
 
-Important: The Filter columns field takes a comma-separated list with NO spaces. This tells Dataverse to only fire the trigger when one of these 5 columns changes — not on every Import Cycle edit.
-Tell me when done.
+Status: Succeeded
+Message: No gate set to Yes. Exiting.
+
+All remaining Flow 2 logic goes inside the If Yes branch.
