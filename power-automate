@@ -1,13 +1,12 @@
-Flow 2, Action 3: Condition — Stage 5 Confirmed
-Now we're inside the If Yes branch. We check gates from Stage 5 backward. First check: is Import Cycle Confirmed = Yes?
+Flow 2, Action 4: Stage 5 validation logic
+Inside Stage 5 Confirmed → If Yes, we need to check if all 4 prior gates are Yes. This is a simple condition — no Dataverse query needed.
 
-Inside Any Gate Is Yes → If Yes, add a Condition
+Inside Stage 5 Confirmed → If Yes, add a Condition
 Left side — click fx and enter:
 
-triggerOutputs()?['body/pei_importcycleconfirmed']
+and(triggerOutputs()?['body/pei_impactreviewed'],triggerOutputs()?['body/pei_classificationcomplete'],triggerOutputs()?['body/pei_applicabilityconfirmed'],triggerOutputs()?['body/pei_evidencereviewed'])
 
 Operator: is equal to
 Right side — click fx and enter: true
-Rename to: Stage 5 Confirmed
+Rename to: All Prior Gates Complete
 
-Don't add anything inside the branches yet — I'll give you the validation logic next.
