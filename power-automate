@@ -1,25 +1,42 @@
-Action 14: Inside Stage 3 Applicability Confirmed → If Yes, after Count Pending Applicability, add a Condition
+Action 17: Inside Stage 3 Applicability Confirmed → If No, add a Condition
 
-Left — click fx: length(outputs('Count_Pending_Applicability')?['body/value'])
+Left — click fx: triggerOutputs()?['body/pei_classificationcomplete']
+Operator: is equal to
+Right — click fx: true
+Rename to: Stage 2 Classification Complete
+
+
+
+Action 18: Inside Stage 2 Classification Complete → If Yes, add Dataverse → List rows
+
+Table: Scope Classifications
+Filter rows — click fx: concat('_pei_importcycle_value eq ', triggerOutputs()?['body/pei_importcycleid'], ' and pei_reviewdecision eq 890920000')
+Rename to: Count Pending Classifications
+
+
+
+Action 19: Inside Stage 2 Classification Complete → If Yes, after Count Pending Classifications, add a Condition
+
+Left — click fx: length(outputs('Count_Pending_Classifications')?['body/value'])
 Operator: is greater than
 Right: 0
-Rename to: Has Pending Applicability
+Rename to: Has Pending Classifications
 
 
 
-Action 15: Inside Has Pending Applicability → If Yes, add Dataverse → Update a row
+Action 20: Inside Has Pending Classifications → If Yes, add Dataverse → Update a row
 
 Table: Import Cycles
 Row ID — click fx: triggerOutputs()?['body/pei_importcycleid']
-Applicability Confirmed: No (dropdown)
-Validation Message — click fx: concat(string(length(outputs('Count_Pending_Applicability')?['body/value'])), ' applicability mappings still pending review. Complete all reviews before advancing.')
-Rename to: Revert Stage 3
+Classification Complete: No (dropdown)
+Validation Message — click fx: concat(string(length(outputs('Count_Pending_Classifications')?['body/value'])), ' scope classifications still pending review. Complete all reviews before advancing.')
+Rename to: Revert Stage 2
 
 
 
-Action 16: Inside Has Pending Applicability → If No, add Dataverse → Update a row
+Action 21: Inside Has Pending Classifications → If No, add Dataverse → Update a row
 
 Table: Import Cycles
 Row ID — click fx: triggerOutputs()?['body/pei_importcycleid']
 Validation Message: (empty)
-Rename to: Clear Validation Message Stage 3
+Rename to: Clear Validation Message Stage 2
