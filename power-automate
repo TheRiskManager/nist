@@ -1,24 +1,24 @@
-Action 8: Inside Stage 4 Evidence Reviewed → If Yes, add Dataverse → List rows
 
-Table: Evidence
-Filter rows — click fx: concat('_pei_importcycle_value eq ', triggerOutputs()?['body/pei_importcycleid'], ' and (pei_evidencestatus eq 890920000 or pei_evidencestatus eq 890920003)')
-Rename to: Count Pending Evidence
-
-
-
-Action 9: Inside Stage 4 Evidence Reviewed → If Yes, after Count Pending Evidence, add a Condition
-
-Left — click fx: length(outputs('Count_Pending_Evidence')?['body/value'])
-Operator: is greater than
-Right: 0
-Rename to: Has Pending Evidence
-
-
-
-Action 10: Inside Has Pending Evidence → If Yes, add Dataverse → Update a row
+Action 11: Inside Has Pending Evidence → If No, add Dataverse → Update a row
 
 Table: Import Cycles
 Row ID — click fx: triggerOutputs()?['body/pei_importcycleid']
-Evidence Reviewed: No (dropdown)
-Validation Message — click fx: concat(string(length(outputs('Count_Pending_Evidence')?['body/value'])), ' evidence items still pending or flagged as gaps. Complete all evidence reviews before advancing.')
-Rename to: Revert Stage 4
+Validation Message: (empty)
+Rename to: Clear Validation Message Stage 4
+
+
+
+Action 12: Inside Stage 4 Evidence Reviewed → If No, add a Condition
+
+Left — click fx: triggerOutputs()?['body/pei_applicabilityconfirmed']
+Operator: is equal to
+Right — click fx: true
+Rename to: Stage 3 Applicability Confirmed
+
+
+
+Action 13: Inside Stage 3 Applicability Confirmed → If Yes, add Dataverse → List rows
+
+Table: Control Applicability
+Filter rows — click fx: concat('_pei_importcycle_value eq ', triggerOutputs()?['body/pei_importcycleid'], ' and pei_reviewdecision eq 890920000')
+Rename to: Count Pending Applicability
