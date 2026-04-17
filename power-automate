@@ -1,12 +1,23 @@
-Flow 2, Action 4: Stage 5 validation logic
-Inside Stage 5 Confirmed → If Yes, we need to check if all 4 prior gates are Yes. This is a simple condition — no Dataverse query needed.
+Action 5: Inside All Prior Gates Complete → If No, add Dataverse → Update a row
 
-Inside Stage 5 Confirmed → If Yes, add a Condition
-Left side — click fx and enter:
+Table: Import Cycles
+Row ID — click fx: triggerOutputs()?['body/pei_importcycleid']
+Import Cycle Confirmed: No (dropdown)
+Validation Message: type text → Stage 5 cannot be confirmed. Complete all prior stages first (Impact Review, Classification, Applicability, Evidence).
+Rename to: Revert Stage 5
 
-and(triggerOutputs()?['body/pei_impactreviewed'],triggerOutputs()?['body/pei_classificationcomplete'],triggerOutputs()?['body/pei_applicabilityconfirmed'],triggerOutputs()?['body/pei_evidencereviewed'])
+Action 6: Inside All Prior Gates Complete → If Yes, add Dataverse → Update a row
 
+Table: Import Cycles
+Row ID — click fx: triggerOutputs()?['body/pei_importcycleid']
+Validation Message: type text → leave it empty (click into the field, leave blank — clears any old message)
+Rename to: Clear Validation Message Stage 5
+
+Action 7: Now go to Stage 5 Confirmed → If No branch. Add a Condition:
+
+Left — click fx: triggerOutputs()?['body/pei_evidencereviewed']
 Operator: is equal to
-Right side — click fx and enter: true
-Rename to: All Prior Gates Complete
+Right — click fx: true
+Rename to: Stage 4 Evidence Reviewed
 
+Tell me when all 3 are done.
