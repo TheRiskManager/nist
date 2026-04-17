@@ -1,24 +1,25 @@
+Action 14: Inside Stage 3 Applicability Confirmed → If Yes, after Count Pending Applicability, add a Condition
 
-Action 11: Inside Has Pending Evidence → If No, add Dataverse → Update a row
+Left — click fx: length(outputs('Count_Pending_Applicability')?['body/value'])
+Operator: is greater than
+Right: 0
+Rename to: Has Pending Applicability
+
+
+
+Action 15: Inside Has Pending Applicability → If Yes, add Dataverse → Update a row
+
+Table: Import Cycles
+Row ID — click fx: triggerOutputs()?['body/pei_importcycleid']
+Applicability Confirmed: No (dropdown)
+Validation Message — click fx: concat(string(length(outputs('Count_Pending_Applicability')?['body/value'])), ' applicability mappings still pending review. Complete all reviews before advancing.')
+Rename to: Revert Stage 3
+
+
+
+Action 16: Inside Has Pending Applicability → If No, add Dataverse → Update a row
 
 Table: Import Cycles
 Row ID — click fx: triggerOutputs()?['body/pei_importcycleid']
 Validation Message: (empty)
-Rename to: Clear Validation Message Stage 4
-
-
-
-Action 12: Inside Stage 4 Evidence Reviewed → If No, add a Condition
-
-Left — click fx: triggerOutputs()?['body/pei_applicabilityconfirmed']
-Operator: is equal to
-Right — click fx: true
-Rename to: Stage 3 Applicability Confirmed
-
-
-
-Action 13: Inside Stage 3 Applicability Confirmed → If Yes, add Dataverse → List rows
-
-Table: Control Applicability
-Filter rows — click fx: concat('_pei_importcycle_value eq ', triggerOutputs()?['body/pei_importcycleid'], ' and pei_reviewdecision eq 890920000')
-Rename to: Count Pending Applicability
+Rename to: Clear Validation Message Stage 3
