@@ -1,2 +1,60 @@
-Value: RC file could not be read. File may have wrong format or missing table 'Referencecontrols'. RC processing skipped.
-Rename to: Warn RC Read Failed
+PART 1: Top-level actions — Configure run after (✅ successful, ✅ failed, ✅ skipped)
+Set this on each of these actions (three dots → Configure run after → check successful + failed + skipped):
+
+BP File Exists ← already done ✅
+CP File Exists
+App File Exists
+Old Cycles Had Staged Records
+List Unreviewed CPs
+Has Unreviewed Apps
+Update Import Cycle Counts
+Build AI Prompt
+AI Import Assessment
+Strip HTML For Form
+Format AI For Email
+Save AI Assessment
+Notify Risk Manager
+Any Changes Detected
+
+
+PART 2: Add Warn Read Failed inside BP, CP, App (same pattern as RC)
+BP — inside BP File Exists → If Yes:
+After Read BP Excel, add:
+
+Variable → Append to string variable
+Name: varWarnings
+Value: BP file could not be read. File may have wrong format or missing table 'Business Process'. BP processing skipped.
+Rename to: Warn BP Read Failed
+Configure run after: ☐ successful, ✅ failed, ☐ skipped, ✅ timed out
+
+Then on BP Header Valid (the action after Warn BP Read Failed), set Configure run after:
+
+✅ successful, ☐ failed, ✅ skipped, ☐ timed out
+
+
+CP — inside CP File Exists → If Yes:
+After Read CP Excel, add:
+
+Variable → Append to string variable
+Name: varWarnings
+Value: CP file could not be read. File may have wrong format or missing table 'ControlProcedures'. CP processing skipped.
+Rename to: Warn CP Read Failed
+Configure run after: ☐ successful, ✅ failed, ☐ skipped, ✅ timed out
+
+Then on CP Header Valid, set Configure run after:
+
+✅ successful, ☐ failed, ✅ skipped, ☐ timed out
+
+
+App — inside App File Exists → If Yes:
+After Read App Excel, add:
+
+Variable → Append to string variable
+Name: varWarnings
+Value: App file could not be read. File may have wrong format or missing table 'ApplicationsList'. App processing skipped.
+Rename to: Warn App Read Failed
+Configure run after: ☐ successful, ✅ failed, ☐ skipped, ✅ timed out
+
+Then on App Header Valid, set Configure run after:
+
+✅ successful, ☐ failed, ✅ skipped, ☐ timed out
