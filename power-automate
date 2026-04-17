@@ -1,18 +1,13 @@
-Flow 2, Action 2: Condition — Gate Set To Yes
-This is the Option B loop prevention. Before doing anything, check if ANY gate is currently Yes. If all gates are No (meaning the trigger fired from a revert), exit immediately.
+Flow 2, Action 3: Condition — Stage 5 Confirmed
+Now we're inside the If Yes branch. We check gates from Stage 5 backward. First check: is Import Cycle Confirmed = Yes?
 
-Add a Condition action
+Inside Any Gate Is Yes → If Yes, add a Condition
 Left side — click fx and enter:
 
-or(triggerOutputs()?['body/pei_impactreviewed'],triggerOutputs()?['body/pei_classificationcomplete'],triggerOutputs()?['body/pei_applicabilityconfirmed'],triggerOutputs()?['body/pei_evidencereviewed'],triggerOutputs()?['body/pei_importcycleconfirmed'])
+triggerOutputs()?['body/pei_importcycleconfirmed']
 
 Operator: is equal to
 Right side — click fx and enter: true
-Rename to: Any Gate Is Yes
+Rename to: Stage 5 Confirmed
 
-If No → add a Terminate action:
-
-Status: Succeeded
-Message: No gate set to Yes. Exiting.
-
-All remaining Flow 2 logic goes inside the If Yes branch.
+Don't add anything inside the branches yet — I'll give you the validation logic next.
