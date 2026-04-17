@@ -1,23 +1,24 @@
-Action 5: Inside All Prior Gates Complete → If No, add Dataverse → Update a row
+Action 8: Inside Stage 4 Evidence Reviewed → If Yes, add Dataverse → List rows
+
+Table: Evidence
+Filter rows — click fx: concat('_pei_importcycle_value eq ', triggerOutputs()?['body/pei_importcycleid'], ' and (pei_evidencestatus eq 890920000 or pei_evidencestatus eq 890920003)')
+Rename to: Count Pending Evidence
+
+
+
+Action 9: Inside Stage 4 Evidence Reviewed → If Yes, after Count Pending Evidence, add a Condition
+
+Left — click fx: length(outputs('Count_Pending_Evidence')?['body/value'])
+Operator: is greater than
+Right: 0
+Rename to: Has Pending Evidence
+
+
+
+Action 10: Inside Has Pending Evidence → If Yes, add Dataverse → Update a row
 
 Table: Import Cycles
 Row ID — click fx: triggerOutputs()?['body/pei_importcycleid']
-Import Cycle Confirmed: No (dropdown)
-Validation Message: type text → Stage 5 cannot be confirmed. Complete all prior stages first (Impact Review, Classification, Applicability, Evidence).
-Rename to: Revert Stage 5
-
-Action 6: Inside All Prior Gates Complete → If Yes, add Dataverse → Update a row
-
-Table: Import Cycles
-Row ID — click fx: triggerOutputs()?['body/pei_importcycleid']
-Validation Message: type text → leave it empty (click into the field, leave blank — clears any old message)
-Rename to: Clear Validation Message Stage 5
-
-Action 7: Now go to Stage 5 Confirmed → If No branch. Add a Condition:
-
-Left — click fx: triggerOutputs()?['body/pei_evidencereviewed']
-Operator: is equal to
-Right — click fx: true
-Rename to: Stage 4 Evidence Reviewed
-
-Tell me when all 3 are done.
+Evidence Reviewed: No (dropdown)
+Validation Message — click fx: concat(string(length(outputs('Count_Pending_Evidence')?['body/value'])), ' evidence items still pending or flagged as gaps. Complete all evidence reviews before advancing.')
+Rename to: Revert Stage 4
