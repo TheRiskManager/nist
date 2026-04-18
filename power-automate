@@ -1,24 +1,12 @@
-Action 5: Add Apply to each
-
-Select output — click fx: outputs('Get_Mapped_RCs')?['body/value']
-Rename to: Loop Mapped RCs
-
-But wait — we need a variable to accumulate RC descriptions. We need to add it before the loop.
-Action 5 (revised): Add Initialize variable (place it right after the trigger, before Get Classification Record)
+Action 8: Inside Loop Mapped RCs, after Get RC Details, add Append to string variable
 
 Name: varRCDescriptions
-Type: String
-Value: (empty)
-Rename to: Initialize varRCDescriptions
+Value — click fx: concat(outputs('Get_RC_Details')?['pei_referencecontrolidentifier'], ': ', outputs('Get_RC_Details')?['pei_referencecontroltitle'], ' - ', outputs('Get_RC_Details')?['pei_referencecontroldescription'], ' | ')
+Rename to: Append RC Description
 
-Move Get Classification Record, Get CP Details, and Get Mapped RCs below this variable.
-Action 6: Add Apply to each (after Get Mapped RCs)
+Action 9: After Loop Mapped RCs (outside the loop), add AI Builder → Run a prompt
 
-Select output — click fx: outputs('Get_Mapped_RCs')?['body/value']
-Rename to: Loop Mapped RCs
-
-Action 7: Inside Loop Mapped RCs, add Dataverse → Get a row by ID
-
-Table: Reference Controls
-Row ID — click fx: items('Loop_Mapped_RCs')?['_pei_referencecontrol_value']
-Rename to: Get RC Details
+Prompt: EMS Control Classification
+CPDescription — click fx: outputs('Get_CP_Details')?['pei_description']
+RCDescriptions — click fx: variables('varRCDescriptions')
+Rename to: AI Classify CP
