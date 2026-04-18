@@ -1,1 +1,1 @@
-outputs('Debug_AI_Output')?['predictionOutput']?['text']
+trim(first(split(last(split(string(outputs('Debug_AI_Output')), 'SCOPE_TYPE: ')), '\\n')))
