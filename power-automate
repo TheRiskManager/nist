@@ -1,42 +1,47 @@
-Action 17: Inside Stage 3 Applicability Confirmed → If No, add a Condition
 
-Left — click fx: triggerOutputs()?['body/pei_classificationcomplete']
-Operator: is equal to
-Right — click fx: true
-Rename to: Stage 2 Classification Complete
+Name: EMS Control Classification
+Input variables:
 
-
-
-Action 18: Inside Stage 2 Classification Complete → If Yes, add Dataverse → List rows
-
-Table: Scope Classifications
-Filter rows — click fx: concat('_pei_importcycle_value eq ', triggerOutputs()?['body/pei_importcycleid'], ' and pei_reviewdecision eq 890920000')
-Rename to: Count Pending Classifications
+CPDescription (Text)
+RCDescriptions (Text)
 
 
+Test with:
 
-Action 19: Inside Stage 2 Classification Complete → If Yes, after Count Pending Classifications, add a Condition
-
-Left — click fx: length(outputs('Count_Pending_Classifications')?['body/value'])
-Operator: is greater than
-Right: 0
-Rename to: Has Pending Classifications
+CPDescription: Access reviews are performed quarterly for all applications to ensure only authorized users have access.
+RCDescriptions: AC-1: Access Control Policy and Procedures - The organization develops, documents, and disseminates an access control policy.
 
 
+You are an AI assistant for a GRC Evidence Management System. Your job is to classify a Control Procedure into one of three scope types based on its description and the Reference Controls it implements.
 
-Action 20: Inside Has Pending Classifications → If Yes, add Dataverse → Update a row
+SCOPE TYPES:
+- Common Control: One team provides evidence once for the entire organization. The control is executed centrally and the evidence is the same regardless of which application it applies to. Examples: organization-wide policies, central IT security configurations, enterprise-wide training programs.
+- Application-Level Control: Evidence must be provided per-application. The control is executed differently for each application, or the evidence varies by application. Examples: application-specific access controls, per-app encryption settings, application-level logging.
+- Hybrid: Some evidence is central (same for all apps) and some is per-application. Examples: a policy exists centrally but each app must demonstrate compliance individually.
 
-Table: Import Cycles
-Row ID — click fx: triggerOutputs()?['body/pei_importcycleid']
-Classification Complete: No (dropdown)
-Validation Message — click fx: concat(string(length(outputs('Count_Pending_Classifications')?['body/value'])), ' scope classifications still pending review. Complete all reviews before advancing.')
-Rename to: Revert Stage 2
+There is no Exempt category. If a control does not require evidence, it should not be in the source system.
 
+INPUTS:
+Control Procedure Description: [CPDescription]
+Reference Controls this CP implements: [RCDescriptions]
 
+INSTRUCTIONS:
+1. Analyze the Control Procedure description to understand what it requires.
+2. Consider the Reference Controls to understand the broader compliance requirement.
+3. Determine the scope type based on:
+   - Who executes this control? (central team vs. application team)
+   - Is the output/evidence the same for all applications, or does it vary?
+   - Does execution depend on application-specific attributes?
 
-Action 21: Inside Has Pending Classifications → If No, add Dataverse → Update a row
+Respond with EXACTLY this format, one field per line, no other text:
+SCOPE_TYPE: Common Control
+CONFIDENCE: High
+REASONING: Your 2-3 sentence explanation here
+EVIDENCE_SUGGESTION: What kind of evidence would satisfy this control
+RESPONSIBLE_PARTY: Who should provide the evidence
 
-Table: Import Cycles
-Row ID — click fx: triggerOutputs()?['body/pei_importcycleid']
-Validation Message: (empty)
-Rename to: Clear Validation Message Stage 2
+Rules for the response:
+- SCOPE_TYPE must be exactly one of: Common Control, Application-Level Control, Hybrid
+- CONFIDENCE must be exactly one of: High, Medium, Low
+- Each line must start with the field name followed by a colon and a space
+- Do not add any other lines, headers, or formatting
