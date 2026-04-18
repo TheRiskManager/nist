@@ -1,3 +1,1 @@
-Click fx: concat('_pei_controlprocedure_value eq ', first(outputs('Get_CP_Details')?['body/value'])?['pei_controlprocedureid'])
-And update AI Classify CP CPDescription input to:
-Click fx: first(outputs('Get_CP_Details')?['body/value'])?['pei_description']
+concat('pei_controlprocedureid eq ', outputs('Get_Classification_Record')?['_pei_controlprocedure_value'])
