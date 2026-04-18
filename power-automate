@@ -1,2 +1,21 @@
-AC-1: Access Control Policy and Procedures - The organization develops, documents, and disseminates an access control policy. | AC-2: Account Management - The organization manages information system accounts, including establishing, activating, modifying, reviewing, disabling, and removing accounts. | AC-3: Access Enforcement - The information system enforces approved authorizations for logical access to information and system resources.
+Next 3 actions — get the staged CPs that need classification:
+Action 2: Add Dataverse → List rows
+
+Table: Staged Records
+Filter rows — click fx: concat('_pei_importcycle_value eq ', triggerOutputs()?['body/pei_importcycleid'], ' and pei_entitytype eq 890920000 and (pei_whatchanged eq 890920000 or pei_whatchanged eq 890920001)')
+Rename to: Get CPs To Classify
+
+This gets Staged Records for this Import Cycle where Entity Type = Control Procedure AND What Changed = New or Updated.
+Action 3: Add a Condition after Get CPs To Classify
+
+Left — click fx: length(outputs('Get_CPs_To_Classify')?['body/value'])
+Operator: is greater than
+Right: 0
+Rename to: Has CPs To Classify
+
+Action 4: Inside Has CPs To Classify → If No, add Terminate
+
+Status: Succeeded
+Message: No Control Procedures to classify. Exiting.
+
 
