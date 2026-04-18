@@ -1,1 +1,13 @@
-trim(first(split(last(split(outputs('Get_AI_Text'), 'CONFIDENCE: ')), '\n')))
+Then go back to Flow 3B, delete and re-add the Update Classification With AI action (to refresh the schema cache — same pattern as Error #5 with CP Title).
+Re-add it with the same fields:
+
+Table: Scope Classifications
+Row ID — click fx: outputs('Get_Classification_Record')?['pei_scopeclassificationid']
+Scope Type — click fx: if(equals(outputs('Parse_Scope_Type'), 'Common Control'), 890920000, if(equals(outputs('Parse_Scope_Type'), 'Application-Level Control'), 890920001, 890920002))
+AI Confidence — click fx: if(equals(outputs('Parse_Confidence'), 'High'), 890920000, if(equals(outputs('Parse_Confidence'), 'Medium'), 890920001, 890920002))
+Copilot Reasoning — click fx: outputs('Parse_Reasoning')
+Suggested Evidence Central — click fx: outputs('Parse_Evidence_Suggestion')
+Suggested Responsible Central — click fx: outputs('Parse_Responsible_Party')
+Rename to: Update Classification With AI
+
+Also increase Suggested Evidence Central to 500 while you're at it — same risk of AI returning long text.
