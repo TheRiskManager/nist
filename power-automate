@@ -1,20 +1,24 @@
-Action 5: Inside Has Existing Records → If Yes, add Apply to each
+Action 8: Inside Needs Enterprise Record → If Yes, add Dataverse → List rows
 
-Select output — click fx: outputs('List_Existing_Applicability')?['body/value']
-Rename to: Loop Existing Applicability
+Table: Applications
+Filter rows: pei_displayname eq 'Enterprise'
+Rename to: Find Enterprise App
 
-Action 6: Inside Loop Existing Applicability, add Dataverse → Update a row
+Action 9: Inside Needs Enterprise Record → If Yes, after Find Enterprise App, add Dataverse → Add a new row
 
 Table: Applicability
-Row ID — click fx: items('Loop_Existing_Applicability')?['pei_applicabilityid']
-Applicability Status: Inactive (dropdown)
-Rename to: Deactivate Old Applicability
+Name — click fx: concat(triggerOutputs()?['body/pei_name'], ' - Enterprise')
+Control Procedure — click fx: concat('pei_controlprocedures(', triggerOutputs()?['body/_pei_controlprocedure_value'], ')')
+Application — click fx: concat('pei_applications(', first(outputs('Find_Enterprise_App')?['body/value'])?['pei_applicationid'], ')')
+Import Cycle — click fx: concat('pei_importcycles(', triggerOutputs()?['body/_pei_importcycle_value'], ')')
+Applicability: Applicable (dropdown)
+Applicability Status: Active (dropdown)
+Review Decision: Pending (dropdown)
+Rename to: Create Enterprise Applicability
 
-Action 7: After the Has Existing Records condition (outside it, below it), add a Condition
+Action 10: After Needs Enterprise Record condition (outside it, below it), add a Condition
 
-Left — click fx: or(equals(triggerOutputs()?['body/pei_scopetype'], 890920000), equals(triggerOutputs()?['body/pei_scopetype'], 890920002))
+Left — click fx: or(equals(triggerOutputs()?['body/pei_scopetype'], 890920001), equals(triggerOutputs()?['body/pei_scopetype'], 890920002))
 Operator: is equal to
 Right — click fx: true
-Rename to: Needs Enterprise Record
-
-NOTE: This checks if Scope Type is Common Control (890920000) OR Hybrid (890920002). If yes → create Enterprise Applicability record.
+Rename to: Needs Per App Records
