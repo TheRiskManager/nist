@@ -1,7 +1,3 @@
-Delete the current Get CP Details action
-Add Dataverse → List rows
-Table: Control Procedures
-Filter rows — click fx: concat('pei_controlprocedureid eq ', outputs('Get_Classification_Record')?['_pei_controlprocedure_value'])
-Rename to: Get CP Details
-
-Then every action after this that references outputs('Get_CP_Details') needs to change to first(outputs('Get_CP_Details')?['body/value']). But let's first see if the List rows approach works.
+Click fx: concat('_pei_controlprocedure_value eq ', first(outputs('Get_CP_Details')?['body/value'])?['pei_controlprocedureid'])
+And update AI Classify CP CPDescription input to:
+Click fx: first(outputs('Get_CP_Details')?['body/value'])?['pei_description']
