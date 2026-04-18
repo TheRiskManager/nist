@@ -1,6 +1,1 @@
-Add a Compose action BEFORE Get CP Details
-Inputs — click fx: outputs('Get_Classification_Record')?['_pei_controlprocedure_value']
-Rename to: Get CP ID
-
-Then change Get CP Details filter rows to:
-Click fx: concat('pei_controlprocedureid eq ', outputs('Get_CP_ID'))
+concat('pei_controlprocedureid eq ''', outputs('Get_CP_ID'), '''')
