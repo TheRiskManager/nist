@@ -1,2 +1,10 @@
-CPDescription — click fx: outputs('Get_CP_Details')?['pei_description']
-RCDescriptions — click fx: if(empty(variables('varRCDescriptions')), 'No Reference Controls mapped to this Control Procedure.', variables('varRCDescriptions'))
+Parse Scope Type — click fx:
+trim(first(split(last(split(outputs('AI_Classify_CP')?['text'], 'SCOPE_TYPE: ')), decodeUriComponent('%0A'))))
+Parse Confidence — click fx:
+trim(first(split(last(split(outputs('AI_Classify_CP')?['text'], 'CONFIDENCE: ')), decodeUriComponent('%0A'))))
+Parse Reasoning — click fx:
+trim(first(split(last(split(outputs('AI_Classify_CP')?['text'], 'REASONING: ')), decodeUriComponent('%0A'))))
+Parse Evidence Suggestion — click fx:
+trim(first(split(last(split(outputs('AI_Classify_CP')?['text'], 'EVIDENCE_SUGGESTION: ')), decodeUriComponent('%0A'))))
+Parse Responsible Party — click fx:
+trim(last(split(outputs('AI_Classify_CP')?['text'], 'RESPONSIBLE_PARTY: ')))
