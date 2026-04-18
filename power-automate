@@ -1,7 +1,14 @@
-Action 8: Inside CP Found → If Yes, add Dataverse → Add a new row
+Action 8a: Inside CP Found → If Yes, BEFORE Create Scope Classification, add Dataverse → List rows
 
 Table: Scope Classifications
-Control Procedure — click fx: concat('pei_controlprocedures(', first(outputs('Find_CP_Record')?['body/value'])?['pei_controlprocedureid'], ')')
-Import Cycle — click fx: concat('pei_importcycles(', triggerOutputs()?['body/pei_importcycleid'], ')')
-Review Decision: Pending (dropdown)
-Rename to: Create Scope Classification
+Filter rows — click fx: concat('_pei_controlprocedure_value eq ', first(outputs('Find_CP_Record')?['body/value'])?['pei_controlprocedureid'], ' and _pei_importcycle_value eq ', triggerOutputs()?['body/pei_importcycleid'])
+Rename to: Check Existing Classification
+
+Action 8b: Add a Condition after Check Existing Classification
+
+Left — click fx: length(outputs('Check_Existing_Classification')?['body/value'])
+Operator: is equal to
+Right: 0
+Rename to: No Existing Classification
+
+Then move the existing Create Scope Classification action inside No Existing Classification → If Yes.
