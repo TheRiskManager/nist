@@ -1,17 +1,24 @@
-Action 2: Add Dataverse → Get a row by ID
+Action 5: Add Apply to each
 
-Table: Scope Classifications
-Row ID — click lightning bolt: select the Scope Classification identifier from the trigger output (it should show as a dynamic content item from the trigger)
-Rename to: Get Classification Record
+Select output — click fx: outputs('Get_Mapped_RCs')?['body/value']
+Rename to: Loop Mapped RCs
 
-Action 3: Add Dataverse → Get a row by ID
+But wait — we need a variable to accumulate RC descriptions. We need to add it before the loop.
+Action 5 (revised): Add Initialize variable (place it right after the trigger, before Get Classification Record)
 
-Table: Control Procedures
-Row ID — click fx: outputs('Get_Classification_Record')?['_pei_controlprocedure_value']
-Rename to: Get CP Details
+Name: varRCDescriptions
+Type: String
+Value: (empty)
+Rename to: Initialize varRCDescriptions
 
-Action 4: Add Dataverse → List rows
+Move Get Classification Record, Get CP Details, and Get Mapped RCs below this variable.
+Action 6: Add Apply to each (after Get Mapped RCs)
 
-Table: Control Mappings
-Filter rows — click fx: concat('_pei_controlprocedure_value eq ', outputs('Get_CP_Details')?['pei_controlprocedureid'])
-Rename to: Get Mapped RCs
+Select output — click fx: outputs('Get_Mapped_RCs')?['body/value']
+Rename to: Loop Mapped RCs
+
+Action 7: Inside Loop Mapped RCs, add Dataverse → Get a row by ID
+
+Table: Reference Controls
+Row ID — click fx: items('Loop_Mapped_RCs')?['_pei_referencecontrol_value']
+Rename to: Get RC Details
