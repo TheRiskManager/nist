@@ -1,1 +1,1 @@
-trim(first(split(last(split(string(outputs('Debug_AI_Output')), 'SCOPE_TYPE: ')), '\\\\n')))
+body('AI_Classify_CP')?['responsev2']?['predictionOutput']?['text']
