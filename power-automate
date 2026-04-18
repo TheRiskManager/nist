@@ -1,1 +1,1 @@
-trim(first(split(last(split(string(outputs('Debug_AI_Output')), 'SCOPE_TYPE: ')), '\\n')))
+trim(first(split(last(split(string(outputs('Debug_AI_Output')), 'SCOPE_TYPE: ')), '\\\\n')))
