@@ -1,12 +1,11 @@
-Next 3 actions — get the staged CPs that need classification:
 Action 2: Add Dataverse → List rows
 
 Table: Staged Records
-Filter rows — click fx: concat('_pei_importcycle_value eq ', triggerOutputs()?['body/pei_importcycleid'], ' and pei_entitytype eq 890920000 and (pei_whatchanged eq 890920000 or pei_whatchanged eq 890920001)')
+Filter rows — click fx: concat('_pei_importcycle_value eq ', triggerOutputs()?['body/pei_importcycleid'], ' and pei_entitytype eq 890920000 and (pei_whatchanged eq 890920000 or pei_whatchanged eq 890920001 or pei_whatchanged eq 890920004)')
 Rename to: Get CPs To Classify
 
-This gets Staged Records for this Import Cycle where Entity Type = Control Procedure AND What Changed = New or Updated.
-Action 3: Add a Condition after Get CPs To Classify
+NOTE: This gets CPs that are New (890920000), Updated (890920001), OR Reactivated (890920004). All three need classification.
+Action 3: Add a Condition
 
 Left — click fx: length(outputs('Get_CPs_To_Classify')?['body/value'])
 Operator: is greater than
@@ -17,5 +16,3 @@ Action 4: Inside Has CPs To Classify → If No, add Terminate
 
 Status: Succeeded
 Message: No Control Procedures to classify. Exiting.
-
-
