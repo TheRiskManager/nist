@@ -1,18 +1,17 @@
-Action 2: Add Dataverse → List rows
+Action 5: Inside Has CPs To Classify → If Yes, add Apply to each
 
-Table: Staged Records
-Filter rows — click fx: concat('_pei_importcycle_value eq ', triggerOutputs()?['body/pei_importcycleid'], ' and pei_entitytype eq 890920000 and (pei_whatchanged eq 890920000 or pei_whatchanged eq 890920001 or pei_whatchanged eq 890920004)')
-Rename to: Get CPs To Classify
+Select output — click fx: outputs('Get_CPs_To_Classify')?['body/value']
+Rename to: Loop CPs To Classify
 
-NOTE: This gets CPs that are New (890920000), Updated (890920001), OR Reactivated (890920004). All three need classification.
-Action 3: Add a Condition
+Action 6: Inside Loop CPs To Classify, add Dataverse → List rows
 
-Left — click fx: length(outputs('Get_CPs_To_Classify')?['body/value'])
+Table: Control Procedures
+Filter rows — click fx: concat('pei_controlprocedureidentifier eq ''', items('Loop_CPs_To_Classify')?['pei_name'], '''')
+Rename to: Find CP Record
+
+Action 7: Inside Loop CPs To Classify, after Find CP Record, add a Condition
+
+Left — click fx: length(outputs('Find_CP_Record')?['body/value'])
 Operator: is greater than
 Right: 0
-Rename to: Has CPs To Classify
-
-Action 4: Inside Has CPs To Classify → If No, add Terminate
-
-Status: Succeeded
-Message: No Control Procedures to classify. Exiting.
+Rename to: CP Found
