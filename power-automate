@@ -1,13 +1,30 @@
-Then go back to Flow 3B, delete and re-add the Update Classification With AI action (to refresh the schema cache — same pattern as Error #5 with CP Title).
-Re-add it with the same fields:
+Action 1: Create the flow:
+
+Power Automate → + New flow → Automated cloud flow
+Flow name: EMS Create Applicability
+Trigger: Microsoft Dataverse → When a row is modified
+Table: Scope Classifications
+Scope: Organization
+Filter columns: pei_reviewdecision
+Filter rows: pei_reviewdecision ne 890920000
+
+Action 2: Add Dataverse → Get a row by ID
 
 Table: Scope Classifications
-Row ID — click fx: outputs('Get_Classification_Record')?['pei_scopeclassificationid']
-Scope Type — click fx: if(equals(outputs('Parse_Scope_Type'), 'Common Control'), 890920000, if(equals(outputs('Parse_Scope_Type'), 'Application-Level Control'), 890920001, 890920002))
-AI Confidence — click fx: if(equals(outputs('Parse_Confidence'), 'High'), 890920000, if(equals(outputs('Parse_Confidence'), 'Medium'), 890920001, 890920002))
-Copilot Reasoning — click fx: outputs('Parse_Reasoning')
-Suggested Evidence Central — click fx: outputs('Parse_Evidence_Suggestion')
-Suggested Responsible Central — click fx: outputs('Parse_Responsible_Party')
-Rename to: Update Classification With AI
+Row ID: lightning bolt → select the Scope Classification identifier from the trigger
+Rename to: Get Classification Record
 
-Also increase Suggested Evidence Central to 500 while you're at it — same risk of AI returning long text.
+Action 3: Add Dataverse → List rows
+
+Table: Applicability
+Filter rows — click fx: concat('_pei_controlprocedure_value eq ', triggerOutputs()?['body/_pei_controlprocedure_value'], ' and _pei_importcycle_value eq ', triggerOutputs()?['body/_pei_importcycle_value'], ' and pei_applicabilitystatus eq 890920000')
+Rename to: List Existing Applicability
+
+Action 4: Add a Condition
+
+Left — click fx: length(outputs('List_Existing_Applicability')?['body/value'])
+Operator: is greater than
+Right: 0
+Rename to: Has Existing Records
+
+Tell me when all 4 are done.
