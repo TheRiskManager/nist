@@ -1,30 +1,20 @@
-Action 1: Create the flow:
+Action 5: Inside Has Existing Records → If Yes, add Apply to each
 
-Power Automate → + New flow → Automated cloud flow
-Flow name: EMS Create Applicability
-Trigger: Microsoft Dataverse → When a row is modified
-Table: Scope Classifications
-Scope: Organization
-Filter columns: pei_reviewdecision
-Filter rows: pei_reviewdecision ne 890920000
+Select output — click fx: outputs('List_Existing_Applicability')?['body/value']
+Rename to: Loop Existing Applicability
 
-Action 2: Add Dataverse → Get a row by ID
-
-Table: Scope Classifications
-Row ID: lightning bolt → select the Scope Classification identifier from the trigger
-Rename to: Get Classification Record
-
-Action 3: Add Dataverse → List rows
+Action 6: Inside Loop Existing Applicability, add Dataverse → Update a row
 
 Table: Applicability
-Filter rows — click fx: concat('_pei_controlprocedure_value eq ', triggerOutputs()?['body/_pei_controlprocedure_value'], ' and _pei_importcycle_value eq ', triggerOutputs()?['body/_pei_importcycle_value'], ' and pei_applicabilitystatus eq 890920000')
-Rename to: List Existing Applicability
+Row ID — click fx: items('Loop_Existing_Applicability')?['pei_applicabilityid']
+Applicability Status: Inactive (dropdown)
+Rename to: Deactivate Old Applicability
 
-Action 4: Add a Condition
+Action 7: After the Has Existing Records condition (outside it, below it), add a Condition
 
-Left — click fx: length(outputs('List_Existing_Applicability')?['body/value'])
-Operator: is greater than
-Right: 0
-Rename to: Has Existing Records
+Left — click fx: or(equals(triggerOutputs()?['body/pei_scopetype'], 890920000), equals(triggerOutputs()?['body/pei_scopetype'], 890920002))
+Operator: is equal to
+Right — click fx: true
+Rename to: Needs Enterprise Record
 
-Tell me when all 4 are done.
+NOTE: This checks if Scope Type is Common Control (890920000) OR Hybrid (890920002). If yes → create Enterprise Applicability record.
