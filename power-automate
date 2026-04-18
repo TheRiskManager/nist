@@ -1,10 +1,10 @@
 Parse Scope Type — click fx:
-trim(first(split(last(split(outputs('AI_Classify_CP')?['text'], 'SCOPE_TYPE: ')), decodeUriComponent('%0A'))))
+trim(first(split(last(split(body('AI_Classify_CP')?['predictionOutput']?['text'], 'SCOPE_TYPE: ')), decodeUriComponent('%0A'))))
 Parse Confidence — click fx:
-trim(first(split(last(split(outputs('AI_Classify_CP')?['text'], 'CONFIDENCE: ')), decodeUriComponent('%0A'))))
+trim(first(split(last(split(body('AI_Classify_CP')?['predictionOutput']?['text'], 'CONFIDENCE: ')), decodeUriComponent('%0A'))))
 Parse Reasoning — click fx:
-trim(first(split(last(split(outputs('AI_Classify_CP')?['text'], 'REASONING: ')), decodeUriComponent('%0A'))))
+trim(first(split(last(split(body('AI_Classify_CP')?['predictionOutput']?['text'], 'REASONING: ')), decodeUriComponent('%0A'))))
 Parse Evidence Suggestion — click fx:
-trim(first(split(last(split(outputs('AI_Classify_CP')?['text'], 'EVIDENCE_SUGGESTION: ')), decodeUriComponent('%0A'))))
+trim(first(split(last(split(body('AI_Classify_CP')?['predictionOutput']?['text'], 'EVIDENCE_SUGGESTION: ')), decodeUriComponent('%0A'))))
 Parse Responsible Party — click fx:
-trim(last(split(outputs('AI_Classify_CP')?['text'], 'RESPONSIBLE_PARTY: ')))
+trim(last(split(body('AI_Classify_CP')?['predictionOutput']?['text'], 'RESPONSIBLE_PARTY: ')))
