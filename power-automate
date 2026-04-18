@@ -1,12 +1,14 @@
-Action 8: Inside Loop Mapped RCs, after Get RC Details, add Append to string variable
+Action 10: Add Compose
 
-Name: varRCDescriptions
-Value — click fx: concat(outputs('Get_RC_Details')?['pei_referencecontrolidentifier'], ': ', outputs('Get_RC_Details')?['pei_referencecontroltitle'], ' - ', outputs('Get_RC_Details')?['pei_referencecontroldescription'], ' | ')
-Rename to: Append RC Description
+Inputs — click fx: trim(first(split(last(split(outputs('AI_Classify_CP')?['responsePrediction'], 'SCOPE_TYPE: ')), decodeUriComponent('%0A'))))
+Rename to: Parse Scope Type
 
-Action 9: After Loop Mapped RCs (outside the loop), add AI Builder → Run a prompt
+Action 11: Add Compose
 
-Prompt: EMS Control Classification
-CPDescription — click fx: outputs('Get_CP_Details')?['pei_description']
-RCDescriptions — click fx: variables('varRCDescriptions')
-Rename to: AI Classify CP
+Inputs — click fx: trim(first(split(last(split(outputs('AI_Classify_CP')?['responsePrediction'], 'CONFIDENCE: ')), decodeUriComponent('%0A'))))
+Rename to: Parse Confidence
+
+Action 12: Add Compose
+
+Inputs — click fx: trim(first(split(last(split(outputs('AI_Classify_CP')?['responsePrediction'], 'REASONING: ')), decodeUriComponent('%0A'))))
+Rename to: Parse Reasoning
