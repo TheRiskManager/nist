@@ -1,1 +1,1 @@
-trim(first(split(last(split(body('AI_Classify_CP')?['predictionOutput']?['text'], 'SCOPE_TYPE: ')), '\n')))
+trim(first(split(last(split(outputs('Debug_AI_Output')?['predictionOutput']?['text'], 'SCOPE_TYPE: ')), decodeUriComponent('%0A'))))
