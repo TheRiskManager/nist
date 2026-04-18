@@ -1,14 +1,24 @@
-Action 10: Add Compose
+Action 13: Add Compose
 
-Inputs — click fx: trim(first(split(last(split(outputs('AI_Classify_CP')?['responsePrediction'], 'SCOPE_TYPE: ')), decodeUriComponent('%0A'))))
-Rename to: Parse Scope Type
+Inputs — click fx: trim(first(split(last(split(outputs('AI_Classify_CP')?['responsePrediction'], 'EVIDENCE_SUGGESTION: ')), decodeUriComponent('%0A'))))
+Rename to: Parse Evidence Suggestion
 
-Action 11: Add Compose
+Action 14: Add Compose
 
-Inputs — click fx: trim(first(split(last(split(outputs('AI_Classify_CP')?['responsePrediction'], 'CONFIDENCE: ')), decodeUriComponent('%0A'))))
-Rename to: Parse Confidence
+Inputs — click fx: trim(last(split(outputs('AI_Classify_CP')?['responsePrediction'], 'RESPONSIBLE_PARTY: ')))
+Rename to: Parse Responsible Party
 
-Action 12: Add Compose
+NOTE: Parse Responsible Party uses last(split(...)) without the newline split because it's the final line — no newline after it.
 
-Inputs — click fx: trim(first(split(last(split(outputs('AI_Classify_CP')?['responsePrediction'], 'REASONING: ')), decodeUriComponent('%0A'))))
-Rename to: Parse Reasoning
+
+
+Action 15: Add Dataverse → Update a row
+
+Table: Scope Classifications
+Row ID — click fx: outputs('Get_Classification_Record')?['pei_scopeclassificationid']
+Scope Type — click fx: if(equals(outputs('Parse_Scope_Type'), 'Common Control'), 890920000, if(equals(outputs('Parse_Scope_Type'), 'Application-Level Control'), 890920001, 890920002))
+AI Confidence — click fx: if(equals(outputs('Parse_Confidence'), 'High'), 890920000, if(equals(outputs('Parse_Confidence'), 'Medium'), 890920001, 890920002))
+Copilot Reasoning — click fx: outputs('Parse_Reasoning')
+Suggested Evidence Central — click fx: outputs('Parse_Evidence_Suggestion')
+Suggested Responsible Central — click fx: outputs('Parse_Responsible_Party')
+Rename to: Update Classification With AI
