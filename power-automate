@@ -1,22 +1,9 @@
-Action 11: Inside Needs Per App Records → If Yes, add Dataverse → List rows
+Then add a Condition as the first action after the trigger:
 
-Table: Applications
-Filter rows: pei_emslifecyclestatus eq 890920000 and pei_displayname ne 'Enterprise'
-Rename to: List Active Apps
+Left — click fx: triggerOutputs()?['body/pei_reviewdecision']
+Operator: is equal to
+Right: 890920000
+Rename to: Is Still Pending
 
-Action 12: Inside Needs Per App Records → If Yes, after List Active Apps, add Apply to each
-
-Select output — click fx: outputs('List_Active_Apps')?['body/value']
-Rename to: Loop Active Apps
-
-Action 13: Inside Loop Active Apps, add Dataverse → Add a new row
-
-Table: Applicability
-Name — click fx: concat(triggerOutputs()?['body/pei_name'], ' - ', items('Loop_Active_Apps')?['pei_displayname'])
-Control Procedure — click fx: concat('pei_controlprocedures(', triggerOutputs()?['body/_pei_controlprocedure_value'], ')')
-Application — click fx: concat('pei_applications(', items('Loop_Active_Apps')?['pei_applicationid'], ')')
-Import Cycle — click fx: concat('pei_importcycles(', triggerOutputs()?['body/_pei_importcycle_value'], ')')
-Applicability: Applicable (dropdown)
-Applicability Status: Active (dropdown)
-Review Decision: Pending (dropdown)
-Rename to: Create App Applicability
+Inside Is Still Pending → If Yes → add Terminate (Succeeded, Review Decision is Pending. Exiting.)
+Move all existing flow actions inside Is Still Pending → If No.
