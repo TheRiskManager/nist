@@ -1,1 +1,4 @@
-concat('pei_controlprocedureid eq ''', outputs('Get_CP_ID'), '''')
+Then update Get Mapped RCs filter rows back to:
+Click fx: concat('_pei_controlprocedure_value eq ', outputs('Get_CP_Details')?['pei_controlprocedureid'])
+And update AI Classify CP CPDescription back to:
+Click fx: outputs('Get_CP_Details')?['pei_description']
