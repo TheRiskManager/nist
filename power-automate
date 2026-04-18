@@ -1,1 +1,10 @@
-body('AI_Classify_CP')?['responsev2']?['predictionOutput']?['text']
+Parse Scope Type — click fx:
+trim(first(split(last(split(outputs('Get_AI_Text'), 'SCOPE_TYPE: ')), decodeUriComponent('%0A'))))
+Parse Confidence — click fx:
+trim(first(split(last(split(outputs('Get_AI_Text'), 'CONFIDENCE: ')), decodeUriComponent('%0A'))))
+Parse Reasoning — click fx:
+trim(first(split(last(split(outputs('Get_AI_Text'), 'REASONING: ')), decodeUriComponent('%0A'))))
+Parse Evidence Suggestion — click fx:
+trim(first(split(last(split(outputs('Get_AI_Text'), 'EVIDENCE_SUGGESTION: ')), decodeUriComponent('%0A'))))
+Parse Responsible Party — click fx:
+trim(last(split(outputs('Get_AI_Text'), 'RESPONSIBLE_PARTY: ')))
