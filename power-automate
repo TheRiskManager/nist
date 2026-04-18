@@ -1,17 +1,7 @@
-Action 5: Inside Has CPs To Classify → If Yes, add Apply to each
+Action 8: Inside CP Found → If Yes, add Dataverse → Add a new row
 
-Select output — click fx: outputs('Get_CPs_To_Classify')?['body/value']
-Rename to: Loop CPs To Classify
-
-Action 6: Inside Loop CPs To Classify, add Dataverse → List rows
-
-Table: Control Procedures
-Filter rows — click fx: concat('pei_controlprocedureidentifier eq ''', items('Loop_CPs_To_Classify')?['pei_name'], '''')
-Rename to: Find CP Record
-
-Action 7: Inside Loop CPs To Classify, after Find CP Record, add a Condition
-
-Left — click fx: length(outputs('Find_CP_Record')?['body/value'])
-Operator: is greater than
-Right: 0
-Rename to: CP Found
+Table: Scope Classifications
+Control Procedure — click fx: concat('pei_controlprocedures(', first(outputs('Find_CP_Record')?['body/value'])?['pei_controlprocedureid'], ')')
+Import Cycle — click fx: concat('pei_importcycles(', triggerOutputs()?['body/pei_importcycleid'], ')')
+Review Decision: Pending (dropdown)
+Rename to: Create Scope Classification
