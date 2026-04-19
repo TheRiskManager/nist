@@ -1,41 +1,33 @@
-Delete the auto-wrapped Apply to each (including the Update inside it)
-Re-add Dataverse → Update a row directly under CP Found → If Yes
-Table: Control Procedures
-Row ID: fx → first(outputs('Find_CP_Record')?['body/value'])?['pei_controlprocedureid']
-Reviewed: Yes (dropdown)
-Rename to: Update CP Reviewed
-
-
-
-F4A-9 — List Staged Apps
-Inside Prior Gates Incomplete → If No, after Loop Staged CPs. Dataverse → List rows.
+F4A-14 — List Removed CPs
+Inside Prior Gates Incomplete → If No, after Loop Staged Apps. Dataverse → List rows.
 Table: Staged Records
-Filter rows: fx → concat('_pei_importcycle_value eq ', variables('varImportCycleID'), ' and pei_entitytype eq 890920001')
-Rename to: List Staged Apps
+Filter rows: fx → concat('_pei_importcycle_value eq ', variables('varImportCycleID'), ' and pei_entitytype eq 890920000 and pei_whatchanged eq 890920002')
+Rename to: List Removed CPs
+Note: Entity Type = CP (890920000), What Changed = Removed from Archer (890920002).
 
-F4A-10 — Loop Staged Apps
-Apply to each, after List Staged Apps.
-Select output: fx → outputs('List_Staged_Apps')?['body/value']
-Rename to: Loop Staged Apps
+F4A-15 — Loop Removed CPs
+Apply to each, after List Removed CPs.
+Select output: fx → outputs('List_Removed_CPs')?['body/value']
+Rename to: Loop Removed CPs
 
-F4A-11 — Find App Record
-Inside Loop Staged Apps. Dataverse → List rows.
-Table: Applications
-Filter rows: fx → concat('pei_displayname eq ''', items('Loop_Staged_Apps')?['pei_name'], '''')
-Rename to: Find App Record
-Note: App match key is pei_displayname, not pei_leanixapplicationid — same reason as Flow 1 (LeanIX ID fails at runtime).
+F4A-16 — Find Removed CP Record
+Inside Loop Removed CPs. Dataverse → List rows.
+Table: Control Procedures
+Filter rows: fx → concat('pei_controlprocedureidentifier eq ''', items('Loop_Removed_CPs')?['pei_name'], '''')
+Rename to: Find Removed CP Record
 
-F4A-12 — Condition: App Found
-Inside Loop Staged Apps, after Find App Record.
-Left: fx → length(outputs('Find_App_Record')?['body/value'])
+F4A-17 — Condition: Removed CP Found
+Inside Loop Removed CPs, after Find Removed CP Record.
+Left: fx → length(outputs('Find_Removed_CP_Record')?['body/value'])
 Operator: is greater than
 Right: 0
-Rename to: App Found
+Rename to: Removed CP Found
 
-F4A-13 — Update App Reviewed
-Inside App Found → If Yes. Dataverse → Update a row.
-Table name: Applications
-Row ID: fx → first(outputs('Find_App_Record')?['body/value'])?['pei_applicationid']
-Reviewed: Yes (dropdown — boolean)
-Leave every other field blank.
-Rename to: Update App Reviewed
+F4A-18 — List Applicability For Removed CP
+Inside Removed CP Found → If Yes. Dataverse → List rows.
+Table: Applicability
+Filter rows: fx → concat('_pei_controlprocedure_value eq ', first(outputs('Find_Removed_CP_Record')?['body/value'])?['pei_controlprocedureid'], ' and pei_applicabilitystatus eq 890920000')
+Rename to: List Applicability For Removed CP
+Note: Scopes ACROSS all cycles, filters only Active records. CP is gone — every Active Applicability for it needs to become Inactive. Mirrors the F3C-3 pattern (same lookup field name _pei_controlprocedure_value).
+
+Build all 5. Say "done" and I'll log them, then give you F4A-19 through F4A-23 (Loop Applicability → Deactivate, then Evidence list → loop → Update to Not Required).
