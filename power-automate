@@ -1,33 +1,31 @@
-F4A-19 — Loop Applicability For Removed CP
-Inside Removed CP Found → If Yes, after List Applicability For Removed CP. Apply to each.
-Select output: fx → outputs('List_Applicability_For_Removed_CP')?['body/value']
-Rename to: Loop Applicability For Removed CP
+F4A-24 — List Decommissioned Apps
+Inside Prior Gates Incomplete → If No, after Loop Removed CPs (sibling level, not nested). Dataverse → List rows.
+Table: Staged Records
+Filter rows: fx → concat('_pei_importcycle_value eq ', variables('varImportCycleID'), ' and pei_entitytype eq 890920001 and pei_whatchanged eq 890920003')
+Rename to: List Decommissioned Apps
+Note: Entity Type = Application (890920001), What Changed = Decommissioned (890920003).
 
-F4A-20 — Deactivate Removed CP Applicability
-Inside Loop Applicability For Removed CP. Dataverse → Update a row.
+F4A-25 — Loop Decommissioned Apps
+Apply to each, after List Decommissioned Apps.
+Select output: fx → outputs('List_Decommissioned_Apps')?['body/value']
+Rename to: Loop Decommissioned Apps
+
+F4A-26 — Find Decommissioned App Record
+Inside Loop Decommissioned Apps. Dataverse → List rows.
+Table: Applications
+Filter rows: fx → concat('pei_displayname eq ''', items('Loop_Decommissioned_Apps')?['pei_name'], '''')
+Rename to: Find Decommissioned App Record
+
+F4A-27 — Condition: Decommissioned App Found
+Inside Loop Decommissioned Apps, after Find Decommissioned App Record.
+Left: fx → length(outputs('Find_Decommissioned_App_Record')?['body/value'])
+Operator: is greater than
+Right: 0
+Rename to: Decommissioned App Found
+
+F4A-28 — List Applicability For Decommissioned App
+Inside Decommissioned App Found → If Yes. Dataverse → List rows.
 Table: Applicability
-Row ID: fx → items('Loop_Applicability_For_Removed_CP')?['pei_applicabilityid']
-Applicability Status: Inactive (dropdown — 890920001)
-Leave every other field blank.
-Rename to: Deactivate Removed CP Applicability
-Note: items() inside a loop gives a single object, not an array — direct field access works (no first() needed). Same pattern as F3C-6.
-
-F4A-21 — List Evidence For Removed CP
-Inside Removed CP Found → If Yes, after Loop Applicability For Removed CP (sibling, not nested). Dataverse → List rows.
-Table: Evidence
-Filter rows: fx → concat('_pei_controlprocedure_value eq ', first(outputs('Find_Removed_CP_Record')?['body/value'])?['pei_controlprocedureid'])
-Rename to: List Evidence For Removed CP
-Note: All Evidence for this CP across all cycles. No status filter — update is idempotent; updating Evidence already Not Required just reassigns the same value. Simpler than ne filters.
-
-F4A-22 — Loop Evidence For Removed CP
-After List Evidence For Removed CP. Apply to each.
-Select output: fx → outputs('List_Evidence_For_Removed_CP')?['body/value']
-Rename to: Loop Evidence For Removed CP
-
-F4A-23 — Mark Evidence Not Required (CP)
-Inside Loop Evidence For Removed CP. Dataverse → Update a row.
-Table: Evidence
-Row ID: fx → items('Loop_Evidence_For_Removed_CP')?['pei_evidenceid']
-Evidence Status: Not Required (dropdown — 890920004)
-Leave every other field blank.
-Rename to: Mark Evidence Not Required (CP)
+Filter rows: fx → concat('_pei_application_value eq ', first(outputs('Find_Decommissioned_App_Record')?['body/value'])?['pei_applicationid'], ' and pei_applicabilitystatus eq 890920000')
+Rename to: List Applicability For Decommissioned App
+Note: Filter uses _pei_application_value (Applicability's App lookup field in OData). Same pattern as F4A-18 but by App instead of CP. Scopes across all cycles, Active records only.
