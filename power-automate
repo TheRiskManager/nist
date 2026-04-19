@@ -1,33 +1,32 @@
-F4A-4 — List Staged CPs
-Add a new action inside Prior Gates Incomplete → If No branch. Microsoft Dataverse → List rows.
+F4A-9 — List Staged Apps
+Inside Prior Gates Incomplete → If No, after Loop Staged CPs. Dataverse → List rows.
 Table: Staged Records
-Filter rows: fx → concat('_pei_importcycle_value eq ', variables('varImportCycleID'), ' and pei_entitytype eq 890920000')
-Rename to: List Staged CPs
-Note: Entity Type = Control Procedure (890920000). We want ALL Staged CP records for this cycle (New, Updated, Removed, Reactivated) — every one of them needs its CP flagged Reviewed = Yes.
+Filter rows: fx → concat('_pei_importcycle_value eq ', variables('varImportCycleID'), ' and pei_entitytype eq 890920001')
+Rename to: List Staged Apps
 
-F4A-5 — Loop Staged CPs
-Add an Apply to each inside If No, after List Staged CPs.
-Select output: fx → outputs('List_Staged_CPs')?['body/value']
-Rename to: Loop Staged CPs
+F4A-10 — Loop Staged Apps
+Apply to each, after List Staged Apps.
+Select output: fx → outputs('List_Staged_Apps')?['body/value']
+Rename to: Loop Staged Apps
 
-F4A-6 — Find CP Record
-Inside Loop Staged CPs. Dataverse → List rows.
-Table: Control Procedures
-Filter rows: fx → concat('pei_controlprocedureidentifier eq ''', items('Loop_Staged_CPs')?['pei_name'], '''')
-Rename to: Find CP Record
-Note: Staged Record's pei_name holds the CP Identifier text. This lookup resolves it to the actual CP GUID so we can update the CP.
+F4A-11 — Find App Record
+Inside Loop Staged Apps. Dataverse → List rows.
+Table: Applications
+Filter rows: fx → concat('pei_displayname eq ''', items('Loop_Staged_Apps')?['pei_name'], '''')
+Rename to: Find App Record
+Note: App match key is pei_displayname, not pei_leanixapplicationid — same reason as Flow 1 (LeanIX ID fails at runtime).
 
-F4A-7 — Condition: CP Found
-Inside Loop Staged CPs, after Find CP Record.
-Left: fx → length(outputs('Find_CP_Record')?['body/value'])
+F4A-12 — Condition: App Found
+Inside Loop Staged Apps, after Find App Record.
+Left: fx → length(outputs('Find_App_Record')?['body/value'])
 Operator: is greater than
 Right: 0
-Rename to: CP Found
+Rename to: App Found
 
-F4A-8 — Update CP Reviewed
-Inside CP Found → If Yes. Dataverse → Update a row.
-Table name: Control Procedures
-Row ID: lightning bolt → expand "Find CP Record" → select Control Procedure (the GUID dynamic content, not _pei_xxx_value). Do NOT use fx — that returns null (Error #26/31).
+F4A-13 — Update App Reviewed
+Inside App Found → If Yes. Dataverse → Update a row.
+Table name: Applications
+Row ID: lightning bolt → expand "Find App Record" → select Application (the GUID dynamic content)
 Reviewed: Yes (dropdown — boolean)
 Leave every other field blank.
-Rename to: Update CP Reviewed
+Rename to: Update App Reviewed
