@@ -1,33 +1,33 @@
-F4A-14 — List Removed CPs
-Inside Prior Gates Incomplete → If No, after Loop Staged Apps. Dataverse → List rows.
-Table: Staged Records
-Filter rows: fx → concat('_pei_importcycle_value eq ', variables('varImportCycleID'), ' and pei_entitytype eq 890920000 and pei_whatchanged eq 890920002')
-Rename to: List Removed CPs
-Note: Entity Type = CP (890920000), What Changed = Removed from Archer (890920002).
+F4A-19 — Loop Applicability For Removed CP
+Inside Removed CP Found → If Yes, after List Applicability For Removed CP. Apply to each.
+Select output: fx → outputs('List_Applicability_For_Removed_CP')?['body/value']
+Rename to: Loop Applicability For Removed CP
 
-F4A-15 — Loop Removed CPs
-Apply to each, after List Removed CPs.
-Select output: fx → outputs('List_Removed_CPs')?['body/value']
-Rename to: Loop Removed CPs
-
-F4A-16 — Find Removed CP Record
-Inside Loop Removed CPs. Dataverse → List rows.
-Table: Control Procedures
-Filter rows: fx → concat('pei_controlprocedureidentifier eq ''', items('Loop_Removed_CPs')?['pei_name'], '''')
-Rename to: Find Removed CP Record
-
-F4A-17 — Condition: Removed CP Found
-Inside Loop Removed CPs, after Find Removed CP Record.
-Left: fx → length(outputs('Find_Removed_CP_Record')?['body/value'])
-Operator: is greater than
-Right: 0
-Rename to: Removed CP Found
-
-F4A-18 — List Applicability For Removed CP
-Inside Removed CP Found → If Yes. Dataverse → List rows.
+F4A-20 — Deactivate Removed CP Applicability
+Inside Loop Applicability For Removed CP. Dataverse → Update a row.
 Table: Applicability
-Filter rows: fx → concat('_pei_controlprocedure_value eq ', first(outputs('Find_Removed_CP_Record')?['body/value'])?['pei_controlprocedureid'], ' and pei_applicabilitystatus eq 890920000')
-Rename to: List Applicability For Removed CP
-Note: Scopes ACROSS all cycles, filters only Active records. CP is gone — every Active Applicability for it needs to become Inactive. Mirrors the F3C-3 pattern (same lookup field name _pei_controlprocedure_value).
+Row ID: fx → items('Loop_Applicability_For_Removed_CP')?['pei_applicabilityid']
+Applicability Status: Inactive (dropdown — 890920001)
+Leave every other field blank.
+Rename to: Deactivate Removed CP Applicability
+Note: items() inside a loop gives a single object, not an array — direct field access works (no first() needed). Same pattern as F3C-6.
 
-Build all 5. Say "done" and I'll log them, then give you F4A-19 through F4A-23 (Loop Applicability → Deactivate, then Evidence list → loop → Update to Not Required).
+F4A-21 — List Evidence For Removed CP
+Inside Removed CP Found → If Yes, after Loop Applicability For Removed CP (sibling, not nested). Dataverse → List rows.
+Table: Evidence
+Filter rows: fx → concat('_pei_controlprocedure_value eq ', first(outputs('Find_Removed_CP_Record')?['body/value'])?['pei_controlprocedureid'])
+Rename to: List Evidence For Removed CP
+Note: All Evidence for this CP across all cycles. No status filter — update is idempotent; updating Evidence already Not Required just reassigns the same value. Simpler than ne filters.
+
+F4A-22 — Loop Evidence For Removed CP
+After List Evidence For Removed CP. Apply to each.
+Select output: fx → outputs('List_Evidence_For_Removed_CP')?['body/value']
+Rename to: Loop Evidence For Removed CP
+
+F4A-23 — Mark Evidence Not Required (CP)
+Inside Loop Evidence For Removed CP. Dataverse → Update a row.
+Table: Evidence
+Row ID: fx → items('Loop_Evidence_For_Removed_CP')?['pei_evidenceid']
+Evidence Status: Not Required (dropdown — 890920004)
+Leave every other field blank.
+Rename to: Mark Evidence Not Required (CP)
