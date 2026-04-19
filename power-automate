@@ -1,19 +1,32 @@
-Now we need to update 3 things:
-1. Flow 3B — add Final Scope Type to the Update Classification With AI action. Open the action, add:
+Step 1: Update Flow 3B — Open EMS AI Classify → Update Classification With AI action. Add:
 
 Final Scope Type — click fx: if(equals(outputs('Parse_Scope_Type'), 'Common Control'), 890920000, if(equals(outputs('Parse_Scope_Type'), 'Application-Level Control'), 890920001, 890920002))
+Save the flow
 
-(Same expression as Scope Type — AI sets both to the same value initially.)
-2. Business Rule 8.6 — on Scope Classifications table:
+Step 2: Create Business Rule 8.6 — Go to Dataverse → Scope Classifications → Business Rules → New:
 
-Condition: Review Decision = Overridden
-Action: Set Final Scope Type = Override Scope Type
-This way when the risk manager overrides, Final Scope Type automatically updates.
+Name: Set Final Scope Type On Override
+Condition: Review Decision equals Overridden
+Action (If True): Set Field → Final Scope Type = Override Scope Type
+Scope: Entity
+Activate
 
-3. Flow 3C trigger — change Filter columns to: pei_finalscopetype
+Step 3: Update Flow 3C trigger — Open EMS Create Applicability:
 
-Remove pei_reviewdecision,pei_scopetype
-Filter rows: (keep empty, the Is Still Pending condition handles it)
+Change Filter columns to: pei_finalscopetype
+Filter rows: (empty — keep empty, Is Still Pending condition handles it)
 
-This way Flow 3C fires whenever Final Scope Type changes — whether from AI (Flow 3B sets it) or from override (business rule copies it).
-Start with updating Flow 3B. Tell me when done.
+Step 4: Update Flow 3C Action F3C-7 (Needs Enterprise Record) — Change the condition:
+
+Left — click fx: or(equals(triggerOutputs()?['body/pei_finalscopetype'], 890920000), equals(triggerOutputs()?['body/pei_finalscopetype'], 890920002))
+
+Step 5: Update Flow 3C Action F3C-10 (Needs Per App Records) — Change the condition:
+
+Left — click fx: or(equals(triggerOutputs()?['body/pei_finalscopetype'], 890920001), equals(triggerOutputs()?['body/pei_finalscopetype'], 890920002))
+
+Step 6: Add Final Scope Type to Scope Classification form:
+
+Open Scope Classification Main Form
+Add Final Scope Type to the right column (Risk Manager Decision section), below Review Decision
+Set it to read-only
+Save and publish
