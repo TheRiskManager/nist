@@ -1,32 +1,41 @@
-F4A-29 — Loop Applicability For Decommissioned App
-Inside Decommissioned App Found → If Yes, after List Applicability For Decommissioned App. Apply to each.
-Select output: fx → outputs('List_Applicability_For_Decommissioned_App')?['body/value']
-Rename to: Loop Applicability For Decommissioned App
-
-F4A-30 — Deactivate Decommissioned App Applicability
-Inside Loop Applicability For Decommissioned App. Dataverse → Update a row.
+F4A-34 — List Active Applicability For Cycle
+Inside Prior Gates Incomplete → If No, after Loop Decommissioned Apps (sibling level). Dataverse → List rows.
 Table: Applicability
-Row ID: fx → items('Loop_Applicability_For_Decommissioned_App')?['pei_applicabilityid']
-Applicability Status: Inactive (dropdown — 890920001)
-Leave every other field blank.
-Rename to: Deactivate Decommissioned App Applicability
+Filter rows: fx → concat('_pei_importcycle_value eq ', variables('varImportCycleID'), ' and pei_applicabilitystatus eq 890920000 and pei_applicability eq 890920000')
+Rename to: List Active Applicability For Cycle
+Note: This cycle only. Active status. Applicable = 890920000 (skips records where risk manager set Not Applicable).
 
-F4A-31 — List Evidence For Decommissioned App
-Inside Decommissioned App Found → If Yes, after Loop Applicability For Decommissioned App (sibling, not nested). Dataverse → List rows.
+F4A-35 — Loop Active Applicability
+Apply to each, after List Active Applicability For Cycle.
+Select output: fx → outputs('List_Active_Applicability_For_Cycle')?['body/value']
+Rename to: Loop Active Applicability
+
+F4A-36 — Find Existing Evidence
+Inside Loop Active Applicability. Dataverse → List rows.
 Table: Evidence
-Filter rows: fx → concat('_pei_application_value eq ', first(outputs('Find_Decommissioned_App_Record')?['body/value'])?['pei_applicationid'])
-Rename to: List Evidence For Decommissioned App
-Note: All Evidence for this App across all cycles. No status filter.
+Filter rows: fx → concat('_pei_applicability_value eq ', items('Loop_Active_Applicability')?['pei_applicabilityid'])
+Rename to: Find Existing Evidence
+Note: Checks if any Evidence record already links to this Applicability. If so, skip Gap creation (Evidence carried forward from prior cycle, or already uploaded).
 
-F4A-32 — Loop Evidence For Decommissioned App
-After List Evidence For Decommissioned App. Apply to each.
-Select output: fx → outputs('List_Evidence_For_Decommissioned_App')?['body/value']
-Rename to: Loop Evidence For Decommissioned App
+F4A-37 — Condition: No Evidence Exists
+Inside Loop Active Applicability, after Find Existing Evidence.
+Left: fx → length(outputs('Find_Existing_Evidence')?['body/value'])
+Operator: is equal to
+Right: 0
+Rename to: No Evidence Exists
 
-F4A-33 — Mark Evidence Not Required (App)
-Inside Loop Evidence For Decommissioned App. Dataverse → Update a row.
+F4A-38 — Create Evidence Gap
+Inside No Evidence Exists → If Yes. Dataverse → Add a new row.
 Table: Evidence
-Row ID: fx → items('Loop_Evidence_For_Decommissioned_App')?['pei_evidenceid']
-Evidence Status: Not Required (dropdown — 890920004)
-Leave every other field blank.
-Rename to: Mark Evidence Not Required (App)
+Fill in these fields (leave everything else blank):
+
+Name: fx → items('Loop_Active_Applicability')?['pei_name']
+Applicability: fx → concat('pei_applicabilities(', items('Loop_Active_Applicability')?['pei_applicabilityid'], ')')
+Control Procedure: fx → concat('pei_controlprocedures(', items('Loop_Active_Applicability')?['_pei_controlprocedure_value'], ')')
+Application: fx → concat('pei_applications(', items('Loop_Active_Applicability')?['_pei_application_value'], ')')
+Import Cycle: fx → concat('pei_importcycles(', variables('varImportCycleID'), ')')
+Evidence Status: Gap (dropdown — 890920003)
+
+Rename to: Create Evidence Gap
+Note: The Name field inherits the Applicability's name (e.g. "CP-001 - AppXYZ"). Evidence Status = Gap signals this is a work item for control owners.
+⚠️ Unverified assumption: Applicability's Evidence plural name is pei_applicabilities. If the lookup creation throws an error on test, the correct plural name comes from the entity's schema — we'll adjust. Power Apps might use pei_applicabilityies or similar. Worst case, we check in Dataverse → Tables → Applicability → Properties → Plural name.
