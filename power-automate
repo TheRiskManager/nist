@@ -1,3 +1,12 @@
+Delete the auto-wrapped Apply to each (including the Update inside it)
+Re-add Dataverse → Update a row directly under CP Found → If Yes
+Table: Control Procedures
+Row ID: fx → first(outputs('Find_CP_Record')?['body/value'])?['pei_controlprocedureid']
+Reviewed: Yes (dropdown)
+Rename to: Update CP Reviewed
+
+
+
 F4A-9 — List Staged Apps
 Inside Prior Gates Incomplete → If No, after Loop Staged CPs. Dataverse → List rows.
 Table: Staged Records
@@ -26,7 +35,7 @@ Rename to: App Found
 F4A-13 — Update App Reviewed
 Inside App Found → If Yes. Dataverse → Update a row.
 Table name: Applications
-Row ID: lightning bolt → expand "Find App Record" → select Application (the GUID dynamic content)
+Row ID: fx → first(outputs('Find_App_Record')?['body/value'])?['pei_applicationid']
 Reviewed: Yes (dropdown — boolean)
 Leave every other field blank.
 Rename to: Update App Reviewed
