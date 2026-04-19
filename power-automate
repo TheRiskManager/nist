@@ -1,9 +1,19 @@
-Then add a Condition as the first action after the trigger:
+Now we need to update 3 things:
+1. Flow 3B — add Final Scope Type to the Update Classification With AI action. Open the action, add:
 
-Left — click fx: triggerOutputs()?['body/pei_reviewdecision']
-Operator: is equal to
-Right: 890920000
-Rename to: Is Still Pending
+Final Scope Type — click fx: if(equals(outputs('Parse_Scope_Type'), 'Common Control'), 890920000, if(equals(outputs('Parse_Scope_Type'), 'Application-Level Control'), 890920001, 890920002))
 
-Inside Is Still Pending → If Yes → add Terminate (Succeeded, Review Decision is Pending. Exiting.)
-Move all existing flow actions inside Is Still Pending → If No.
+(Same expression as Scope Type — AI sets both to the same value initially.)
+2. Business Rule 8.6 — on Scope Classifications table:
+
+Condition: Review Decision = Overridden
+Action: Set Final Scope Type = Override Scope Type
+This way when the risk manager overrides, Final Scope Type automatically updates.
+
+3. Flow 3C trigger — change Filter columns to: pei_finalscopetype
+
+Remove pei_reviewdecision,pei_scopetype
+Filter rows: (keep empty, the Is Still Pending condition handles it)
+
+This way Flow 3C fires whenever Final Scope Type changes — whether from AI (Flow 3B sets it) or from override (business rule copies it).
+Start with updating Flow 3B. Tell me when done.
