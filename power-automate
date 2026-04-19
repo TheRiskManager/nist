@@ -1,23 +1,32 @@
-F4A-39 — Scope: Try Create Evidence Folder
-Inside Loop Active Applicability, AFTER the No Evidence Exists condition block (sibling level — runs for every Applicability, not just new Gaps). Control → Scope.
-Rename to: Try Create Evidence Folder
+F4A-42 — Complete Cycle
+Outside all loops. Inside Prior Gates Incomplete → If No, AFTER Loop Active Applicability (sibling level — same indent as List Active Applicability For Cycle, Loop Active Applicability, etc.).
+Dataverse → Update a row.
 
-F4A-40 — Create new folder
-Inside the Scope. SharePoint → Create new folder.
-Site Address: https://ems.sharepoint.com/sites/EMS
-List or Library: EMS
-Folder Path: fx → concat('/Evidence/', items('Loop_Active_Applicability')?['_pei_application_value@OData.Community.Display.V1.FormattedValue'], '/', items('Loop_Active_Applicability')?['_pei_controlprocedure_value@OData.Community.Display.V1.FormattedValue'], '/')
-Rename to: Create Evidence Folder
-Note: @OData.Community.Display.V1.FormattedValue pulls the lookup's primary field. For App lookup that's Display Name; for CP lookup that's CP Identifier (both are each table's primary name field).
+Table: Import Cycles
+Row ID: fx → variables('varImportCycleID')
+Status: Completed (dropdown)
+Completed On: fx → utcNow()
+Completed By: fx → concat('systemusers(', triggerOutputs()?['body/_modifiedby_value'], ')')
 
-F4A-41 — Compose: Continue On Folder Result
-After the Scope (sibling level — still inside Loop Active Applicability, after the Scope). Data Operation → Compose.
-Inputs: Continue
-Configure Run After on this Compose action — click the "..." on the Compose → Configure run after → check all 3 boxes:
+Leave every other field blank.
+Rename to: Complete Cycle
+Note: _modifiedby_value is the GUID of the user who ticked the Import Cycle Confirmed gate — that's who closed the cycle. BR 8.5 will then lock the Status field to prevent changes.
 
-Try Create Evidence Folder is successful
-Try Create Evidence Folder has failed
-Try Create Evidence Folder is skipped
+F4A-43 — Notify Cycle Complete
+After Complete Cycle (sibling level — still inside Prior Gates Incomplete → If No).
+Office 365 Outlook → Send an email (V2).
 
-Save.
-Rename to: Continue On Folder Result
+To: risk-manager@ems.com
+Subject: fx → concat('EMS Import Cycle Completed — ', triggerOutputs()?['body/pei_name'])
+Body: paste this in HTML mode (click the </> icon in the body editor to switch to HTML):
+
+<p>The monthly EMS Import Cycle has completed.</p>
+<p><strong>Cycle:</strong> @{triggerOutputs()?['body/pei_name']}<br>
+<strong>Completed On:</strong> @{formatDateTime(utcNow(), 'MMMM d, yyyy h:mm tt')} UTC<br>
+<strong>New Evidence Gaps Created:</strong> @{length(outputs('List_Active_Applicability_For_Cycle')?['body/value'])} applicability records processed</p>
+<p>The cycle is now read-only. Control owners can begin uploading evidence to the SharePoint folders created at <code>/EMS/Evidence/[App]/[CP]/</code>.</p>
+<p style="color:#8b8fa3;font-size:12px;">Power Platform | EMS 1.0</p>
+Rename to: Notify Cycle Complete
+Note: The "gaps created" count is approximate — it's the total Active Applicability records processed, not the exact number of new Gap records (some had existing Evidence and were skipped). An exact count would need a counter variable increment in Block 5. For POC this is sufficient signal; we can tighten later.
+
+Build both. Say "done" and I'll log them, then Flow 4A is complete — we'll do the full status sync, package the project, and you can test end-to-end.
