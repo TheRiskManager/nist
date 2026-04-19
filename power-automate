@@ -1,1 +1,19 @@
-FieldValueChange typeModifiedTable nameImport CyclesScopeOrganizationSelect columnspei_importcycleconfirmedFilter rowspei_importcycleconfirmed eq true and pei_status eq 890920001
+F4A-2 — Init Import Cycle ID
+Add a new action after the trigger. Variables → Initialize variable.
+Name: varImportCycleID
+Type: String
+Value: fx → triggerOutputs()?['body/pei_importcycleid']
+Rename to: Init Import Cycle ID
+
+F4A-3 — Condition: Prior Gates Incomplete
+Add a Condition after Init Import Cycle ID. This is the defensive gate re-check — handles the race with Flow 2.
+Left side: fx → and(triggerOutputs()?['body/pei_impactreviewed'],triggerOutputs()?['body/pei_classificationcomplete'],triggerOutputs()?['body/pei_applicabilityconfirmed'],triggerOutputs()?['body/pei_evidencereviewed'])
+Operator: is equal to
+Right side: fx → false
+Rename to: Prior Gates Incomplete
+Logic: If ANY of the 4 prior gates is False, the and() returns false, condition is true, we terminate. Mirrors the Flow 3C "Is Still Pending" pattern — undesirable branch in If Yes, main flow in If No.
+
+F4A-3a — Terminate: Gates Incomplete
+Inside the If Yes branch of Prior Gates Incomplete. Control → Terminate.
+Status: Succeeded (clean exit — this isn't a failure, the race with Flow 2 just got here early)
+Rename to: Exit — Gates Incomplete
