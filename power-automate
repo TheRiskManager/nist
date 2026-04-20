@@ -1,32 +1,6 @@
-F4A-42 — Complete Cycle
-Outside all loops. Inside Prior Gates Incomplete → If No, AFTER Loop Active Applicability (sibling level — same indent as List Active Applicability For Cycle, Loop Active Applicability, etc.).
-Dataverse → Update a row.
-
-Table: Import Cycles
-Row ID: fx → variables('varImportCycleID')
-Status: Completed (dropdown)
-Completed On: fx → utcNow()
-Completed By: fx → concat('systemusers(', triggerOutputs()?['body/_modifiedby_value'], ')')
-
-Leave every other field blank.
-Rename to: Complete Cycle
-Note: _modifiedby_value is the GUID of the user who ticked the Import Cycle Confirmed gate — that's who closed the cycle. BR 8.5 will then lock the Status field to prevent changes.
-
-F4A-43 — Notify Cycle Complete
-After Complete Cycle (sibling level — still inside Prior Gates Incomplete → If No).
-Office 365 Outlook → Send an email (V2).
-
-To: risk-manager@ems.com
-Subject: fx → concat('EMS Import Cycle Completed — ', triggerOutputs()?['body/pei_name'])
-Body: paste this in HTML mode (click the </> icon in the body editor to switch to HTML):
-
-<p>The monthly EMS Import Cycle has completed.</p>
+<p>The monthly EMS Import Cycle has completed and is now read-only.</p>
 <p><strong>Cycle:</strong> @{triggerOutputs()?['body/pei_name']}<br>
 <strong>Completed On:</strong> @{formatDateTime(utcNow(), 'MMMM d, yyyy h:mm tt')} UTC<br>
-<strong>New Evidence Gaps Created:</strong> @{length(outputs('List_Active_Applicability_For_Cycle')?['body/value'])} applicability records processed</p>
-<p>The cycle is now read-only. Control owners can begin uploading evidence to the SharePoint folders created at <code>/EMS/Evidence/[App]/[CP]/</code>.</p>
+<strong>Applicability Records Processed:</strong> @{length(outputs('List_Active_Applicability_For_Cycle')?['body/value'])}</p>
+<p>Evidence Gap records have been created and assigned to control owners via the EMS Control Owner Portal. Owners will receive collection tasks and upload evidence through the portal.</p>
 <p style="color:#8b8fa3;font-size:12px;">Power Platform | EMS 1.0</p>
-Rename to: Notify Cycle Complete
-Note: The "gaps created" count is approximate — it's the total Active Applicability records processed, not the exact number of new Gap records (some had existing Evidence and were skipped). An exact count would need a counter variable increment in Block 5. For POC this is sufficient signal; we can tighten later.
-
-Build both. Say "done" and I'll log them, then Flow 4A is complete — we'll do the full status sync, package the project, and you can test end-to-end.
