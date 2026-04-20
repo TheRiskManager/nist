@@ -1,8 +1,9 @@
-Stage 2 — Classify Controls
-Stage 3 — Map Applicability
-Stage 4 — Review Evidence
-Stage 5 — Confirm
+Rule name: Lock Applicability Confirmed When Stage 2 Incomplete
 
+
+Rule name: Lock Evidence Reviewed When Stage 3 Incomplete
+
+Rule name: Lock Import Cycle Confirmed When Stage 4 Incomplete
 
 
 
