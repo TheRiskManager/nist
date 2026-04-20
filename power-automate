@@ -1,1 +1,11 @@
-If(ThisRecord.'Impact Reviewed' = true, "Approved", "Pending")
+If(ThisRecord.'Impact Reviewed' = true,
+    "✓ Approved on " & Text(ThisRecord.'Modified On', "dd mmm yyyy, hh:mm"),
+    "Review pending — tick Impact Reviewed below when done"
+)
+
+
+
+If(ThisRecord.'Impact Reviewed' = true,
+    Concatenate("✓ Approved on ", Text(ThisRecord.'Modified On')),
+    "Review pending — tick Impact Reviewed below when done"
+)
