@@ -1,4 +1,4 @@
-If(ThisRecord.'Impact Reviewed' = true,
-    "✓ Stage approved",
-    "Review pending — tick Impact Reviewed below when done"
+If(ThisRecord.'Classification Complete' = true,
+    "✓ All classifications complete",
+    "Classifications pending — review in section below"
 )
