@@ -1,39 +1,29 @@
 
 
-Step A3 — Stage 3 Summary
-
-Display name: Stage 3 Summary
-Data type: Formula
-Formula:
-
-If(ThisRecord.'Applicability Confirmed' = true,
-    "✓ Applicability confirmed",
-    "Applicability records pending — review in section below"
-)
-
-
-
-Step A4 — Stage 4 Summary
-
-Display name: Stage 4 Summary
-Data type: Formula
-Formula:
-
-If(ThisRecord.'Evidence Reviewed' = true,
-    "✓ Evidence reviewed",
-    "Evidence records pending review — see section below"
-)
 
 
 
 
-Step A5 — Stage 5 Summary
-
-Display name: Stage 5 Summary
-Data type: Formula
-Formula:
-
-If(ThisRecord.'Import Cycle Confirmed' = true,
-    "✓ Cycle confirmed and completed",
-    "Tick Import Cycle Confirmed below to complete this cycle"
-)
+Tab: Cycle (single tab)
+  ├── Section 1: Cycle Header           (full width — name, status, sync date, etc.)
+  ├── Section 2: Stage 1 — Review Changes
+  │   ├── Stage 1 Summary (read-only)
+  │   ├── [optional instruction text]
+  │   ├── Staged Records sub-grid
+  │   └── Impact Reviewed (gate)
+  ├── Section 3: Stage 2 — Classify Controls
+  │   ├── Stage 2 Summary (read-only)
+  │   ├── Scope Classifications sub-grid
+  │   └── Classification Complete (gate)
+  ├── Section 4: Stage 3 — Map Applicability
+  │   ├── Stage 3 Summary (read-only)
+  │   ├── Applicability sub-grid
+  │   └── Applicability Confirmed (gate)
+  ├── Section 5: Stage 4 — Review Evidence
+  │   ├── Stage 4 Summary (read-only)
+  │   ├── Evidence sub-grid
+  │   └── Evidence Reviewed (gate)
+  └── Section 6: Stage 5 — Confirm
+      ├── Stage 5 Summary (read-only)
+      ├── (no sub-grid — just summary + confirm)
+      └── Import Cycle Confirmed (gate)
