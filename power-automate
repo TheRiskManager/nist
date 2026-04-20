@@ -1,4 +1,39 @@
-If(ThisRecord.'Classification Complete' = true,
-    "✓ All classifications complete",
-    "Classifications pending — review in section below"
+
+
+Step A3 — Stage 3 Summary
+
+Display name: Stage 3 Summary
+Data type: Formula
+Formula:
+
+If(ThisRecord.'Applicability Confirmed' = true,
+    "✓ Applicability confirmed",
+    "Applicability records pending — review in section below"
+)
+
+
+
+Step A4 — Stage 4 Summary
+
+Display name: Stage 4 Summary
+Data type: Formula
+Formula:
+
+If(ThisRecord.'Evidence Reviewed' = true,
+    "✓ Evidence reviewed",
+    "Evidence records pending review — see section below"
+)
+
+
+
+
+Step A5 — Stage 5 Summary
+
+Display name: Stage 5 Summary
+Data type: Formula
+Formula:
+
+If(ThisRecord.'Import Cycle Confirmed' = true,
+    "✓ Cycle confirmed and completed",
+    "Tick Import Cycle Confirmed below to complete this cycle"
 )
