@@ -1,4 +1,1 @@
-IF(pei_impactreviewed = true,
-   CONCAT("✓ Approved on ", TEXT(Modified On)),
-   "Review pending — tick gate when done"
-)
+If(ThisRecord.'Impact Reviewed' = true, "Approved", "Pending")
