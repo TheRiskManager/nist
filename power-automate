@@ -1,6 +1,4 @@
-<p>The monthly EMS Import Cycle has completed and is now read-only.</p>
-<p><strong>Cycle:</strong> @{triggerOutputs()?['body/pei_name']}<br>
-<strong>Completed On:</strong> @{formatDateTime(utcNow(), 'MMMM d, yyyy h:mm tt')} UTC<br>
-<strong>Applicability Records Processed:</strong> @{length(outputs('List_Active_Applicability_For_Cycle')?['body/value'])}</p>
-<p>Evidence Gap records have been created and assigned to control owners via the EMS Control Owner Portal. Owners will receive collection tasks and upload evidence through the portal.</p>
-<p style="color:#8b8fa3;font-size:12px;">Power Platform | EMS 1.0</p>
+IF(pei_impactreviewed = true,
+   CONCAT("✓ Approved on ", TEXT(Modified On)),
+   "Review pending — tick gate when done"
+)
