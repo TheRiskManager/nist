@@ -1,27 +1,9 @@
-Step B6 — Add 5 new sections to Tab Cycle
-Now we add 5 new sections to the Cycle tab — one per stage. They'll initially be empty; we'll fill them in subsequent steps.
-Add Section 1: Stage 1 — Review Changes
-
-In the form editor, navigate to the Tab Cycle (should be selected)
-Click on the canvas BELOW the Import Warnings section (or wherever you want the new section to land — at the bottom of Tab Cycle is fine)
-In the toolbar at the top, click Component → look for "1-column section" or "Section"
-
-Alternative: + Section button if visible
-Alternative: drag a section component from the left rail
+Stage 2 — Classify Controls
+Stage 3 — Map Applicability
+Stage 4 — Review Evidence
+Stage 5 — Confirm
 
 
-A new empty section appears
-Click on the section header → in the right properties panel:
-
-Display name (Label): Stage 1 — Review Changes
-Name (internal): leave default or set to tab_stage_1 if asked
-Layout: 1 column (default)
-
-
-Press Enter / click outside
-
-Tell me when Section "Stage 1 — Review Changes" exists at the bottom of Tab Cycle.
-If the way to add a section is different from what I described, screenshot it and I'll adjust.
 
 
 
