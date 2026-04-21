@@ -1,10 +1,4 @@
-Rule name: Lock Applicability Confirmed When Stage 2 Incomplete
-
-
-Rule name: Lock Evidence Reviewed When Stage 3 Incomplete
-
-Rule name: Lock Import Cycle Confirmed When Stage 4 Incomplete
-
+length(outputs('Count_Staged_Records_For_Cycle')?['body/value'])
 
 
 
