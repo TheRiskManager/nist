@@ -1,17 +1,16 @@
 var EMS = EMS || {};
 EMS.ImportCycle = EMS.ImportCycle || {};
 
-// Map BPF stage names to form tab names
-// IMPORTANT: These must match EXACTLY the BPF stage names and the tab names on the form
+// Map BPF stage display names to form tab names
 EMS.ImportCycle.stageToTabMap = {
-    "Stage 1 - Review Changes": "tab_stage1",
-    "Stage 2 - Classify Controls": "tab_stage2",
-    "Stage 3 - Map Applicability": "tab_stage3",
-    "Stage 4 - Review Evidence": "tab_stage4",
-    "Stage 5 - Confirm": "tab_stage5"
+    "Stage 1 - Review Changes": "tab_2",
+    "Stage 2 - Classify Controls": "tab_3",
+    "Stage 3 - Map Applicability": "tab_4",
+    "Stage 4 - Review Evidence": "tab_5",
+    "Stage 5 - Confirm": "tab_6"
 };
 
-// Called when form loads and on BPF stage change
+// Called when BPF stage changes — switches to matching tab
 EMS.ImportCycle.onStageChange = function(executionContext) {
     var formContext = executionContext.getFormContext();
     var activeStage = formContext.data.process.getActiveStage();
@@ -31,7 +30,7 @@ EMS.ImportCycle.onStageChange = function(executionContext) {
     }
 };
 
-// Called on form load — also triggers initial tab switch
+// Called on form load — registers the handler and triggers initial tab switch
 EMS.ImportCycle.onLoad = function(executionContext) {
     var formContext = executionContext.getFormContext();
     
