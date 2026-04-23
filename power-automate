@@ -10,16 +10,11 @@ EMS.ImportCycle.stageToTabMap = {
     "Stage 5 - Confirm": "tab_6"
 };
 
-// Called when BPF stage changes — switches to matching tab
-EMS.ImportCycle.onStageChange = function(executionContext) {
-    var formContext = executionContext.getFormContext();
-    var activeStage = formContext.data.process.getActiveStage();
+// Shared tab-switcher used by both stage change and stage selected handlers
+EMS.ImportCycle.switchTabForStage = function(formContext, stage) {
+    if (!stage) return;
     
-    if (!activeStage) {
-        return;
-    }
-    
-    var stageName = activeStage.getName();
+    var stageName = stage.getName();
     var targetTabName = EMS.ImportCycle.stageToTabMap[stageName];
     
     if (targetTabName) {
@@ -30,13 +25,22 @@ EMS.ImportCycle.onStageChange = function(executionContext) {
     }
 };
 
-// Called on form load — registers the handler and triggers initial tab switch
+// Fires when the active BPF stage advances (gate ticked, etc.)
+EMS.ImportCycle.onStageChange = function(executionContext) {
+    var formContext = executionContext.getFormContext();
+    EMS.ImportCycle.switchTabForStage(formContext, formContext.data.process.getActiveStage());
+};
+
+// Fires when user clicks a BPF stage circle (no advancement, just selection)
+EMS.ImportCycle.onStageSelected = function(executionContext) {
+    var formContext = executionContext.getFormContext();
+    var selectedStage = executionContext.getEventArgs().getStage();
+    EMS.ImportCycle.switchTabForStage(formContext, selectedStage);
+};
+
+// Registers both handlers — does NOT auto-switch on load (Overview is default landing)
 EMS.ImportCycle.onLoad = function(executionContext) {
     var formContext = executionContext.getFormContext();
-    
-    // Register stage change handler
     formContext.data.process.addOnStageChange(EMS.ImportCycle.onStageChange);
-    
-    // Switch to current stage's tab on load
-    EMS.ImportCycle.onStageChange(executionContext);
+    formContext.data.process.addOnStageSelected(EMS.ImportCycle.onStageSelected);
 };
