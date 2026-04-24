@@ -1,1 +1,1 @@
-concat('/Evidence/', items('Loop_Active_Applicability')?['_pei_application_value@OData.Community.Display.V1.FormattedValue'], '/', items('Loop_Active_Applicability')?['_pei_controlprocedure_value@OData.Community.Display.V1.FormattedValue'], '/')
+concat('_pei_importcycle_value eq ', variables('varImportCycleID'), ' and (pei_evidencestatus eq 890920003 or pei_evidencestatus eq 890920000)')
