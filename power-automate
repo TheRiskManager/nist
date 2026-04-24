@@ -1,42 +1,4 @@
-Action 2 — Apply to each: Loop Orphan Evidence Candidates
+concat('_pei_importcycle_value eq ', variables('varImportCycleID'))
 
-Connector: Control → Apply to each
-Output: value from List Orphan Evidence Candidates
-Rename to: Loop Orphan Evidence Candidates
-
-Action 3 — Inside the loop: Get Linked Applicability
-
-Connector: Microsoft Dataverse → Get a row by ID
-Table name: Applicabilities
-Row ID: click fx → paste:
-
-items('Loop_Orphan_Evidence_Candidates')?['_pei_applicability_value']
-
-Select columns: pei_applicabilitystatus,pei_applicability,pei_reviewdecision
-Rename to: Get Linked Applicability
-
-Action 4 — Inside the loop: Condition: Applicability Is Orphan
-
-Connector: Control → Condition
-Set up with three rows joined by OR:
-
-Row 1: pei_applicabilitystatus from Get Linked Applicability — is equal to — 890920001 (Inactive)
-Row 2: pei_applicability from Get Linked Applicability — is equal to — 890920001 (Not Applicable)
-Row 3: pei_reviewdecision from Get Linked Applicability — is equal to — 890920000 (Pending — should not have produced Evidence)
-
-
-Change the AND/OR dropdown to Or
-Rename to: Applicability Is Orphan
-
-Action 5 — Inside True branch of Applicability Is Orphan: Update a row
-
-Connector: Microsoft Dataverse → Update a row
-Table name: Evidences
-Row ID: click fx → paste:
-
-items('Loop_Orphan_Evidence_Candidates')?['pei_evidenceid']
-
-Evidence Status: select Not Required (value 890920004)
-Rename to: Mark Evidence Not Required
-
-False branch stays empty.
+Select columns: pei_applicabilityid,pei_applicabilitystatus,pei_applicability,pei_reviewdecision
+Rename to: List All Applicability For Cycle
