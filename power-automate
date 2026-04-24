@@ -1,1 +1,1 @@
-concat('_pei_importcycle_value eq ', variables('varImportCycleID'), ' and (pei_evidencestatus eq 890920003 or pei_evidencestatus eq 890920000)')
+pei_evidenceid,_pei_applicability_value,pei_evidencestatus
