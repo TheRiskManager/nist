@@ -1,32 +1,18 @@
-Action 2 — Get a row by ID: Re-fetch Import Cycle
-Purpose: fresh read from Dataverse to get the current state of all gate fields.
-
-Connector: Microsoft Dataverse → Get a row by ID
-Table name: Import Cycles
-Row ID: @{variables('varImportCycleID')} — type this using fx expression OR use the lightning bolt to pick the variable
-Select columns: pei_impactreviewed,pei_classificationcomplete,pei_applicabilityconfirmed
-Rename the action to: Re-fetch Import Cycle
-
-Action 3 — Condition: Prior Gates Incomplete
-Purpose: if any prior gate is No, stop.
-
-Connector: Control → Condition
-Rename the condition to: Prior Gates Incomplete
-Set up the condition with THREE rows joined by OR:
-
-Row 1: Impact Reviewed (lightning bolt → select from Re-fetch Import Cycle output) — is equal to — false
-Row 2: Classification Complete — is equal to — false
-Row 3: Applicability Confirmed — is equal to — false
+_pei_importcycle_value eq @{variables('varImportCycleID')} and pei_applicabilitystatus eq 890920000 and pei_applicability eq 890920000 and (pei_reviewdecision eq 890920001 or pei_reviewdecision eq 890920002)
 
 
-Change the top dropdown from And to Or
+concat('_pei_importcycle_value eq ', variables('varImportCycleID'), ' and pei_applicabilitystatus eq 890920000 and pei_applicability eq 890920000 and (pei_reviewdecision eq 890920001 or pei_reviewdecision eq 890920002)')
 
-Action 4 — Terminate: Exit Gates Incomplete
-Purpose: stop cleanly if any gate check failed.
 
-Position: inside the True branch of the condition (i.e. one or more gates are incomplete)
-Connector: Control → Terminate
-Status: Succeeded (not Failed — it's a valid exit, not an error)
-Rename the action to: Exit Gates Incomplete
 
-The False branch of the condition stays empty for now — we'll fill it with the next items (3.4 onwards) starting with the Applicability query
+
+
+What this filter says:
+
+_pei_importcycle_value eq [cycle ID] — this cycle only
+pei_applicabilitystatus eq 890920000 — Active
+pei_applicability eq 890920000 — Applicable (not Not Applicable)
+(pei_reviewdecision eq 890920001 or pei_reviewdecision eq 890920002) — Accepted OR Overridden (excludes Pending)
+
+Select columns: leave blank (or specify the minimum: pei_applicabilityid,_pei_controlprocedure_value,_pei_application_value — smaller payload, faster runtime). Your call — leaving blank is fine for now.
+Rename the action to: List Active Applicability For Cycle
