@@ -1,46 +1,32 @@
-var EMS = EMS || {};
-EMS.ImportCycle = EMS.ImportCycle || {};
+Action 2 — Get a row by ID: Re-fetch Import Cycle
+Purpose: fresh read from Dataverse to get the current state of all gate fields.
 
-// Map BPF stage display names to form tab names
-EMS.ImportCycle.stageToTabMap = {
-    "Stage 1 - Review Changes": "tab_2",
-    "Stage 2 - Classify Controls": "tab_3",
-    "Stage 3 - Map Applicability": "tab_4",
-    "Stage 4 - Review Evidence": "tab_5",
-    "Stage 5 - Confirm": "tab_6"
-};
+Connector: Microsoft Dataverse → Get a row by ID
+Table name: Import Cycles
+Row ID: @{variables('varImportCycleID')} — type this using fx expression OR use the lightning bolt to pick the variable
+Select columns: pei_impactreviewed,pei_classificationcomplete,pei_applicabilityconfirmed
+Rename the action to: Re-fetch Import Cycle
 
-// Shared tab-switcher used by both stage change and stage selected handlers
-EMS.ImportCycle.switchTabForStage = function(formContext, stage) {
-    if (!stage) return;
-    
-    var stageName = stage.getName();
-    var targetTabName = EMS.ImportCycle.stageToTabMap[stageName];
-    
-    if (targetTabName) {
-        var tab = formContext.ui.tabs.get(targetTabName);
-        if (tab) {
-            tab.setFocus();
-        }
-    }
-};
+Action 3 — Condition: Prior Gates Incomplete
+Purpose: if any prior gate is No, stop.
 
-// Fires when the active BPF stage advances (gate ticked, etc.)
-EMS.ImportCycle.onStageChange = function(executionContext) {
-    var formContext = executionContext.getFormContext();
-    EMS.ImportCycle.switchTabForStage(formContext, formContext.data.process.getActiveStage());
-};
+Connector: Control → Condition
+Rename the condition to: Prior Gates Incomplete
+Set up the condition with THREE rows joined by OR:
 
-// Fires when user clicks a BPF stage circle (no advancement, just selection)
-EMS.ImportCycle.onStageSelected = function(executionContext) {
-    var formContext = executionContext.getFormContext();
-    var selectedStage = executionContext.getEventArgs().getStage();
-    EMS.ImportCycle.switchTabForStage(formContext, selectedStage);
-};
+Row 1: Impact Reviewed (lightning bolt → select from Re-fetch Import Cycle output) — is equal to — false
+Row 2: Classification Complete — is equal to — false
+Row 3: Applicability Confirmed — is equal to — false
 
-// Registers both handlers — does NOT auto-switch on load (Overview is default landing)
-EMS.ImportCycle.onLoad = function(executionContext) {
-    var formContext = executionContext.getFormContext();
-    formContext.data.process.addOnStageChange(EMS.ImportCycle.onStageChange);
-    formContext.data.process.addOnStageSelected(EMS.ImportCycle.onStageSelected);
-};
+
+Change the top dropdown from And to Or
+
+Action 4 — Terminate: Exit Gates Incomplete
+Purpose: stop cleanly if any gate check failed.
+
+Position: inside the True branch of the condition (i.e. one or more gates are incomplete)
+Connector: Control → Terminate
+Status: Succeeded (not Failed — it's a valid exit, not an error)
+Rename the action to: Exit Gates Incomplete
+
+The False branch of the condition stays empty for now — we'll fill it with the next items (3.4 onwards) starting with the Applicability query
