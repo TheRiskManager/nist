@@ -1,20 +1,47 @@
-Rewrite each row of the condition:
+Step-by-step
+Open Flow 3D → navigate to Loop Orphan Evidence Candidates
+You should see inside it:
 
-Row 1: click fx, paste:
+Applicability Is Orphan (condition) ← this is what we're fixing
+Mark Evidence Not Required (inside True)
 
-first(filter(outputs('List_All_Applicability_For_Cycle')?['body/value'], equals(item()?['pei_applicabilityid'], items('Loop_Orphan_Evidence_Candidates')?['_pei_applicability_value'])))?['pei_applicabilitystatus']
+Add new action BEFORE the condition
+
+Click the + button between the loop boundary and Applicability Is Orphan
+Search: Filter array
+Add: Data Operation → Filter array
+Rename to: Find Matching Applicability
+
+Configure Filter array
+From field:
+Click fx → paste:
+outputs('List_All_Applicability_For_Cycle')?['body/value']
+Condition row (one row only):
+
+Left value: click fx → paste: item()?['pei_applicabilityid']
 Middle dropdown: is equal to
-Right value: 890920001 (Inactive)
+Right value: click fx → paste: items('Loop_Orphan_Evidence_Candidates')?['_pei_applicability_value']
 
-Row 2: click fx, paste:
+Save.
+Rewrite the 3 rows in Applicability Is Orphan
+Delete the existing three expressions and replace with:
+Row 1:
 
-first(filter(outputs('List_All_Applicability_For_Cycle')?['body/value'], equals(item()?['pei_applicabilityid'], items('Loop_Orphan_Evidence_Candidates')?['_pei_applicability_value'])))?['pei_applicability']
-Middle dropdown: is equal to
-Right value: 890920001 (Not Applicable)
+Left: fx → first(body('Find_Matching_Applicability'))?['pei_applicabilitystatus']
+Middle: is equal to
+Right: 890920001
 
-Row 3: click fx, paste:
+Row 2:
 
-first(filter(outputs('List_All_Applicability_For_Cycle')?['body/value'], equals(item()?['pei_applicabilityid'], items('Loop_Orphan_Evidence_Candidates')?['_pei_applicability_value'])))?['pei_reviewdecision']
-Middle dropdown: is equal to
-Right value: 890920000 (Pending)
-Dropdown top-level: Or
+Left: fx → first(body('Find_Matching_Applicability'))?['pei_applicability']
+Middle: is equal to
+Right: 890920001
+
+Row 3:
+
+Left: fx → first(body('Find_Matching_Applicability'))?['pei_reviewdecision']
+Middle: is equal to
+Right: 890920000
+
+Top-level operator: Or (unchanged)
+Save and verify
