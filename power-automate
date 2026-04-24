@@ -1,4 +1,20 @@
-concat('_pei_importcycle_value eq ', variables('varImportCycleID'))
+Rewrite each row of the condition:
 
-Select columns: pei_applicabilityid,pei_applicabilitystatus,pei_applicability,pei_reviewdecision
-Rename to: List All Applicability For Cycle
+Row 1: click fx, paste:
+
+first(filter(outputs('List_All_Applicability_For_Cycle')?['body/value'], equals(item()?['pei_applicabilityid'], items('Loop_Orphan_Evidence_Candidates')?['_pei_applicability_value'])))?['pei_applicabilitystatus']
+Middle dropdown: is equal to
+Right value: 890920001 (Inactive)
+
+Row 2: click fx, paste:
+
+first(filter(outputs('List_All_Applicability_For_Cycle')?['body/value'], equals(item()?['pei_applicabilityid'], items('Loop_Orphan_Evidence_Candidates')?['_pei_applicability_value'])))?['pei_applicability']
+Middle dropdown: is equal to
+Right value: 890920001 (Not Applicable)
+
+Row 3: click fx, paste:
+
+first(filter(outputs('List_All_Applicability_For_Cycle')?['body/value'], equals(item()?['pei_applicabilityid'], items('Loop_Orphan_Evidence_Candidates')?['_pei_applicability_value'])))?['pei_reviewdecision']
+Middle dropdown: is equal to
+Right value: 890920000 (Pending)
+Dropdown top-level: Or
