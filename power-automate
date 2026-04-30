@@ -1,72 +1,105 @@
-Got it — batching the remaining steps. You're past the dialog-juggling part; the rest is sequential and you can rip through it.
+Step 12 — Add seed data (5 sample BUs)
+Per acceptance criteria: "Initial seed data populated (5-10 typical BUs based on org structure)." 5 covers the spread without overcommitting to an org structure you may not have finalized.
+In the table editor, find the Data experiences section in the left nav, click Tables hub (or just navigate: top breadcrumb → Tables → Business Unit → Data tab).
+Click + New record five times, entering this data. The first three are root-level BUs (no parent); the last two demonstrate hierarchy by being children of one of the roots.
+Record 1:
+Finance
 
-Step 5 — Save the table
-Click Save at the bottom of the New table dialog.
-Wait for the table to finish creating (15-30 seconds; you'll see a spinner, then land on the table's editor page with tabs like Columns, Relationships, Forms, Views).
+BU Code: FIN
+Status: Active
+Parent BU: (leave empty)
 
-Step 6 — Add the BU Code column
-In the table editor, click the Columns area → + New column.
-BU Code
-Description:
-Short code identifying the business unit (e.g. "FIN", "HR", "ENG"). Must be unique across all BUs.
-Data type: Single line of text
-Maximum character count:
-10
-Required: Business required
-Click Save.
+Record 2:
+Engineering
 
-Step 7 — Add the Status column
-Click + New column again.
-Status
-Description:
-Whether the BU is currently active and selectable for assignment to apps/CPs/BPs.
-Data type: Choice
-Sync this choice with: select New choice (creates a fresh choice, not a global one)
-Choice items — add exactly these two, in this order:
-Item 1:
+BU Code: ENG
+Status: Active
+Parent BU: (leave empty)
 
-Label: Active
-Value: 890920000
+Record 3:
+Human Resources
 
-Item 2:
+BU Code: HR
+Status: Active
+Parent BU: (leave empty)
 
-Label: Inactive
-Value: 890920001
+Record 4:
+Platform Engineering
 
-Default choice: Active
-Required: Business required
-After the choice is created, look for the Schema name under Advanced options and manually edit it to:
-bustatus
-(So the full logical name becomes pei_bustatus, not pei_status — this avoids the ADR-034 anti-pattern.)
-Click Save.
+BU Code: ENG-PLAT
+Status: Active
+Parent BU: Engineering (select from lookup)
 
-Step 8 — Add the Parent BU column (self-lookup)
-Click + New column.
-Parent BU
-Description:
-The parent business unit in the BU hierarchy. Root BUs (top of hierarchy) have no parent. Self-referential lookup.
-Data type: Lookup
-Related table: Business Unit (this same table — it'll appear in the dropdown since the table now exists)
-Required: Optional (root BUs need to allow null parent)
-Under Advanced options, set the Schema name to:
-parentbu
-(So logical becomes pei_parentbu.)
-Click Save.
+Record 5:
+Application Engineering
 
-Step 9 — Enable Hierarchical on the Parent BU relationship
-After saving the Parent BU column, you need to mark its underlying relationship as hierarchical.
+BU Code: ENG-APP
+Status: Active
+Parent BU: Engineering (select from lookup)
 
-In the table editor, click the Relationships area (left nav of the table)
-Find the relationship pei_businessunit_pei_parentbu (or similarly named — it'll be the self-referential one created when you added Parent BU)
-Open it
-Look for a checkbox or toggle labeled Hierarchical — check it
-Save the relationship
+After all 5 records save successfully, you'll have validated:
 
-If you don't see "Hierarchical" as an option in the modern UI, it's reachable via the classic Solution Explorer (make.powerapps.com → Settings → "Switch to classic" if you have access). Tell me if you can't find it and I'll route you the long way.
+Required-field enforcement (Name, BU Code, Status all filled)
+Alternate key (BU Code values FIN/ENG/HR/ENG-PLAT/ENG-APP all unique)
+Self-lookup works (Records 4 and 5 reference Record 2)
+Hierarchy (Engineering will have 2 children visible in hierarchy view)
 
-Step 10 — Add the Alternate Key on BU Code
-Still in the table editor, click the Keys area (it may be under "Schema" in the left nav, or as a separate sub-tab).
-Click + New key.
-BU Code Unique
-Columns: select BU Code (only column — single-field key)
-Click Save.
+
+Step 13 — Verify forms and views auto-generated
+Power Platform auto-creates default form + view when a table is created. Quick confirmation:
+
+In the Business Unit table editor, click Forms in the left nav
+
+You should see at least one form: Information (Main form, default)
+Open it briefly, verify it shows Name, BU Code, Status, Parent BU fields somewhere on the canvas
+If any are missing, drag them onto the form from the right-side column tree, then Save and Publish
+
+
+Click Views in the left nav
+
+You should see: Active Business Units (default), Business Unit Lookup View, All Business Units, possibly others
+Open Active Business Units
+Verify the view shows columns: Name, BU Code, Status (or similar)
+If "Parent BU" isn't there and you want it visible, click + View column, add Parent BU, then Save and Publish
+
+
+
+(If forms and views look thin / generic, that's fine — Power Platform's defaults are minimal but functional. We can refine them in a later story if needed; not blocking for L1-A01 acceptance.)
+
+Step 14 — Smoke test
+Verify the table is queryable by another consumer (this is the real "did we build this right" test):
+
+In the Business Unit table → Data tab
+Confirm all 5 records visible in the grid
+Click into Record 2 (Engineering)
+Look for a View Hierarchy button or icon (it appears for tables with a hierarchical relationship — usually a small org-chart-style icon next to the record header, or in the command bar)
+Click it — you should see Engineering at top with Platform Engineering and Application Engineering as children
+(If the View Hierarchy button isn't visible, the Hierarchical setting from Step 9 didn't fully take — flag it and we'll fix)
+
+Then test the alternate key actually enforces uniqueness:
+
+Click + New record
+Name: Test Duplicate Code
+BU Code: FIN (duplicate of Record 1)
+Status: Active
+Try to Save
+
+You should get an error like "A record with these values already exists" or "Duplicate key found." That's the alternate key doing its job.
+After confirming the duplicate-error appeared, delete that test record (don't save with a different code — just discard).
+
+Verification checkpoint
+When done with Steps 12–14, tell me:
+
+All 5 seed records saved successfully?
+Default form has Name, BU Code, Status, Parent BU visible?
+Active Business Units view shows the 5 records?
+View Hierarchy for Engineering shows Platform Engineering + Application Engineering as children?
+Duplicate BU Code attempt was rejected?
+
+If all 5 check out, say "smoke passed" and I'll close L1-A01 properly per Schema Discipline + Tracker Maintenance:
+
+Update /tmp/bl002_tenant_schema.py to move pei_businessunit from FORWARD_PLANNED → TENANT_TABLES with all confirmed columns
+Rebuild schema doc
+Run Schema Currency Check (drift should drop — we just made a forward-planned table real)
+Mark L1-A01 Done in tracker source with Outcomes
+Rebuild tracker
