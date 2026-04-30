@@ -1,10 +1,72 @@
-Step 4 (revised) — Set the Primary column
-In the Primary column tab of the New table dialog:
-Display name:
-Name
+Got it — batching the remaining steps. You're past the dialog-juggling part; the rest is sequential and you can rip through it.
+
+Step 5 — Save the table
+Click Save at the bottom of the New table dialog.
+Wait for the table to finish creating (15-30 seconds; you'll see a spinner, then land on the table's editor page with tabs like Columns, Relationships, Forms, Views).
+
+Step 6 — Add the BU Code column
+In the table editor, click the Columns area → + New column.
+BU Code
 Description:
-Display name of the business unit (e.g. "Finance", "Engineering", "HR")
-Schema name: should auto-fill to Name (verify it shows Name, with pei_ prefix added by the system)
+Short code identifying the business unit (e.g. "FIN", "HR", "ENG"). Must be unique across all BUs.
+Data type: Single line of text
 Maximum character count:
-100
-Required: select Business required from the dropdown
+10
+Required: Business required
+Click Save.
+
+Step 7 — Add the Status column
+Click + New column again.
+Status
+Description:
+Whether the BU is currently active and selectable for assignment to apps/CPs/BPs.
+Data type: Choice
+Sync this choice with: select New choice (creates a fresh choice, not a global one)
+Choice items — add exactly these two, in this order:
+Item 1:
+
+Label: Active
+Value: 890920000
+
+Item 2:
+
+Label: Inactive
+Value: 890920001
+
+Default choice: Active
+Required: Business required
+After the choice is created, look for the Schema name under Advanced options and manually edit it to:
+bustatus
+(So the full logical name becomes pei_bustatus, not pei_status — this avoids the ADR-034 anti-pattern.)
+Click Save.
+
+Step 8 — Add the Parent BU column (self-lookup)
+Click + New column.
+Parent BU
+Description:
+The parent business unit in the BU hierarchy. Root BUs (top of hierarchy) have no parent. Self-referential lookup.
+Data type: Lookup
+Related table: Business Unit (this same table — it'll appear in the dropdown since the table now exists)
+Required: Optional (root BUs need to allow null parent)
+Under Advanced options, set the Schema name to:
+parentbu
+(So logical becomes pei_parentbu.)
+Click Save.
+
+Step 9 — Enable Hierarchical on the Parent BU relationship
+After saving the Parent BU column, you need to mark its underlying relationship as hierarchical.
+
+In the table editor, click the Relationships area (left nav of the table)
+Find the relationship pei_businessunit_pei_parentbu (or similarly named — it'll be the self-referential one created when you added Parent BU)
+Open it
+Look for a checkbox or toggle labeled Hierarchical — check it
+Save the relationship
+
+If you don't see "Hierarchical" as an option in the modern UI, it's reachable via the classic Solution Explorer (make.powerapps.com → Settings → "Switch to classic" if you have access). Tell me if you can't find it and I'll route you the long way.
+
+Step 10 — Add the Alternate Key on BU Code
+Still in the table editor, click the Keys area (it may be under "Schema" in the left nav, or as a separate sub-tab).
+Click + New key.
+BU Code Unique
+Columns: select BU Code (only column — single-field key)
+Click Save.
