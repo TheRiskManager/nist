@@ -1,105 +1,127 @@
-Step 12 — Add seed data (5 sample BUs)
-Per acceptance criteria: "Initial seed data populated (5-10 typical BUs based on org structure)." 5 covers the spread without overcommitting to an org structure you may not have finalized.
-In the table editor, find the Data experiences section in the left nav, click Tables hub (or just navigate: top breadcrumb → Tables → Business Unit → Data tab).
-Click + New record five times, entering this data. The first three are root-level BUs (no parent); the last two demonstrate hierarchy by being children of one of the roots.
-Record 1:
-Finance
+Step 2 — Properties tab values
+In the New table dialog, on the Properties tab:
+Display name:
+BU Org Unit Mapping
+Description:
+Maps LeanIX Org Unit strings to normalized Business Units. Flow 1 writes new entries when it encounters unmapped org unit strings; admins assign Target BU to resolve them.
+Plural name: auto-fills to BU Org Unit Mappings — leave it.
+Expand Advanced options:
+Schema name: verify auto-fills to BUOrgUnitMapping (full logical becomes pei_BUOrgUnitMapping)
+Type: Standard
+Record ownership: User or team
+Enable for... check these:
 
-BU Code: FIN
-Status: Active
-Parent BU: (leave empty)
+Auditing
+Activities
+Notes
+Connections
 
-Record 2:
-Engineering
+(Leave the other Enable-for checkboxes at default.)
+⚠️ Don't click Save yet — set Primary column on the next tab first.
 
-BU Code: ENG
-Status: Active
-Parent BU: (leave empty)
+Step 3 — Primary column tab
+Click into the Primary column tab.
+Display name:
+Org Unit Variant
+Description:
+The verbatim Org Unit string as exported from LeanIX. Used as the lookup key when Flow 1 resolves applications to Business Units. Must be unique across the table.
+Data type: Single line of text
+Expand Advanced options:
+Schema name: verify auto-fills to OrgUnitVariant
+Maximum character count:
+200
+Required: Business required
 
-Record 3:
-Human Resources
+Step 4 — Save the table
+Click Save at the bottom. Wait 15–30 seconds for the table to finish creating; you'll land on the table editor.
 
-BU Code: HR
-Status: Active
-Parent BU: (leave empty)
+Step 5 — Add column: Target BU (lookup)
+In table editor → Columns area → + New column.
+Display name:
+Target BU
+Description:
+The Business Unit this Org Unit string maps to. Null when status is Unresolved.
+Data type: Lookup
+Related table: Business Unit
+Required: Optional
+Under Advanced options, set the Schema name to:
+targetbu
+Click Save.
 
-Record 4:
-Platform Engineering
+Step 6 — Add column: Status (choice)
+Click + New column.
+Display name:
+Status
+Description:
+Whether this org unit string has been mapped to a BU, deliberately ignored, or is still unresolved.
+Data type: Choice
+Sync this choice with: New choice
+Choice items — add exactly three, in this order:
+Item 1:
 
-BU Code: ENG-PLAT
-Status: Active
-Parent BU: Engineering (select from lookup)
+Label: Unresolved
+Value: 890920000
 
-Record 5:
-Application Engineering
+Item 2:
 
-BU Code: ENG-APP
-Status: Active
-Parent BU: Engineering (select from lookup)
+Label: Mapped
+Value: 890920001
 
-After all 5 records save successfully, you'll have validated:
+Item 3:
 
-Required-field enforcement (Name, BU Code, Status all filled)
-Alternate key (BU Code values FIN/ENG/HR/ENG-PLAT/ENG-APP all unique)
-Self-lookup works (Records 4 and 5 reference Record 2)
-Hierarchy (Engineering will have 2 children visible in hierarchy view)
+Label: Ignored
+Value: 890920002
 
+Default choice: Unresolved
+Required: Business required
+Under Advanced options, manually edit the Schema name to:
+mappingstatus
+(So full logical becomes pei_mappingstatus, not pei_status.)
+Click Save.
 
-Step 13 — Verify forms and views auto-generated
-Power Platform auto-creates default form + view when a table is created. Quick confirmation:
+Step 7 — Add column: Notes
+Click + New column.
+Display name:
+Notes
+Description:
+Admin notes about this mapping (e.g. why it was ignored, ambiguity flags, who to ask).
+Data type: Multiple lines of text
+Format: Text (plain — NOT Rich text)
+Maximum character count:
+2000
+Required: Optional
+Click Save.
 
-In the Business Unit table editor, click Forms in the left nav
+Step 8 — Add column: First Seen
+Click + New column.
+Display name:
+First Seen
+Description:
+Timestamp when Flow 1 first encountered this Org Unit string in a LeanIX export.
+Data type: Date and Time
+Format: Date and time
+Required: Optional
+Under Advanced options, set the Schema name to:
+firstseen
+Click Save.
 
-You should see at least one form: Information (Main form, default)
-Open it briefly, verify it shows Name, BU Code, Status, Parent BU fields somewhere on the canvas
-If any are missing, drag them onto the form from the right-side column tree, then Save and Publish
+Step 9 — Add column: Affected Records
+Click + New column.
+Display name:
+Affected Records
+Description:
+Count of Application records currently using this Org Unit string. Updated by Flow 1 each cycle.
+Data type: Whole Number
+Minimum value:
+0
+Required: Optional
+Under Advanced options, set the Schema name to:
+affectedrecords
+Click Save.
 
-
-Click Views in the left nav
-
-You should see: Active Business Units (default), Business Unit Lookup View, All Business Units, possibly others
-Open Active Business Units
-Verify the view shows columns: Name, BU Code, Status (or similar)
-If "Parent BU" isn't there and you want it visible, click + View column, add Parent BU, then Save and Publish
-
-
-
-(If forms and views look thin / generic, that's fine — Power Platform's defaults are minimal but functional. We can refine them in a later story if needed; not blocking for L1-A01 acceptance.)
-
-Step 14 — Smoke test
-Verify the table is queryable by another consumer (this is the real "did we build this right" test):
-
-In the Business Unit table → Data tab
-Confirm all 5 records visible in the grid
-Click into Record 2 (Engineering)
-Look for a View Hierarchy button or icon (it appears for tables with a hierarchical relationship — usually a small org-chart-style icon next to the record header, or in the command bar)
-Click it — you should see Engineering at top with Platform Engineering and Application Engineering as children
-(If the View Hierarchy button isn't visible, the Hierarchical setting from Step 9 didn't fully take — flag it and we'll fix)
-
-Then test the alternate key actually enforces uniqueness:
-
-Click + New record
-Name: Test Duplicate Code
-BU Code: FIN (duplicate of Record 1)
-Status: Active
-Try to Save
-
-You should get an error like "A record with these values already exists" or "Duplicate key found." That's the alternate key doing its job.
-After confirming the duplicate-error appeared, delete that test record (don't save with a different code — just discard).
-
-Verification checkpoint
-When done with Steps 12–14, tell me:
-
-All 5 seed records saved successfully?
-Default form has Name, BU Code, Status, Parent BU visible?
-Active Business Units view shows the 5 records?
-View Hierarchy for Engineering shows Platform Engineering + Application Engineering as children?
-Duplicate BU Code attempt was rejected?
-
-If all 5 check out, say "smoke passed" and I'll close L1-A01 properly per Schema Discipline + Tracker Maintenance:
-
-Update /tmp/bl002_tenant_schema.py to move pei_businessunit from FORWARD_PLANNED → TENANT_TABLES with all confirmed columns
-Rebuild schema doc
-Run Schema Currency Check (drift should drop — we just made a forward-planned table real)
-Mark L1-A01 Done in tracker source with Outcomes
-Rebuild tracker
+Step 10 — Add Alternate Key on Org Unit Variant
+In table editor → Keys area → + New key.
+Display name:
+Org Unit Variant Unique
+Columns: select Org Unit Variant
+Click Save. (Background job runs ~30-60 sec; key shows "Active" when done.)
