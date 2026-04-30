@@ -1,4 +1,10 @@
-In the New table dialog, enter these values exactly:
-FieldValueDisplay nameBusiness UnitPlural name(auto-fills to Business Units — leave it)DescriptionOrganizational unit for grouping applications, control procedures, and parent business processes. Supports parent-child hierarchy.
-Then expand Advanced options (link near the bottom) and set:
-FieldValueSchema nameshould auto-fill to BusinessUnit — verify it shows pei_BusinessUnit (with pei_ prefix); if it shows just BusinessUnit without prefix, that's still fine, the prefix gets addedTypeStandard (default — leave it)Record ownershipUser or team (this is critical — confirm it's set to "User or team", NOT "Organization")Enable for... checkboxesCheck these: ☑ Auditing    ☑ Activities    ☑ Notes    ☑ Connections    ☑ Sending email    (leave others as default)
+Step 4 (revised) — Set the Primary column
+In the Primary column tab of the New table dialog:
+Display name:
+Name
+Description:
+Display name of the business unit (e.g. "Finance", "Engineering", "HR")
+Schema name: should auto-fill to Name (verify it shows Name, with pei_ prefix added by the system)
+Maximum character count:
+100
+Required: select Business required from the dropdown
