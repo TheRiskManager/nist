@@ -1,127 +1,103 @@
-Step 2 — Properties tab values
-In the New table dialog, on the Properties tab:
-Display name:
-BU Org Unit Mapping
+Steps 11–13 — Custom view, seed data, smoke test
+
+Step 11 — Create the "Unresolved Org Units" view
+In table editor → Views area → + New view.
+Name:
+Unresolved Org Units
 Description:
-Maps LeanIX Org Unit strings to normalized Business Units. Flow 1 writes new entries when it encounters unmapped org unit strings; admins assign Target BU to resolve them.
-Plural name: auto-fills to BU Org Unit Mappings — leave it.
-Expand Advanced options:
-Schema name: verify auto-fills to BUOrgUnitMapping (full logical becomes pei_BUOrgUnitMapping)
-Type: Standard
-Record ownership: User or team
-Enable for... check these:
+Org Unit strings encountered by Flow 1 but not yet mapped to a Business Unit. Admin assigns Target BU to resolve.
+Click Create. The view designer opens.
+Columns to include (in this order):
 
-Auditing
-Activities
-Notes
-Connections
-
-(Leave the other Enable-for checkboxes at default.)
-⚠️ Don't click Save yet — set Primary column on the next tab first.
-
-Step 3 — Primary column tab
-Click into the Primary column tab.
-Display name:
 Org Unit Variant
-Description:
-The verbatim Org Unit string as exported from LeanIX. Used as the lookup key when Flow 1 resolves applications to Business Units. Must be unique across the table.
-Data type: Single line of text
-Expand Advanced options:
-Schema name: verify auto-fills to OrgUnitVariant
-Maximum character count:
-200
-Required: Business required
-
-Step 4 — Save the table
-Click Save at the bottom. Wait 15–30 seconds for the table to finish creating; you'll land on the table editor.
-
-Step 5 — Add column: Target BU (lookup)
-In table editor → Columns area → + New column.
-Display name:
-Target BU
-Description:
-The Business Unit this Org Unit string maps to. Null when status is Unresolved.
-Data type: Lookup
-Related table: Business Unit
-Required: Optional
-Under Advanced options, set the Schema name to:
-targetbu
-Click Save.
-
-Step 6 — Add column: Status (choice)
-Click + New column.
-Display name:
-Status
-Description:
-Whether this org unit string has been mapped to a BU, deliberately ignored, or is still unresolved.
-Data type: Choice
-Sync this choice with: New choice
-Choice items — add exactly three, in this order:
-Item 1:
-
-Label: Unresolved
-Value: 890920000
-
-Item 2:
-
-Label: Mapped
-Value: 890920001
-
-Item 3:
-
-Label: Ignored
-Value: 890920002
-
-Default choice: Unresolved
-Required: Business required
-Under Advanced options, manually edit the Schema name to:
-mappingstatus
-(So full logical becomes pei_mappingstatus, not pei_status.)
-Click Save.
-
-Step 7 — Add column: Notes
-Click + New column.
-Display name:
-Notes
-Description:
-Admin notes about this mapping (e.g. why it was ignored, ambiguity flags, who to ask).
-Data type: Multiple lines of text
-Format: Text (plain — NOT Rich text)
-Maximum character count:
-2000
-Required: Optional
-Click Save.
-
-Step 8 — Add column: First Seen
-Click + New column.
-Display name:
 First Seen
-Description:
-Timestamp when Flow 1 first encountered this Org Unit string in a LeanIX export.
-Data type: Date and Time
-Format: Date and time
-Required: Optional
-Under Advanced options, set the Schema name to:
-firstseen
-Click Save.
-
-Step 9 — Add column: Affected Records
-Click + New column.
-Display name:
 Affected Records
-Description:
-Count of Application records currently using this Org Unit string. Updated by Flow 1 each cycle.
-Data type: Whole Number
-Minimum value:
-0
-Required: Optional
-Under Advanced options, set the Schema name to:
-affectedrecords
-Click Save.
+Status
+Target BU
+Notes
+Created On (system column — search "Created On" in the column picker)
 
-Step 10 — Add Alternate Key on Org Unit Variant
-In table editor → Keys area → + New key.
-Display name:
-Org Unit Variant Unique
-Columns: select Org Unit Variant
-Click Save. (Background job runs ~30-60 sec; key shows "Active" when done.)
+Add each via the + View column button (or by dragging from the right-side column tree). Remove any default columns that aren't in the list above (typically just the primary column shows by default — you may need to remove "Created By" or similar).
+Filters:
+Click Edit filters (top of view designer).
+Add filter:
+
+Field: Status
+Operator: Equals
+Value: Unresolved
+
+Sort:
+Click Edit sort (or sort icon).
+
+Sort by: First Seen
+Direction: A → Z (ascending — oldest unresolved first)
+
+Click Save and Publish at the top.
+
+Step 12 — Add seed data (3 sample mappings to test all states)
+Navigate to: Tables → BU Org Unit Mapping → Data tab.
+Click + New record three times:
+Record 1 — already-mapped example:
+Finance & Accounting
+
+Status: Mapped
+Target BU: Finance (lookup)
+First Seen: today's date/time (any past date works)
+Affected Records: 12
+Notes: leave empty
+
+Record 2 — unresolved example:
+Engineering - Core Platform
+
+Status: Unresolved
+Target BU: (leave empty)
+First Seen: today's date/time
+Affected Records: 4
+Notes:
+
+Possibly maps to Platform Engineering — verify with engineering org chart before assigning.
+Record 3 — ignored example:
+__test__
+
+Status: Ignored
+Target BU: (leave empty)
+First Seen: today's date/time
+Affected Records: 0
+Notes:
+
+Test data leaking from upstream sandbox. Not a real org unit. Ignore on sight.
+
+Step 13 — Smoke test
+Test 1 — View filter works:
+Open the Unresolved Org Units view (top of the data grid, click the view dropdown, select "Unresolved Org Units").
+Expected: only Record 2 appears (Engineering - Core Platform). Records 1 (Mapped) and 3 (Ignored) are filtered out.
+Test 2 — Lookup integrity:
+Open Record 1 (Finance & Accounting). Verify Target BU shows "Finance" with a clickable link that navigates to the Business Unit "Finance" record.
+Test 3 — Alternate key enforcement:
+Click + New record.
+
+Org Unit Variant: Finance & Accounting (duplicate of Record 1)
+Status: Unresolved
+Save.
+
+Expected: rejected with duplicate-key error. Discard the test record (don't save with a different value).
+Test 4 — Status default:
+Click + New record. Don't touch Status. Look at what value is pre-populated.
+Expected: Status defaults to Unresolved. Discard this test record too.
+
+Verification checkpoint
+When done with Steps 11–13, tell me:
+
+"Unresolved Org Units" view shows only Record 2 (Engineering - Core Platform)?
+Record 1 Target BU lookup correctly resolves to Finance BU?
+Duplicate Org Unit Variant rejected?
+Status defaults to Unresolved on a new blank record?
+Bulk-assign feasibility check — when you select multiple rows in the view (use checkboxes on the left), does an "Edit" or similar bulk action appear in the command bar? (We're not doing the action, just confirming the affordance exists. If not, that's a small gap to flag for follow-up — Power Platform's bulk-edit needs to be enabled on the view.)
+
+If all 5 confirm, say "smoke passed" and I'll close L1-A02 properly:
+
+Update /tmp/bl002_tenant_schema.py (move BU Org Unit Mapping from FORWARD_PLANNED to TENANT_TABLES; record primary_logical: "pei_Name" quietly per your decision)
+Rebuild schema doc + Schema Currency Check
+Mark L1-A02 Done in tracker with Outcomes
+Rebuild tracker
+Deliver
