@@ -1,103 +1,100 @@
-Steps 11–13 — Custom view, seed data, smoke test
-
-Step 11 — Create the "Unresolved Org Units" view
-In table editor → Views area → + New view.
-Name:
-Unresolved Org Units
+Steps 2–10 — Build the table
+(Same flow as L1-A02; copy-paste safe; pause anywhere.)
+Step 2 — Properties tab
+In make.powerapps.com → EMS solution → + New → Table → Table → Properties tab:
+Display name:
+BP-to-BU Mapping
 Description:
-Org Unit strings encountered by Flow 1 but not yet mapped to a Business Unit. Admin assigns Target BU to resolve.
-Click Create. The view designer opens.
-Columns to include (in this order):
+Maps Parent Business Process identifiers from Archer to normalized Business Units. Flow 1 writes new entries when it encounters unmapped BPs; admins assign Target BU to resolve them.
+Plural name: auto-fills to BP-to-BU Mappings — leave it.
+Expand Advanced options:
 
-Org Unit Variant
-First Seen
-Affected Records
-Status
-Target BU
-Notes
-Created On (system column — search "Created On" in the column picker)
+Schema name: verify BPtoBUMapping (full logical: pei_BPtoBUMapping)
+Type: Standard
+Record ownership: User or team
+Enable for: ☑ Auditing, ☑ Activities, ☑ Notes, ☑ Connections
 
-Add each via the + View column button (or by dragging from the right-side column tree). Remove any default columns that aren't in the list above (typically just the primary column shows by default — you may need to remove "Created By" or similar).
-Filters:
-Click Edit filters (top of view designer).
-Add filter:
+⚠️ Don't Save yet — set Primary column on next tab.
+Step 3 — Primary column tab
+Display name:
+Parent Business Process Identifier
+Description:
+The verbatim Parent Business Process identifier as it appears in Archer (e.g., "BP-001", "PROC-FIN"). Must be unique. Note: Power Platform stores the logical name as pei_Name regardless of display name; flow code must reference pei_Name, not pei_parentbusinessprocessidentifier.
+Data type: Single line of text
+Expand Advanced options:
 
-Field: Status
-Operator: Equals
-Value: Unresolved
+Schema name: auto-fills to Name
+Maximum character count: 200
+Required: Business required
 
-Sort:
-Click Edit sort (or sort icon).
+Step 4 — Save the table
+Click Save. Wait ~15-30 sec.
+Step 5 — Add column: Target BU (lookup)
+Columns area → + New column:
 
-Sort by: First Seen
-Direction: A → Z (ascending — oldest unresolved first)
+Display name: Target BU
+Description: The Business Unit this Parent BP maps to. Null when status is Unresolved.
+Data type: Lookup
+Related table: Business Unit — be careful to pick the one with pei_businessunit logical name (your custom one), NOT the Microsoft system businessunit. Type pei_ in the search box to filter to custom tables.
+Required: Optional
+Advanced → Schema name: targetbu
+Click Save.
 
-Click Save and Publish at the top.
+Step 6 — Add column: Status (choice)
++ New column:
 
-Step 12 — Add seed data (3 sample mappings to test all states)
-Navigate to: Tables → BU Org Unit Mapping → Data tab.
-Click + New record three times:
-Record 1 — already-mapped example:
-Finance & Accounting
+Display name: Status
+Description: Whether this Parent BP has been mapped to a BU, deliberately ignored, or is still unresolved.
+Data type: Choice
+Sync this choice with: New choice (NOT existing — we're using a local copy, not the global option set)
+Choice items:
 
-Status: Mapped
-Target BU: Finance (lookup)
-First Seen: today's date/time (any past date works)
-Affected Records: 12
-Notes: leave empty
+Label: Unresolved, Value: 890920000
+Label: Mapped, Value: 890920001
+Label: Ignored, Value: 890920002
 
-Record 2 — unresolved example:
-Engineering - Core Platform
 
-Status: Unresolved
-Target BU: (leave empty)
-First Seen: today's date/time
-Affected Records: 4
-Notes:
+Default choice: Unresolved
+Required: Business required
+Advanced → Schema name: edit to mappingstatus (so logical becomes pei_mappingstatus, not pei_status)
+Click Save.
 
-Possibly maps to Platform Engineering — verify with engineering org chart before assigning.
-Record 3 — ignored example:
-__test__
+Step 7 — Add column: Notes
++ New column:
 
-Status: Ignored
-Target BU: (leave empty)
-First Seen: today's date/time
-Affected Records: 0
-Notes:
+Display name: Notes
+Description: Admin notes about this BP mapping (e.g., why ignored, ambiguity flags, who to consult).
+Data type: Multiple lines of text
+Format: Text (plain — NOT Rich text)
+Maximum character count: 2000
+Required: Optional
+Click Save.
 
-Test data leaking from upstream sandbox. Not a real org unit. Ignore on sight.
+Step 8 — Add column: First Seen
++ New column:
 
-Step 13 — Smoke test
-Test 1 — View filter works:
-Open the Unresolved Org Units view (top of the data grid, click the view dropdown, select "Unresolved Org Units").
-Expected: only Record 2 appears (Engineering - Core Platform). Records 1 (Mapped) and 3 (Ignored) are filtered out.
-Test 2 — Lookup integrity:
-Open Record 1 (Finance & Accounting). Verify Target BU shows "Finance" with a clickable link that navigates to the Business Unit "Finance" record.
-Test 3 — Alternate key enforcement:
-Click + New record.
+Display name: First Seen
+Description: Timestamp when Flow 1 first encountered this Parent BP identifier in an Archer export.
+Data type: Date and Time
+Format: Date and time
+Required: Optional
+Advanced → Schema name: firstseen
+Click Save.
 
-Org Unit Variant: Finance & Accounting (duplicate of Record 1)
-Status: Unresolved
-Save.
+Step 9 — Add column: Affected Records
++ New column:
 
-Expected: rejected with duplicate-key error. Discard the test record (don't save with a different value).
-Test 4 — Status default:
-Click + New record. Don't touch Status. Look at what value is pre-populated.
-Expected: Status defaults to Unresolved. Discard this test record too.
+Display name: Affected Records
+Description: Count of Control Procedure records currently associated with this Parent BP. Updated by Flow 1 each cycle.
+Data type: Whole Number
+Minimum value: 0
+Required: Optional
+Advanced → Schema name: affectedrecords
+Click Save.
 
-Verification checkpoint
-When done with Steps 11–13, tell me:
+Step 10 — Add Alternate Key
+Keys area → + New key:
 
-"Unresolved Org Units" view shows only Record 2 (Engineering - Core Platform)?
-Record 1 Target BU lookup correctly resolves to Finance BU?
-Duplicate Org Unit Variant rejected?
-Status defaults to Unresolved on a new blank record?
-Bulk-assign feasibility check — when you select multiple rows in the view (use checkboxes on the left), does an "Edit" or similar bulk action appear in the command bar? (We're not doing the action, just confirming the affordance exists. If not, that's a small gap to flag for follow-up — Power Platform's bulk-edit needs to be enabled on the view.)
-
-If all 5 confirm, say "smoke passed" and I'll close L1-A02 properly:
-
-Update /tmp/bl002_tenant_schema.py (move BU Org Unit Mapping from FORWARD_PLANNED to TENANT_TABLES; record primary_logical: "pei_Name" quietly per your decision)
-Rebuild schema doc + Schema Currency Check
-Mark L1-A02 Done in tracker with Outcomes
-Rebuild tracker
-Deliver
+Display name: BP Identifier Unique
+Columns: select Parent Business Process Identifier
+Click Save (background job ~30-60 sec; key shows "Active" when done).
