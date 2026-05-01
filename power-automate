@@ -1,1 +1,1 @@
-if(empty(variables('varAppOwningBU')), null, variables('varAppOwningBU'))
+if(empty(variables('varAppOwningBU')), null, concat('/pei_businessunits(', variables('varAppOwningBU'), ')'))
