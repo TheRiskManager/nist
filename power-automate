@@ -1,22 +1,3 @@
-Phase 3 — BU resolution block inside Loop App Rows
-Insertion point: between Find Existing App and App Exists (inside Valid Owner App → If Yes).
-3.1 — New Condition: Org Unit Has Value
-After Find Existing App → + → Add Condition.
-Name: Org Unit Has Value
+Name: Mapping Exists
 Left (fx):
-length(trim(coalesce(items('Loop_App_Rows')?['Org Unit Display Name'],'')))
-Operator: is greater than
-Right: 0
-3.2 — If No branch: Increment Missing counter
-Inside If No → Add Increment variable.
-Name: Increment Missing Counter
-Variable: varAppOwningBUMissing
-Value: 1
-3.3 — If Yes branch: Find BU Mapping for Org Unit
-Inside If Yes → Add List rows (Dataverse).
-Name: Find BU Mapping for Org Unit
-Table: BU Org Unit Mappings
-Filter rows (fx):
-concat('pei_Name eq ''', items('Loop_App_Rows')?['Org Unit Display Name'], '''')
-Select columns: leave EMPTY
-Confirm when 3.1, 3.2, 3.3 all done.
+length(outputs('Find_BU_Mapping_for_Org_Unit')?['body/value'])
