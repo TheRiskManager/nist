@@ -1,83 +1,22 @@
-Phase 2 — Add the column existence check before Loop App Rows
-Now we need to add a Condition that validates the Excel file has the Org Unit Display Name column BEFORE the loop runs. This is Option 3 — fail-fast at file boundary, before processing 100s of rows.
-Where it goes: Inside App Header Valid → If Yes (which is the existing branch that contains Loop App Rows). Specifically, it goes ABOVE the existing Loop App Rows action — and Loop App Rows ends up moved INSIDE the new condition.
-This is a slightly tricky operation in Power Automate because we need to "wrap" an existing action inside a new Condition. Let me give you the exact steps.
-Step 2.1 — Add the new Condition above Loop App Rows
-In Power Automate, navigate to:
-
-Section 8: APP FILE EXISTS
-Inside it: App File Exists condition
-
-If Yes branch
-
-Set variable 5 (existing)
-Read App Excel (existing)
-App Header Valid (existing — the existing condition checking for "Display Name")
-
-If Yes branch ← we are working inside here
-
-Loop App Rows (existing — this is what we'll wrap)
-
-
-If No branch (existing — Warn App Invalid Header)
-
-
-
-
-
-
-
-Inside App Header Valid → If Yes, currently the only thing is Loop App Rows. We're inserting our new Condition above it.
-
-Inside App Header Valid → If Yes, click the + icon ABOVE Loop App Rows (between the "If yes" header and the Loop App Rows action) → Add an action
-Search for Condition → select Condition (Control)
-Rename it (click the title):
-
-App Has Org Unit Column
-
-Configure the condition row:
-
-Left value — click the field, switch to fx (Expression), paste:
-contains(string(first(body('Read_App_Excel')?['value'])), 'Org Unit Display Name')
-Operator: is equal to
-Right value — click fx, type:
-true
-
-Don't fill the If Yes / If No branches yet
-
-Confirm: New App Has Org Unit Column Condition appears ABOVE Loop App Rows, with the contains() expression on the left.
-Step 2.2 — Move Loop App Rows INTO the If Yes branch
-Now we need to relocate Loop App Rows from where it currently sits to inside the new condition's If Yes branch.
-In Power Automate, the cleanest way to "move" an action is cut + paste:
-
-Click the ⋯ (three-dot menu) on the Loop App Rows action header
-Select Cut
-Click into the If Yes branch of App Has Org Unit Column
-Click the + Add an action placeholder inside If Yes
-At the top of the action picker, you should see My clipboard as a tab — click it
-Paste Loop App Rows
-
-If "Cut/My clipboard" isn't available in your Power Automate version, alternative: delete and re-add is too destructive (we'd lose the entire 60+ action loop body). In that case, STOP and tell me — we'll use a different approach (collapse the loop body into a Scope, or rebuild the parent condition differently).
-Step 2.3 — Fill the If No branch with the warning
-Inside App Has Org Unit Column → If No:
-
-Click + Add an action
-Search for Append to string variable → select it
-Rename:
-
-Warn App Missing Org Unit Column
-
-Configure:
-
-Name: Select varWarnings from dropdown
-Value:
-App file is missing 'Org Unit Display Name' column. BU resolution skipped for all apps. Verify LeanIX export template includes this column.
-
-Confirm when:
-
-App Has Org Unit Column Condition exists in the right place
-Loop App Rows is now INSIDE the If Yes branch (not at the parent level anymore)
-Warn App Missing Org Unit Column is inside If No
-Loop App Rows is intact — all the actions that were inside it (Reset varAppOwningBU, Valid Owner App, etc.) are still there
-
-This is the trickiest Power Automate maneuver in the whole build. Take a screenshot if anything looks off and I'll help locate the issue. Especially confirm Loop App Rows still has all its child actions intact after the move — that's the failure mode we
+Phase 3 — BU resolution block inside Loop App Rows
+Insertion point: between Find Existing App and App Exists (inside Valid Owner App → If Yes).
+3.1 — New Condition: Org Unit Has Value
+After Find Existing App → + → Add Condition.
+Name: Org Unit Has Value
+Left (fx):
+length(trim(coalesce(items('Loop_App_Rows')?['Org Unit Display Name'],'')))
+Operator: is greater than
+Right: 0
+3.2 — If No branch: Increment Missing counter
+Inside If No → Add Increment variable.
+Name: Increment Missing Counter
+Variable: varAppOwningBUMissing
+Value: 1
+3.3 — If Yes branch: Find BU Mapping for Org Unit
+Inside If Yes → Add List rows (Dataverse).
+Name: Find BU Mapping for Org Unit
+Table: BU Org Unit Mappings
+Filter rows (fx):
+concat('pei_Name eq ''', items('Loop_App_Rows')?['Org Unit Display Name'], '''')
+Select columns: leave EMPTY
+Confirm when 3.1, 3.2, 3.3 all done.
