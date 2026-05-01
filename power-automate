@@ -1,1 +1,14 @@
-coalesce(outputs('Get_Resolved_BU'),'')
+Phase 3.7 — Inside BU Is Resolved → If Yes: Set varAppOwningBU + Increment Resolved
+Two actions inside BU Is Resolved → If Yes:
+3.7a — Set variable
++ Add an action → Set variable
+Name: Set Resolved BU
+Variable: varAppOwningBU
+Value (fx):
+outputs('Get_Resolved_BU')
+3.7b — Increment variable
+After 3.7a → + → Increment variable
+Name: Increment Resolved Counter
+Variable: varAppOwningBUResolved
+Value: 1
+Confirm when both done.
