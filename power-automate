@@ -1,3 +1,1 @@
-Name: Get Resolved BU
-Inputs (fx):
-first(outputs('Find_BU_Mapping_for_Org_Unit')?['body/value'])?['_pei_targetbu_value']
+coalesce(outputs('Get_Resolved_BU'),'')
