@@ -1,3 +1,1 @@
-Owning BU Manual Override
-Description:
-When Yes, Flow 1 (L1-A07) skips BU resolution for this application and preserves whatever value is in pei_owningbu. Used for manual overrides where the auto-resolved BU is wrong (curated judgment per ADR-036). Default No means Flow 1 auto-resolves on every cycle.
+if(empty(variables('varAppOwningBU')), null, variables('varAppOwningBU'))
