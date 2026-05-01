@@ -1,23 +1,5 @@
-L1-A05 — Add Owning BU lookup to Control Procedure
-Pattern: Same as L1-A04 / L1-A06.
-Target table: Control Procedure (logical: pei_controlprocedure)
-New column: pei_owningbu lookup → Business Unit
-
-Block 1 — Add the column
-Power Apps → EMS environment → Tables → Control Procedure → Columns tab → + New column.
-Fill in:
-Display name:
-Owning BU
-Description:
-The Business Unit that owns this Control Procedure. Derived by Flow 1 (L1-A09) from the parent Business Process's Owning BU. Drives BU scoping for Risk Manager visibility and downstream rule evaluation.
-Data type: Lookup
-Related table: Business Unit
-Required: Business Recommended
-Searchable: ☑ (leave checked)
-Click Advanced options.
-Schema name (override the auto-suggested OwningBU):
-owningbu
-Audit: ☑ ON
-Behavior: Simple (default)
-Click Save.
-→ Confirm milestone 1: Column added. Verify schema name reads pei_owningbu (click into column → Advanced options → Name field). If anything else, STOP.
+New action added at end of Section 1
+Renamed to Initialize variable — varAppOwningBU
+Name: varAppOwningBU
+Type: String
+Value: empty
