@@ -1,1 +1,1 @@
-if(empty(variables('varAppOwningBU')), null, concat('/pei_businessunits(', variables('varAppOwningBU'), ')'))
+if(equals(coalesce(outputs('Get_Existing_App_Data')?['pei_owningbumanual'], false), true), if(empty(coalesce(outputs('Get_Existing_App_Data')?['_pei_owningbu_value'], '')), null, concat('/pei_businessunits(', outputs('Get_Existing_App_Data')?['_pei_owningbu_value'], ')')), if(empty(variables('varAppOwningBU')), null, concat('/pei_businessunits(', variables('varAppOwningBU'), ')')))
