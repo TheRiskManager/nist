@@ -1,6 +1,10 @@
-Phase 3.8 — Inside BU Is Resolved → If No: Increment Unmapped
-Inside BU Is Resolved → If No → + Add an action → Increment variable
-Name: Increment Unmapped Counter (mapping exists, no target)
-Variable: varAppOwningBUUnmapped
-Value: 1
+Phase 3.9 — Update Mapping Affected Records
+This goes inside Mapping Exists → If Yes, AFTER BU Is Resolved condition closes (at the same level as Get Resolved BU and BU Is Resolved, not nested inside either branch).
++ Add an action below the BU Is Resolved condition → search Update a row (Dataverse) → select it.
+Name: Increment Mapping Affected Records
+Table name: BU Org Unit Mappings
+Row ID (fx):
+first(outputs('Find_BU_Mapping_for_Org_Unit')?['body/value'])?['pei_buorgunitmappingid']
+Affected Records (pei_affectedrecords) — this is the only field we want to update; leave all other fields blank — fx:
+add(coalesce(int(first(outputs('Find_BU_Mapping_for_Org_Unit')?['body/value'])?['pei_affectedrecords']), 0), 1)
 Confirm when done.
