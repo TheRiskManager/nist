@@ -1,1 +1,36 @@
-length(trim(coalesce(items('Loop_App_Rows')?['Org Unit Display Name'],'')))
+Phase 1 — Add 3 new init variables to Section 1
+In Power Automate (you're in Edit mode on the original Flow 1):
+
+Scroll to Section 1: Initialize Variables at the top
+Find the existing Initialize variable — varAppOwningBU action you added earlier (Action 22)
+Click the + icon below it → Add an action
+Search for Initialize variable → select it
+Configure exactly:
+
+Action name (rename by clicking title):
+Initialize variable — varAppOwningBUResolved
+Name:
+varAppOwningBUResolved
+Type: Integer
+Value:
+0
+
+After it's saved, click the + below this new action → Add an action → Initialize variable
+
+Action name:
+Initialize variable — varAppOwningBUUnmapped
+Name:
+varAppOwningBUUnmapped
+Type: Integer
+Value:
+0
+
+Once that's saved, click + below it → Initialize variable again
+
+Action name:
+Initialize variable — varAppOwningBUMissing
+Name:
+varAppOwningBUMissing
+Type: Integer
+Value:
+0
