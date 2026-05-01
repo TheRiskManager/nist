@@ -1,9 +1,14 @@
-BU-Canadian Engineering	Canadian Engineering
-BU-US Engineering	US Engineering
-BU-Public Markets-Germany	Public Markets Germany
-BU-Public Markets	Public Markets
-BU Canada Wealth	Canada Wealth
-BU Wealth	Wealth
-Finance	Finance
-Engineering	Engineering
-Procurement	Procurement
+Step B1 — exact instructions
+
+Click the + button below the last Initialize variable — varAppOwningBUMissing action
+Choose Add an action
+Search for Initialize variable → pick the Variable connector → Initialize variable action
+Configure:
+
+Name: varAppOwningBUManualSkipped
+Type: Integer
+Value: 0
+
+
+Rename the action title from Initialize variable to Initialize variable — varAppOwningBUManualSkipped (3 dots → Rename)
+Save the flow
