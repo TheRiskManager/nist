@@ -1,39 +1,9 @@
-Column 1 — BU (Lookup → Business Unit)
-
-Display name: BU
-Description: The Business Unit this match token belongs to. When Flow 1 finds this token in a LeanIX Org Unit path, it resolves the application to this BU.
-Data type: Lookup
-Related table: Business Unit
-Required: Required (this token is meaningless without a BU)
-Advanced:
-
-Schema name: bu
-Audit: ON
-
-
-
-Column 2 — Priority (Integer)
-
-Display name: Priority
-Description: Higher priority wins when multiple BU tokens match the same Org Unit path. Use only when longest-match-wins doesn't reflect business intent. Default 0.
-Data type: Whole number
-Required: Optional
-Default value: 0
-Advanced:
-
-Schema name: priority
-Audit: ON
-
-
-
-Column 3 — Active (Yes/No)
-
-Display name: Active
-Description: When Yes, Flow 1 considers this token during BU resolution. When No, the token is ignored. Use to deactivate without deleting (preserves audit history).
-Data type: Yes/No
-Required: Optional
-Default value: Yes
-Advanced:
-
-Schema name: active
-Audit: ON
+Canadian Engineering	CAENG
+US Engineering	USENG
+Public Markets Germany	PMDE
+Public Markets	PM
+Canada Wealth	CAWLTH
+Wealth	WLTH
+Finance	FIN
+Engineering	ENG
+Procurement	PROC
