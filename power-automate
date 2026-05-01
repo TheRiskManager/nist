@@ -1,24 +1,3 @@
-Phase 3.10 — Inside Mapping Exists → If No: Auto-create mapping + increment Unmapped
-Two actions inside Mapping Exists → If No.
-3.10a — Add a row (Dataverse)
-+ Add an action → Add a new row (Dataverse)
-Name: Create Mapping for New Org Unit
-Table name: BU Org Unit Mappings
-Fields:
-Org Unit Variant (pei_Name — primary column, fx):
-items('Loop_App_Rows')?['Org Unit Display Name']
-Status (pei_mappingstatus) — choice, type/select:
-890920000
-First Seen (pei_firstseen, fx):
-utcNow()
-Affected Records (pei_affectedrecords):
-1
-Notes (pei_notes, fx):
-concat('Auto-created by Flow 1 on ', utcNow(), ' from app sync. Awaiting admin to set Target BU.')
-Leave Target BU and all other fields BLANK.
-3.10b — Increment Unmapped Counter
-After 3.10a → + → Increment variable
-Name: Increment Unmapped Counter (new mapping created)
-Variable: varAppOwningBUUnmapped
-Value: 1
-Confirm when both done. Then we move to Phase 4 — modifying the existing Create/Update App actions (the trickiest part).
+Owning BU Manual Override
+Description:
+When Yes, Flow 1 (L1-A07) skips BU resolution for this application and preserves whatever value is in pei_owningbu. Used for manual overrides where the auto-resolved BU is wrong (curated judgment per ADR-036). Default No means Flow 1 auto-resolves on every cycle.
