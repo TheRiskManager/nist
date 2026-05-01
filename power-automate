@@ -1,8 +1,65 @@
-Step 2 — Add the Owning BU lookup column
-In Power Apps, on the Columns tab → click + New column.
-In the side panel, fill these fields. Click each label below and copy the value into Power Apps:
+L1-A04 — Add Owning BU lookup to Application
+Pattern: Same as L1-A06. Different target table.
+Target table: Application (logical: pei_application)
+New column: pei_owningbu lookup → Business Unit
+
+Block 1 — Add the column
+Power Apps → EMS environment → Tables → Application → Columns tab → + New column.
+Fill in:
 Display name:
 Owning BU
 Description:
-The Business Unit that owns this Parent BP. Populated by Flow 1 via the BP-to-BU Mapping table (L1-A03). Drives BU scoping for Risk Manager visibility and downstream Control Procedure BU derivation.
+The Business Unit that owns this Application. Populated by Flow 1 (L1-A07) via the BU Org Unit Mapping table (L1-A02). Drives BU scoping for Risk Manager visibility, security role enforcement, and downstream rule evaluation.
 Data type: Lookup
+Related table: Business Unit
+Required: Business Recommended
+Searchable: ☑ (leave checked)
+Click Advanced options.
+Schema name (override the auto-suggested OwningBU):
+owningbu
+Audit: ☑ ON
+Behavior: Simple (default)
+Click Save.
+→ Confirm milestone 1: Column added. Verify schema name reads pei_owningbu (click into the column → Advanced options → Name field). If anything other than pei_owningbu, STOP and tell me.
+
+Block 2 — Add to form
+Forms tab → open the Main form (typically called "Information").
+In the form designer:
+
+Find Owning BU in the left field list
+Drag onto the canvas, drop in the General section near the top
+Click Save (top right)
+Click Publish (top right)
+
+→ Confirm milestone 2: Form published.
+
+Block 3 — Add to view
+Views tab → open the Main view (typically called "Active Applications").
+In the view designer:
+
+Find Owning BU in the left column list
+Click/drag to add it to the view
+Position it as the second column (after the primary)
+Click Save (top right)
+Click Publish (top right)
+
+→ Confirm milestone 3: View published.
+
+Block 4 — Smoke test (3 checks)
+Open the EMS model-driven app.
+Test 1 — Set Owning BU on a record:
+
+Navigate to Applications in the site map
+Click into any existing Application record (or create a new one with + New if none exist)
+Find the Owning BU field
+Type Finance → autocomplete should show Finance Business Unit
+Select Finance, click Save
+
+Test 2 — Click-through:
+6. After save, click the "Finance" hyperlink in the Owning BU field
+7. Should navigate to the Finance Business Unit record
+Test 3 — Audit log:
+8. Use back button to return to the Application record
+9. Open the Related tab → Audit History
+10. Should see entry: timestamp / your user / Update / Owning BU changed from empty to Finance
+→ Confirm milestone 4: All 3 smoke tests passed. (Or tell me which one failed and what you saw.)
