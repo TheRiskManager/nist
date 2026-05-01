@@ -1,5 +1,1 @@
-New action added at end of Section 1
-Renamed to Initialize variable — varAppOwningBU
-Name: varAppOwningBU
-Type: String
-Value: empty
+Set variable — Reset varAppOwningBU
