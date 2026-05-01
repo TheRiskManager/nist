@@ -1,10 +1,24 @@
-Phase 3.9 — Update Mapping Affected Records
-This goes inside Mapping Exists → If Yes, AFTER BU Is Resolved condition closes (at the same level as Get Resolved BU and BU Is Resolved, not nested inside either branch).
-+ Add an action below the BU Is Resolved condition → search Update a row (Dataverse) → select it.
-Name: Increment Mapping Affected Records
+Phase 3.10 — Inside Mapping Exists → If No: Auto-create mapping + increment Unmapped
+Two actions inside Mapping Exists → If No.
+3.10a — Add a row (Dataverse)
++ Add an action → Add a new row (Dataverse)
+Name: Create Mapping for New Org Unit
 Table name: BU Org Unit Mappings
-Row ID (fx):
-first(outputs('Find_BU_Mapping_for_Org_Unit')?['body/value'])?['pei_buorgunitmappingid']
-Affected Records (pei_affectedrecords) — this is the only field we want to update; leave all other fields blank — fx:
-add(coalesce(int(first(outputs('Find_BU_Mapping_for_Org_Unit')?['body/value'])?['pei_affectedrecords']), 0), 1)
-Confirm when done.
+Fields:
+Org Unit Variant (pei_Name — primary column, fx):
+items('Loop_App_Rows')?['Org Unit Display Name']
+Status (pei_mappingstatus) — choice, type/select:
+890920000
+First Seen (pei_firstseen, fx):
+utcNow()
+Affected Records (pei_affectedrecords):
+1
+Notes (pei_notes, fx):
+concat('Auto-created by Flow 1 on ', utcNow(), ' from app sync. Awaiting admin to set Target BU.')
+Leave Target BU and all other fields BLANK.
+3.10b — Increment Unmapped Counter
+After 3.10a → + → Increment variable
+Name: Increment Unmapped Counter (new mapping created)
+Variable: varAppOwningBUUnmapped
+Value: 1
+Confirm when both done. Then we move to Phase 4 — modifying the existing Create/Update App actions (the trickiest part).
