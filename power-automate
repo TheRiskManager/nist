@@ -1,1 +1,1 @@
-Set variable — Reset varAppOwningBU
+length(trim(coalesce(items('Loop_App_Rows')?['Org Unit Display Name'],'')))
