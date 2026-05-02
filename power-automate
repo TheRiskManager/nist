@@ -1,2 +1,1 @@
-     coalesce(outputs('Get_Existing_App_Data')?['pei_owningbumanual'], false)
-
+coalesce(outputs('Get_Existing_App_Data')?['pei_owningbumanual'], false)
