@@ -1,14 +1,2 @@
-Step B1 — exact instructions
+     coalesce(outputs('Get_Existing_App_Data')?['pei_owningbumanual'], false)
 
-Click the + button below the last Initialize variable — varAppOwningBUMissing action
-Choose Add an action
-Search for Initialize variable → pick the Variable connector → Initialize variable action
-Configure:
-
-Name: varAppOwningBUManualSkipped
-Type: Integer
-Value: 0
-
-
-Rename the action title from Initialize variable to Initialize variable — varAppOwningBUManualSkipped (3 dots → Rename)
-Save the flow
