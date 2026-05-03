@@ -1,4 +1,1 @@
-split(items('Loop_App_Rows')?['Org Unit Display Name'], '/')
-
-
-Compose Path Segments
+split(replace(items('Loop_App_Rows')?['Org Unit Display Name'], ' / ', '/'), '/')
