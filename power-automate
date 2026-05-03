@@ -1,4 +1,4 @@
-Tier 1 Resolved
+first(body('Filter_Array_Match_Tokens'))?['_pei_bu_value']
 
 
-outputs('Compose_Match_Count')
+Get Single Match BU
