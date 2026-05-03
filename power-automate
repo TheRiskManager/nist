@@ -1,29 +1,4 @@
-From field
-Click the From input. Click fx. Paste:
-outputs('List_Active_BU_Tokens')?['body/value']
-Click OK.
-Condition row
-Filter array shows two input boxes with an operator dropdown between them (similar to a Condition action).
-Left side: click left input → fx → paste:
-contains(outputs('Compose_Path_Segments'), trim(item()?['pei_token']))
-Click OK.
-Operator: set dropdown to is equal to
-Right side: click right input → fx → paste:
-true
-Click OK.
-What this does (with clean segments now)
-
-For each token row in the list:
-
-Get its pei_token value (lowercase per ADR-039 sister discovery — the OData logical name)
-trim(...) defensively trims whitespace (in case admin entered BU-Engineering with stray spaces in a seed token)
-contains(segments_array, trimmed_token) — checks exact array membership because the first arg is an array (not a string)
-This is the segment-equality match per ADR-038
+length(body('Filter_Array_Match_Tokens'))
 
 
-Filter keeps only token rows whose pei_token matches at least one segment exactly
-
-Output: an array of token rows that matched. Length 0/1/2+ drives the next step.
-Rename the action:
-
-⋮ → Rename → Filter Array Match Tokens
+Compose Match Count
