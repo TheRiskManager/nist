@@ -1,24 +1,25 @@
-Step C6: Tier 1 Ambiguous Condition
-This adds a sibling Condition AFTER Tier 1 Resolved and BEFORE the existing Find BU Mapping for Org Unit.
-C6a: Add the Condition
-Where: click the + between Tier 1 Resolved and Find BU Mapping for Org Unit. Add an action → Condition.
+Step C7 — overview
+We need to:
+
+Add a new Condition Tier 2 Needed (match count = 0)
+Move existing Find BU Mapping for Org Unit action into its If Yes branch
+Move existing Mapping Exists Condition (the entire condition with all nested branches) into its If Yes branch
+
+The "move" is done via Power Automate's drag-or-cut-paste-action workflow. Let me handle one piece at a time.
+
+Step C7a: Add Tier 2 Needed Condition
+Where: click the + between Tier 1 Ambiguous and Find BU Mapping for Org Unit. Add an action → Condition.
 Configure:
 
 Left: fx → paste:
 
 outputs('Compose_Match_Count')
 
-Operator: is greater than
+Operator: is equal to
 Right: fx → paste:
 
-1
-Rename: ⋮ → Rename → Tier 1 Ambiguous
-C6b: Add Increment inside If Yes
-Click into If Yes branch. Add an action → Increment variable.
-
-Name: select varAppOwningBUUnmapped from dropdown
-Value: type 1
-
-Rename: ⋮ → Rename → Increment Unmapped Counter (Ambiguous)
-(Existing flow has Increment Unmapped Counter in two places already — Mapping Exists If Yes BU-Is-Resolved If No, and Mapping Exists If No after Create Mapping. Adding "(Ambiguous)" disambiguates from those.)
-Leave If No branch empty.
+0
+Rename: ⋮ → Rename → Tier 2 Needed
+Leave both branches empty for now. We'll fill the If Yes branch by moving existing actions in C7b and C7c.
+Confirm done.
+(After this, the structure should look like: ...C6 Tier 1 Ambiguous → NEW C7 Tier 2 Needed (empty branches) → existing Find BU Mapping for Org Unit (still where it is) → existing Mapping Exists Condition.)
