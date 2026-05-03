@@ -1,1 +1,3 @@
-coalesce(outputs('Get_Existing_App_Data')?['pei_owningbumanual'], false)
+✅ Name dropdown = varAppOwningBUManualSkipped
+✅ Value = 1
+✅ Action renamed to Increment Manual Skipped Counter
