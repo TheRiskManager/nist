@@ -1,4 +1,4 @@
-first(body('Filter_Array_Match_Tokens'))?['_pei_bu_value']
+Set Resolved BU
 
 
-Get Single Match BU
+outputs('Get_Single_Match_BU')
