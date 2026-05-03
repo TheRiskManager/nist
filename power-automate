@@ -1,4 +1,24 @@
-Set Resolved BU
+Step C6: Tier 1 Ambiguous Condition
+This adds a sibling Condition AFTER Tier 1 Resolved and BEFORE the existing Find BU Mapping for Org Unit.
+C6a: Add the Condition
+Where: click the + between Tier 1 Resolved and Find BU Mapping for Org Unit. Add an action → Condition.
+Configure:
 
+Left: fx → paste:
 
-outputs('Get_Single_Match_BU')
+outputs('Compose_Match_Count')
+
+Operator: is greater than
+Right: fx → paste:
+
+1
+Rename: ⋮ → Rename → Tier 1 Ambiguous
+C6b: Add Increment inside If Yes
+Click into If Yes branch. Add an action → Increment variable.
+
+Name: select varAppOwningBUUnmapped from dropdown
+Value: type 1
+
+Rename: ⋮ → Rename → Increment Unmapped Counter (Ambiguous)
+(Existing flow has Increment Unmapped Counter in two places already — Mapping Exists If Yes BU-Is-Resolved If No, and Mapping Exists If No after Create Mapping. Adding "(Ambiguous)" disambiguates from those.)
+Leave If No branch empty.
