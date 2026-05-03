@@ -1,1 +1,4 @@
-pei_token,_pei_bu_value
+split(items('Loop_App_Rows')?['Org Unit Display Name'], '/')
+
+
+Compose Path Segments
