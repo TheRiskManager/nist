@@ -1,98 +1,14 @@
-Step 6b: Add empty Switch action
-Position: Sequential, immediately after Compose Mapping Result Class, before Mapping Exists.
-Action for you:
+Test App S1 — Single Token
+Test App S2 — Tier2 Resolved
+Test App S3 — Tier2 Unresolved
+Test App S4 — Auto-create
+Test App S5 — Empty OrgUnit
+Test App S7 — Ambiguous
 
-Inside Org Unit Has Value → If Yes, locate Compose Mapping Result Class (just added)
-AFTER Compose Mapping Result Class, BEFORE Mapping Exists — click the + sign and choose Add an action
-Search Switch → select Control → Switch
-In the Switch's On field, click fx and enter this expression:
+Acme Corp/Engineering/Backend Team
+Random Co/Sales/West Region
+Company / BU Segment / BU-Digital / BU-Digital-Procurement Technology
+Brand New Vendor/Some Department/Some Team
 
-outputs('Compose_Mapping_Result_Class')
-
-Leave the Case (default 'Equals: empty) and Default branches empty for now — we'll configure them in the next step
-Rename the Switch to: Switch Mapping Result
-
-Click … menu on the Switch header → Rename → type Switch Mapping Result
-
-
-Save the flow
-Confirm green
-
-Position check after save — sequence inside Org Unit Has Value If Yes:
-
-C1-C6 (existing)
-Tier 2 Needed Condition (empty)
-Find BU Mapping for Org Unit
-Compose Mapping Result Class
-Switch Mapping Result ← NEW (with one empty Case + empty Default)
-Mapping Exists Condition (full subtree, still here)
-
-Note: the Switch is in its interim position outside Tier 2 Needed. We populate cases first, dismantle Mapping Exists second, then drag the Find BU Mapping + Compose + Switch trio into Tier 2 Needed at the very end (Step 7). Switch case bodies during this phase sit at depth 7 (Switch is at depth 6, cases are 6+1). Once moved into Tier 2 Needed, they'll be at depth 8.
-Tell me when saved and green.
-
-
-
-Step 6c: Configure 3 Cases on Switch Mapping Result
-In the Switch you just added, set up 3 cases. Empty bodies — we'll populate next.
-
-Click into Case 1, set Equals to: RESOLVED (literal string, no quotes — PA wraps automatically)
-Click + between Case 1 and Default → adds Case 2. Set Equals to: UNRESOLVED
-Click + again → adds Case 3. Set Equals to: NO_MAPPING
-Save. Confirm green.
-
-
-Step 6d: Populate Case 'RESOLVED' (4 actions)
-Currently in Mapping Exists → If Yes you have:
-
-Get Resolved BU
-BU Is Resolved Condition → If Yes branch contains: Set Resolved BU, Increment Resolved Counter
-Increment Mapping Affected Records (after BU Is Resolved closes)
-
-Drag 4 actions into Switch Case RESOLVED body in this order:
-
-Get Resolved BU (from Mapping Exists If Yes)
-Set Resolved BU (from BU Is Resolved If Yes)
-Increment Resolved Counter (from BU Is Resolved If Yes)
-Increment Mapping Affected Records (from Mapping Exists If Yes, after BU Is Resolved)
-
-After move:
-
-Mapping Exists If Yes contains only an empty BU Is Resolved Condition
-Switch Case RESOLVED has 4 actions in correct order
-
-Save. Confirm green.
-If any drag fails: copy-paste, then delete source. None of these 4 have downstream consumers in the post-restructure flow, so safe.
-
-Step 6e + 6f + 6g: Populate Case 'UNRESOLVED' + duplicate increment + delete BU Is Resolved
-Three sub-operations, one save:
-
-Drag Increment Unmapped Counter (mapping exists, no target) from BU Is Resolved → If No into Switch Case UNRESOLVED body
-Inside Case UNRESOLVED body, after the action you just dragged, Add an action → Increment variable. Configure: name varAppOwningBUMappingAffected (same variable as the original Increment Mapping Affected Records), value 1. Rename the new action to: Increment Mapping Affected Records (Unresolved)
-Delete the now-empty BU Is Resolved Condition (from Mapping Exists If Yes — both branches empty after Step 6d and 6e)
-
-Save. Confirm green.
-While renaming the duplicate, also rename the original (now in Case RESOLVED) from Increment Mapping Affected Records to Increment Mapping Affected Records (Resolved) for symmetry. Two distinguishable copies.
-
-Step 6h + 6i: Populate Case 'NO_MAPPING' + delete Mapping Exists
-
-Drag Create Mapping for New Org Unit from Mapping Exists → If No into Switch Case NO_MAPPING body
-Drag Increment Unmapped Counter (new mapping created) from Mapping Exists → If No into Switch Case NO_MAPPING body (after Create Mapping)
-Mapping Exists Condition is now fully empty (both If Yes and If No empty). Delete it.
-
-Save. Confirm green.
-
-Step 7: Drag the trio into Tier 2 Needed → If Yes
-Last operation. Three drags in sequence, one save.
-Drag in order, each into Tier 2 Needed → If Yes:
-
-Find BU Mapping for Org Unit
-Compose Mapping Result Class (drop after Find BU Mapping)
-Switch Mapping Result (drop after Compose Mapping Result Class)
-
-Save. Confirm green.
-This is the depth-cap moment — Switch case bodies move from depth 7 to depth 8. If save fails here, we know the Switch nesting model is different from what the diagnostic suggested. Stop and report the error.
-
-Start with Step 6c. Tell me when saved and green between numbered steps. Don't tell me about the sub-actions inside a step — only the save outcome.
-
-
+Acme Corp/BU-US Engineering/Engineering/Team
 
