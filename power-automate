@@ -1,14 +1,1 @@
-Test App S1 — Single Token
-Test App S2 — Tier2 Resolved
-Test App S3 — Tier2 Unresolved
-Test App S4 — Auto-create
-Test App S5 — Empty OrgUnit
-Test App S7 — Ambiguous
-
-Acme Corp/Engineering/Backend Team
-Random Co/Sales/West Region
-Company / BU Segment / BU-Digital / BU-Digital-Procurement Technology
-Brand New Vendor/Some Department/Some Team
-
-Acme Corp/BU-US Engineering/Engineering/Team
-
+concat('pei_name eq ''', replace(items('Loop_App_Rows')?['Org Unit Display Name'], ' / ', '/'), '''')
