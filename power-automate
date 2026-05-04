@@ -1,7 +1,4 @@
-Configure the predicate:
+if(equals(length(outputs('Find_BU_Mapping_for_Org_Unit')?['body/value']), 0), 'NO_MAPPING', if(equals(coalesce(first(outputs('Find_BU_Mapping_for_Org_Unit')?['body/value'])?['_pei_bu_value'], ''), ''), 'UNRESOLVED', 'RESOLVED'))
 
-Left: click fx, enter outputs('Compose_Match_Count')
-Operator: is equal to
-Right: click fx, enter 0
-
+Rename the Compose to: Compose Mapping Result Class
 
