@@ -1,1 +1,16 @@
-replace(items('Loop_App_Rows')?['Org Unit Display Name'], ' / ', '/')
+Step 1: Update Compose Mapping Result Class expression
+Action for you:
+
+Navigate to: Loop App Rows → Valid Owner App → If Yes → Org Unit Has Value → If Yes → Tier 2 Needed → If Yes → Compose Mapping Result Class
+Click into the action's Inputs field
+Current expression (with the bug):
+
+   if(equals(length(outputs('Find_BU_Mapping_for_Org_Unit')?['body/value']), 0), 'NO_MAPPING', if(equals(coalesce(first(outputs('Find_BU_Mapping_for_Org_Unit')?['body/value'])?['_pei_bu_value'], ''), ''), 'UNRESOLVED', 'RESOLVED'))
+
+Replace it entirely with the fixed version:
+
+   if(equals(length(outputs('Find_BU_Mapping_for_Org_Unit')?['body/value']), 0), 'NO_MAPPING', if(equals(coalesce(first(outputs('Find_BU_Mapping_for_Org_Unit')?['body/value'])?['_pei_targetbu_value'], ''), ''), 'UNRESOLVED', 'RESOLVED'))
+(Only change: _pei_bu_value → _pei_targetbu_value — appears once in the expression)
+5. Save the flow. Confirm green.
+Tell me when saved and green.
+Then we also have to update Set Resolved BU's reference (in Switch Case 'RESOLVED' → Set Resolved BU action — its Value also uses Get Resolved BU compose which references _pei_bu_value). I'll guide that next.
