@@ -1,1 +1,1 @@
-concat('pei_name eq ''', replace(items('Loop_App_Rows')?['Org Unit Display Name'], ' / ', '/'), '''')
+replace(items('Loop_App_Rows')?['Org Unit Display Name'], ' / ', '/')
