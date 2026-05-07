@@ -1,1 +1,38 @@
-first(outputs('Find_BU_Mapping_for_Org_Unit')?['body/value'])?['_pei_targetbu_value']
+How to fix the presentation
+1. Rename the metrics so they can't be confused.
+Instead of "Reconciliation" and "Data Quality," try framing them as two distinct lenses:
+
+Pipeline Integrity: 100% — "All source records are accounted for in the output. No data was lost in processing."
+Source Data Health: Amber — "X% of records have broken or missing mappings in the source systems. These are preserved in the output but require remediation upstream."
+
+The key word shift is from "reconciliation/quality" (vague, overlapping) to "pipeline/source" (clearly different subjects).
+2. Add a one-line explainer at the top of the scorecard.
+Something like:
+
+This report measures two separate things: (1) whether our process preserved every record from the source feeds, and (2) whether those source records are well-formed. A record can be preserved successfully (green) while still being flagged as poorly mapped (amber).
+
+3. Make the relationship visible with a funnel or flow.
+Show users the logical chain so they can see where each check applies:
+Source feeds (10,000 records)
+        ↓
+[Pipeline Integrity Check] → 100% preserved ✓
+        ↓
+Output file (10,000 records)
+        ↓
+[Source Data Health Check] → 8,500 complete chains ✓
+                              1,500 orphans ⚠ (preserved but flagged)
+When users see the orphans sitting inside the preserved set, the apparent contradiction dissolves. Green means "we got everything through." Amber means "some of what we got through has problems."
+4. Reframe orphans as a finding, not a failure.
+In your narrative, orphans aren't a bug in the pipeline — they're an output of the pipeline. The whole point of EMS is to surface this stuff. Consider language like:
+
+Orphan records are intentionally preserved and flagged. Their presence is not a pipeline error — it is a governance signal indicating mapping gaps in the source systems (RSA Archer, CMDB, etc.) that require owner remediation.
+
+This flips the conversation from "why is the report inconsistent?" to "we found 1,500 mapping gaps that need attention" — which is exactly what leadership should be focused on anyway.
+The deeper principle
+In compliance reporting, you almost always want to separate process health from data health. They have different owners, different remediation paths, and different SLAs. Mixing them in one metric is what causes the confusion.
+
+Process health → owned by you / RPEI / engineering
+Data health → owned by risk owners, control owners, business units
+
+Once you split the scorecard along ownership lines, the "how can both be true" question stops getting asked, because each audience knows which number is theirs to act on.
+Want me to mock this up as a revised one-page scorecard layout so you can see how the two-lens framing reads visually?
