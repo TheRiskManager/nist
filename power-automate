@@ -1,2 +1,26 @@
-Minor: the icon for the page title.
-The icon next to "Pipeline Operations" looks like scales of justice or a balance symbol. That reads as "legal" or "judgment" more than "pipeline." A flow/pipe/connection icon would map better to the concept. Small thing, but icons set tone.
+Revised Welcome Page
+Badge: xxx · Risk and Controls Data View
+Headline: (in your primary sans-serif, heavy weight, no italic, no color accent)
+
+Risk and Controls Data Pipeline
+
+Intro paragraph:
+
+A guided pipeline that integrates risks, controls, issues, and corrective actions into a single governance-ready data view. Includes built-in pipeline integrity checks, source data health signals, and editable scope configuration.
+
+Three cards: (slightly tightened, source-agnostic, outcome-focused)
+Card 1 — Load & Validate Feeds
+
+Confirm all required source feeds are present, resolve duplicate versions, and verify column headers before anything downstream runs.
+
+Card 2 — Run & Review
+
+Build the consolidated risk and controls view in one click, then inspect the deliverable before publishing.
+
+Card 3 — Verify & Maintain
+
+Review pipeline integrity, source data health, and the in-scope Business Unit list — all in one place.
+
+Footer note: (unchanged)
+
+Working folder is auto-detected from the launch directory.
