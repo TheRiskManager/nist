@@ -1,8 +1,11 @@
-On the Stage 1 (Data Onboarding) page, adjust the font size hierarchy as follows. Do not modify any other styling.
+On the Stage 1 (Data Onboarding) page, restructure the blue callout box to use the full width of the content container, matching the width of the body intro paragraph above it. The callout should no longer be constrained to a narrow center column.
+Inside the now-full-width callout, restructure the three paragraphs into a three-column layout, side by side:
 
-Body intro paragraph (the "This stage admits the source feeds..." / "Why this matters..." text directly under the Data Onboarding title): increase font size by 1–2 pixels (or one step up in the design system) so it clearly reads as the primary descriptive content of the stage.
-Blue callout body text (inside the "What happens when you click Data Onboarding" box): decrease font size by 1–2 pixels (or one step down in the design system) so the callout reads as supporting reference information rather than primary content.
-Bolded section leads inside the callout ("If something goes wrong", "When all three sub-stages complete"): match the new smaller callout body size, just bolder.
-Do not modify: the stage title size, the "STAGE 1 · GOVERNANCE GATE" badge, the "WHAT HAPPENS WHEN YOU CLICK DATA ONBOARDING" header inside the callout, the sub-stage card titles, card body text, button labels, or status pill text.
+Column 1 — heading "What runs": "The pipeline runs three sub-stages back-to-back — Check → Load → Validate — fully automatically. See the cards below for what each one does."
+Column 2 — heading "If something goes wrong": "The flow pauses on the affected card so you can fix the issue (drop in the right file, pick a version, correct columns). Your completed steps are preserved — just press the button again to resume."
+Column 3 — heading "When all three sub-stages complete": "The next stage, Run Pipeline, becomes available."
 
-The goal is to establish clear visual hierarchy: body intro → larger and primary, callout → smaller and secondary.
+Each column should have its heading bolded above the body text. Column widths should be roughly equal (one-third each), with comfortable padding between columns.
+Keep the existing blue background, border, and the "WHAT HAPPENS WHEN YOU CLICK DATA ONBOARDING" heading at the top of the callout, spanning all three columns.
+On narrow viewports (e.g., mobile), the three columns should collapse back to a single stacked column.
+Apply this same callout pattern (full-width container, three-column internal layout) to all other stage pages going forward. Add this to the stage page design specification as the canonical callout layout.
