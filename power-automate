@@ -1,11 +1,31 @@
-On the Stage 1 (Data Onboarding) page, revert the blue callout box back to a single-block layout. Remove the three-column structure and the "What runs" / "If something goes wrong" / "When all three sub-stages complete" column headings.
-Replace the current three-column layout with a single full-width block containing one continuous body. Keep the callout edge-to-edge in width, matching the body intro paragraph above it. Do not constrain it to a narrow center column.
-Callout content:
-Heading (small caps, letter-spaced, blue, unchanged): "WHAT HAPPENS WHEN YOU CLICK DATA ONBOARDING"
-Body (single block, three short paragraphs flowing one after the other):
-"The pipeline runs three sub-stages back-to-back — Check → Load → Validate — fully automatically. See the cards below for what each one does."
-"If something goes wrong: the flow pauses on the affected card so you can fix the issue (drop in the right file, pick a version, correct columns). Your completed steps are preserved — just press the button again to resume."
-"When all three sub-stages complete: the next stage, Run Pipeline, becomes available."
-Render the three paragraphs stacked vertically with normal paragraph spacing between them. Use bolded inline section leads ("If something goes wrong:", "When all three sub-stages complete:") at the start of paragraphs 2 and 3 — these are inline emphasis, not separate column headings.
-Keep the existing blue background, blue left border, and the small-caps heading. The callout container should run full-width, edge-to-edge, matching the body intro paragraph.
-Update the stage page design specification to reflect this as the canonical callout layout: single full-width block, three stacked paragraphs with bolded inline section leads, no column structure.
+Yeah — I see what happened. The text reverted to a single-block structure (good), but the container is still narrow with empty space on the right (not good). The visual problem is the same one we started with.
+
+Looking at the screenshot, the callout text is wrapping at roughly 50% of the page width while the container itself is at full width. So the empty right side is back.
+
+The reason: when we restructured to "single block, three paragraphs," the LLM kept the narrower text-wrap constraint from the previous attempt but extended the container. Result: full-width box, half-width text inside.
+What needs to happen
+
+The text inside the callout needs to wrap at the same width as the body intro paragraph above it. Right now:
+
+    Body intro paragraph: wraps near the right edge of the page (good, this is what you want)
+    Callout body: wraps at roughly half the page width (bad, this is the leftover narrow constraint)
+
+Both should wrap at the same point.
+Why this keeps happening
+
+The LLM is treating "callout body" and "page body" as two different text-width rules. Each time we restructure, the callout body keeps its own narrower constraint while the container changes. We need to explicitly tell it: the text inside the callout wraps at the same width as the body intro paragraph above it.
+A more direct prompt
+
+    On the Stage 1 (Data Onboarding) page, the blue callout box currently has an empty right half — the container is full-width but the text inside it wraps at roughly half the page width. Fix this by removing any width constraint on the text inside the callout.
+
+    The text inside the callout must wrap at the same line length as the body intro paragraph above the callout (the "This stage admits the source feeds..." / "Why this matters..." paragraphs). Both blocks of text should reach the same right edge.
+
+    Specifically:
+
+        Remove any max-width, narrow width, or text-column constraint applied to the callout body text or its inner wrapper.
+        The callout body text should fill the full width of the callout container, with normal padding from the container's left and right edges (matching the padding of the body intro container).
+        The container itself should remain full-width, edge-to-edge, matching the body intro width.
+
+    After the fix, every line of text in the callout should wrap at approximately the same right-edge position as the lines in the body intro paragraph above it. There should be no large empty area on the right side of the callout.
+
+    Keep all other styling unchanged: blue background, blue left border, small-caps heading, three stacked paragraphs with bolded inline section leads
