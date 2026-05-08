@@ -1,25 +1,8 @@
-Update the Welcome page of the Risk and Controls Data Pipeline with the following changes. Do not modify any other parts of the application.
-Change 1 — Revert card numbers to teal/blue
-The numbered badges on the three cards (1, 2, 3) are currently rendered in orange. Revert them to the previous teal/blue color used in the earlier version. Keep the same square shape, white numerals, and rounded corners. The teal/blue should match the color used elsewhere in the app for informational accents (not the orange used for primary actions).
-Change 2 — Replace the subtitle under the headline
-Remove the current subtitle text "FIVE GUIDED STAGES, END-TO-END".
-Replace it with: "Integrate · Validate · Reconcile · Publish"
-Keep the subtitle styling consistent with the current implementation (uppercase, letter-spaced, smaller than the headline, centered, in the same orange accent color as currently used). Use the interpunct character (·) as the separator, with a single space on each side.
-Change 3 — Preserve all other elements exactly as they are
-Do not change:
-
-The headline "Risk and Controls Data Pipeline"
-The intro paragraph ("A guided pipeline that integrates risks, controls, issues, and corrective actions...")
-The three card titles (Load & Validate Feeds, Run & Review, Verify & Maintain)
-The three card body texts
-The orange Begin Pipeline → CTA button
-The footer note ("Working folder is auto-detected from the launch directory.")
-The badge at the top of the page
-
-Verification after the changes
-Confirm visually that:
-
-Card numbers (1, 2, 3) display in teal/blue, not orange
-Subtitle reads Integrate · Validate · Reconcile · Publish with interpunct separators
-Orange now appears only in the badge accent and the Begin Pipeline → CTA button
-No other text or layout has changed
+Update the Stage 1 (Data Onboarding) intro section with the following changes. Do not modify the badge, icon, title, or any elements below the intro paragraph.
+Current intro text:
+"Admit the Archer source feeds into the pipeline as the authoritative data set for this run — nothing downstream executes until all three sub-stages below complete."
+Replace with:
+"This stage admits the source feeds into the pipeline as the authoritative dataset for this run.
+Why this matters: every downstream stage operates on the data admitted here. If a file is missing, duplicated, or has the wrong columns, those problems would propagate silently through the pipeline. This is the governance gate — nothing executes downstream until all three sub-stages below complete cleanly."
+Render this as two paragraphs with appropriate vertical spacing between them. Use the same typography (sans-serif, regular weight, body text size) as the rest of the page. Bold the phrase "Why this matters" if your design system supports inline emphasis; otherwise leave it as plain text.
+Do not modify the Stage 1 · Governance Gate badge, the document icon, the Data Onboarding title, or the blue "What happens when you click Data Onboarding" callout box below this intro section.
