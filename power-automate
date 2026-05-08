@@ -1,9 +1,11 @@
-Update the blue callout box on the Stage 1 (Data Onboarding) page. Do not modify any elements outside this callout box.
-Current callout text:
-"WHAT HAPPENS WHEN YOU CLICK DATA ONBOARDING — The pipeline runs the three sub-stages below back-to-back — Check → Load → Validate — fully automatically. For each feed it scans the working folder, picks the matching file, opens it into memory, and confirms every required column is present. If a feed is missing, has multiple versions, or fails column validation, the flow pauses on that card so you can drop in the right file or pick a version — your completed steps are preserved and you just press the button again to resume. When all three pillars turn green, the Run Pipeline button unlocks. When you're ready, click the Data Onboarding button below to begin."
-Replace with three short paragraphs:
-Heading (small caps, bolded, same style as before): "What happens when you click Data Onboarding"
-Paragraph 1: "The pipeline runs three sub-stages back-to-back — Check → Load → Validate — fully automatically. See the cards below for what each one does."
-Paragraph 2: "If something goes wrong: the flow pauses on the affected card so you can fix the issue (drop in the right file, pick a version, correct columns). Your completed steps are preserved — just press the button again to resume."
-Paragraph 3: "When all three sub-stages complete: the next stage, Run Pipeline, becomes available."
-Render the three paragraphs with vertical spacing between them so they read as distinct sections rather than one block of text. Bold the lead phrases ("If something goes wrong", "When all three sub-stages complete") and the stage names (Check → Load → Validate, Run Pipeline) consistently. Keep the blue callout box background and border styling unchanged.
+Update the three sub-stage cards on the Stage 1 (Data Onboarding) page. Do not modify the card layout, the numbered badges, the card titles, the progressive state design (idle → in-progress → complete), or the colors used in any state.
+Card 1 — Check
+Current text: "Confirm every required Archer .xlsx feed is present in the working folder. If a file is missing or duplicated, the flow pauses here so you can drop the right export in."
+Replace with: "Confirms every required source feed is present in the working folder. Pauses here if a file is missing or duplicated."
+Card 2 — Load
+Current text: "Read each feed into memory and lock the chosen version so nothing changes underneath the pipeline mid-run."
+Replace with: "Reads each feed into memory and locks the chosen version so nothing changes underneath the pipeline mid-run."
+Card 3 — Validate
+Current text: "Verify every feed exposes the columns the downstream stages need. Missing headers stop the flow with a clear, fixable message."
+Replace with: "Verifies that every feed has the columns downstream stages need. Stops the flow with a clear, fixable message if headers are missing."
+Ensure all three cards use the same typography (sans-serif, regular weight, body text size) consistent with the rest of the page. After applying these changes, the three cards should be visually balanced in height — if they are not, adjust the card container so all three render at the same height regardless of text length.
