@@ -1,11 +1,16 @@
-Update the three sub-stage cards on the Stage 1 (Data Onboarding) page. Do not modify the card layout, the numbered badges, the card titles, the progressive state design (idle → in-progress → complete), or the colors used in any state.
-Card 1 — Check
-Current text: "Confirm every required Archer .xlsx feed is present in the working folder. If a file is missing or duplicated, the flow pauses here so you can drop the right export in."
-Replace with: "Confirms every required source feed is present in the working folder. Pauses here if a file is missing or duplicated."
-Card 2 — Load
-Current text: "Read each feed into memory and lock the chosen version so nothing changes underneath the pipeline mid-run."
-Replace with: "Reads each feed into memory and locks the chosen version so nothing changes underneath the pipeline mid-run."
-Card 3 — Validate
-Current text: "Verify every feed exposes the columns the downstream stages need. Missing headers stop the flow with a clear, fixable message."
-Replace with: "Verifies that every feed has the columns downstream stages need. Stops the flow with a clear, fixable message if headers are missing."
-Ensure all three cards use the same typography (sans-serif, regular weight, body text size) consistent with the rest of the page. After applying these changes, the three cards should be visually balanced in height — if they are not, adjust the card container so all three render at the same height regardless of text length.
+Update the primary action button and the status pill below it on the Stage 1 (Data Onboarding) page. Do not modify the button color states (blue during work, green on completion), the arrow on the completion state, or the visual positioning of the button and pill.
+Button label changes:
+
+Idle state: Change button label from "Data Onboarding" to "Begin Onboarding →"
+In-progress states: Keep current labels ("Checking feeds...", "Loading feeds into memory...", etc.)
+Completion state: Keep current label "Run Pipeline →" unchanged
+
+Status pill text changes:
+
+Idle state: Change from "Ready · click to begin all 3 sub-stages" to "Ready · runs Check, Load, and Validate in sequence"
+Step 1 in progress: Change from "Step 1/3 · Looking for files..." to "Step 1/3 · Check"
+Step 2 in progress: Change from "Step 2/3 · Locking files..." to "Step 2/3 · Load"
+Step 3 in progress: Change from current text to "Step 3/3 · Validate"
+Completion state: Change from "All 3 sub-stages complete — ready to build the risk register" to "All 3 sub-stages complete — ready to run the pipeline"
+
+Keep the existing pill background colors for each state (idle, in-progress, complete). Do not modify the synchronization logic between the button states, sub-stage card states, and pill states.
