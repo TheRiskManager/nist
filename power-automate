@@ -1,3 +1,8 @@
-On the Stage 1 (Data Onboarding) page, constrain the width of the blue callout box (containing "What happens when you click Data Onboarding") to a maximum reading width of approximately 720 pixels (or 60% of the parent container width, whichever is smaller). Keep the callout left-aligned or centered within the parent container — match whichever alignment the rest of the page content uses.
-Do not change the content, the three-paragraph structure, the bolded section leads, the blue background, or the border styling. Only adjust the container width so the callout no longer leaves a large empty area on the right side.
-The goal is for the text inside the callout to wrap at a comfortable reading width (roughly 65–75 characters per line) rather than the current narrow wrap inside an over-wide container.
+On the Stage 1 (Data Onboarding) page, adjust the font size hierarchy as follows. Do not modify any other styling.
+
+Body intro paragraph (the "This stage admits the source feeds..." / "Why this matters..." text directly under the Data Onboarding title): increase font size by 1–2 pixels (or one step up in the design system) so it clearly reads as the primary descriptive content of the stage.
+Blue callout body text (inside the "What happens when you click Data Onboarding" box): decrease font size by 1–2 pixels (or one step down in the design system) so the callout reads as supporting reference information rather than primary content.
+Bolded section leads inside the callout ("If something goes wrong", "When all three sub-stages complete"): match the new smaller callout body size, just bolder.
+Do not modify: the stage title size, the "STAGE 1 · GOVERNANCE GATE" badge, the "WHAT HAPPENS WHEN YOU CLICK DATA ONBOARDING" header inside the callout, the sub-stage card titles, card body text, button labels, or status pill text.
+
+The goal is to establish clear visual hierarchy: body intro → larger and primary, callout → smaller and secondary.
