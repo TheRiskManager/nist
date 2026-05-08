@@ -1,26 +1,70 @@
-Revised Welcome Page
-Badge: xxx · Risk and Controls Data View
-Headline: (in your primary sans-serif, heavy weight, no italic, no color accent)
+Here's the consolidated list of must-do improvements, in priority order.
+1. Unify the typography — kill the serif italic everywhere except the headline
 
-Risk and Controls Data Pipeline
+This is the single highest-impact change. The page is currently split between two voices: bold sans-serif headline (modern, enterprise) and serif italic everything-else (editorial, decorative). Convert all of the following to the same sans-serif family as your headline:
 
-Intro paragraph:
+    Intro paragraph — sans-serif, regular weight, no italic
+    Card titles (Load & Validate Feeds, Run & Review, Verify & Maintain) — sans-serif, semibold or bold, no italic
+    Card body text — sans-serif, regular weight, no italic
+    Get Started button text — sans-serif, semibold, no italic
+    Footer note (Working folder is auto-detected...) — sans-serif, regular weight, smaller size, no italic
 
-A guided pipeline that integrates risks, controls, issues, and corrective actions into a single governance-ready data view. Includes built-in pipeline integrity checks, source data health signals, and editable scope configuration.
+Bold within the intro paragraph (risks, controls, issues, and corrective actions) is fine to keep — just make it bold sans-serif instead of bold italic serif.
 
-Three cards: (slightly tightened, source-agnostic, outcome-focused)
-Card 1 — Load & Validate Feeds
+3. Use orange with purpose, not as decoration
 
-Confirm all required source feeds are present, resolve duplicate versions, and verify column headers before anything downstream runs.
+You like orange — keep it, but apply it where it carries meaning:
 
-Card 2 — Run & Review
+    Keep: the Get Started CTA button (this is already correct)
+    Add: a soft orange tint or border on the badge, so the top and bottom of the page are visually anchored by the same accent color
+    Optional: swap the blue squares on the card numbers (1, 2, 3) for orange, which visually connects the steps to the CTA
 
-Build the consolidated risk and controls view in one click, then inspect the deliverable before publishing.
+Avoid coloring random words in the headline or body text. Color should signal action or category, not visual interest.
+4. Add a one-line subtitle under the headline
 
-Card 3 — Verify & Maintain
+Right now the headline jumps directly into the intro paragraph. A short subtitle gives users a quick orientation cue before they read the longer description:
 
-Review pipeline integrity, source data health, and the in-scope Business Unit list — all in one place.
+    Risk and Controls Data Pipeline Five guided stages, end-to-end.
 
-Footer note: (unchanged)
+    A guided pipeline that integrates risks, controls, issues, and corrective actions into a single governance-ready data view...
 
-Working folder is auto-detected from the launch directory.
+The subtitle sets expectations: this is structured, multi-step, and complete.
+5. Tighten the intro paragraph
+
+The current paragraph runs three lines and uses "Includes built-in..." which is slightly weak phrasing. Consider:
+
+    A guided pipeline that integrates risks, controls, issues, and corrective actions into a single governance-ready data view — with built-in integrity checks, source data health signals, and editable scope configuration.
+
+The em dash creates a stronger visual break than starting a new sentence, and "with" reads more naturally than "Includes."
+6. Sharpen the card body text
+
+Current Card 2 reads: "Build the consolidated risk and controls view in one click, then inspect the deliverable before publishing."
+
+The phrase "inspect the deliverable" is slightly awkward. Try:
+
+    "Build the consolidated risk and controls view in one click, then review the output before publishing."
+
+Same idea, cleaner verbs (build → review → publish reads as a clear sequence).
+
+For Card 3: "Review pipeline integrity, source data health, and the in-scope Business Unit list — all in one place."
+
+This is fine, but "all in one place" is a filler phrase. Consider trimming to:
+
+    "Review pipeline integrity, source data health, and the in-scope Business Unit list."
+
+7. Strengthen the CTA button label
+
+Get Started → is fine but generic. Since the button initiates Stage 1 (Data Onboarding), a more specific label tells users exactly what's about to happen:
+
+    Begin Pipeline →
+    Start Onboarding →
+    Run Pipeline → (if it actually runs the whole flow)
+    Begin → (shortest)
+
+If you keep Get Started, that's not wrong — just less informative.
+8. Fix the page-header bleed at the top of the screenshot
+
+The screenshot shows "controls data view" cut off at the top edge — the page subtitle is being clipped. Make sure the page-level header (Pipeline Console / Build & refresh end-to-end risk and controls data view) renders cleanly above this welcome content. If you've removed the header on this view intentionally, ignore this point.
+9. Resolve the duplicate progress indicators
+
+Mentioned twice before but worth repeating: the top stage ribbon (numbered 1–5 with checkmarks) and the Pipeline Progress dot row directly below it are tracking the same thing. Drop the dot row, or repurpose that horizontal space to show useful run metadata (run ID, last refresh timestamp, current user).
