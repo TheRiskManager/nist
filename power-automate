@@ -1,91 +1,100 @@
-Restructure the pipeline by adding a new stage dedicated to business-domain metrics. Currently, the integrated dataset's business metrics (unique risks, unique controls, unique issues, unique CAPs) are displayed on Stage 4 alongside pipeline integrity information, mixing two different kinds of content (process verification and business summary). These should be separated into distinct stages.
-The new structure inserts a new stage between the current Stage 4 (Pipeline Integrity) and Stage 5 (Source Data Health). All subsequent stages renumber accordingly.
+Update the Stage 6 (Business Units) page to communicate the strategic role this stage plays in the architecture. Currently, the page describes the mechanics of maintaining the BU list but does not explain why the stage exists, why the BU list is maintained independently from Archer, or how it powers downstream Power BI analytics and accountability.
+The updated copy must position this stage as a deliberate, important component of the pipeline — the reference data layer that fills a gap in the system of record and underpins all BU-segmented intelligence in Power BI. Use the same vocabulary established on Stage 3 (Publish): semantic model, certified dataset, intelligence layer, dimension, dashboards, scorecards, BU segmentation, accountability.
+Do not modify the existing 5 sub-stage cards (Upload, Check, Load, Validate, Review & Edit), their progressive state behavior, the Proceed button, or the upload zone. The mechanics of the page are correct — only the messaging and surrounding context need updating.
 
-1. New stage structure
-Update the horizontal stage ribbon to reflect the following stages:
+1. Replace the body intro paragraph
+Current text:
+"Maintain the in-scope Business Unit list used downstream for scoping reports and filtering risk views."
+Replace with:
+"This stage maintains the authoritative list of in-scope business units that the pipeline uses to scope, segment, and assign accountability across the downstream analytics. Because Archer does not track business unit ownership at the level required for risk intelligence reporting, this list is curated and maintained independently — it is the trusted reference dataset that the Power BI semantic model uses to slice risks, controls, issues, and corrective action plans by business unit."
 
-Stage 1 — Data Onboarding (unchanged)
-Stage 2 — Run Pipeline (unchanged)
-Stage 3 — Publish (unchanged)
-Stage 4 — Pipeline Integrity (unchanged)
-Stage 5 — Risk and Controls Coverage (NEW)
-Stage 6 — Source Data Health (was Stage 5)
-Stage 7 — Business Units (was Stage 6)
+2. Add a "Why this list matters" callout above the existing "What happens when you click Load Business Units" callout
+Add a new callout box positioned above the existing technical callout. Use the same visual treatment as other stage callouts (background tint, border, small-caps heading), but treat this as the strategic context that explains the stage's purpose.
+Heading: "Why this list matters"
+Body (four short paragraphs):
+"Archer is the system of record for risks, controls, issues, and corrective action plans — but it does not track business unit ownership at the level needed for analytics, reporting, and accountability. This stage closes that gap by maintaining the authoritative, in-scope business unit list as a curated reference dataset alongside the Archer-sourced data."
+"Every corrective action plan in the consolidated dataset is assigned to a specific business unit using this list. That assignment is what enables accountability — the right BU heads, control owners, and second-line teams can see, own, and act on the items that belong to them, rather than navigating a single organization-wide list with no clear ownership."
+"Downstream, the Power BI semantic model uses this list as a dimension, joining it to the consolidated risk and controls dataset to produce per-BU views: BU-level risk dashboards, control effectiveness scorecards by business unit, CAP coverage and aging reports per BU, and the executive roll-ups that compare risk posture across the organization. The accuracy and completeness of this list directly shapes the trust and usefulness of every BU-segmented report and intelligence view consumed across the team."
+"Use this stage to add new business units that have come into scope, remove units that are no longer in scope, or correct existing entries. Changes take effect the next time the pipeline runs."
 
-Update all stage numbers, badges, navigation, and routing accordingly.
+3. Keep the existing "What happens when you click Load Business Units" callout but position it as the technical/operational context
+The existing callout is correct and useful but should sit below the new strategic callout. It explains the mechanics of the stage; the new callout explains the purpose.
+No changes to its body text are required at this time, except to verify it uses consistent vocabulary (no "Risk Register" or "Archer feed" references that conflict with established conventions).
 
-2. Build the new Stage 5: Risk and Controls Coverage
-Stage ribbon entry:
-Stage 5 · Risk and Controls Coverage · What's in the integrated dataset
-Stage badge:
-Stage 5 · Coverage Summary
-Page title:
-Risk and Controls Coverage
-Body intro paragraph:
-"This stage summarizes the risk and controls landscape captured in the integrated dataset. The numbers below show the distinct entities consolidated across all source systems."
-Callout:
-Heading: "What this stage shows"
-Body (two paragraphs):
-"This page presents a summary view of the integrated dataset in business-domain terms — the count of distinct risks, controls, issues, and corrective action plans consolidated from all source systems. These figures are finalized at this stage and represent the organization-wide totals captured in the certified dataset."
-"As additional source files and Business Unit enrichments are introduced in future iterations, this stage will expand to include per-BU coverage, relationship-level metrics (e.g., risks with at least one control), and other domain-specific summaries. For per-BU breakdowns and dashboards available today, see the Risk Intelligence views in Power BI."
-Coverage cards (four cards, equal width):
+4. Add a summary header above the sub-stage cards
+Below the body intro and the two callouts, add a small summary row showing:
 
-90 — Unique Risks
-306 — Unique Controls
-51 — Unique Issues
-85 — Unique CAPs
+In-scope count: "[N] business units in scope" — where [N] is the live count of the current BU list
+Last updated: "Last updated: [date] by [username]" — where [date] and [username] reflect the most recent edit to the list
 
-Status pill:
-"Coverage finalized · organization-wide totals from the integrated dataset"
-Primary action button:
-Continue to Source Data Health →
-Visual style:
-Match the existing stage page design conventions — same typography, color tokens, container patterns, and component styling. No new visual language; this is a new stage in the existing system.
+Display these two pieces of information clearly but compactly — small text, side by side or stacked, using subdued typography (smaller font, muted color) so they read as metadata rather than primary content.
 
-3. Update Stage 4 (Pipeline Integrity)
-Remove the following from Stage 4:
+5. Add a downstream impact note below the sub-stage cards
+Below the 5 sub-stage cards (Upload, Check, Load, Validate, Review & Edit) and above the Proceed button, add a small info banner:
+"Changes to this list affect: BU-level dashboards, control effectiveness scorecards, CAP assignment, and executive risk reports in Power BI."
+Use a subtle visual treatment — light background, small text — so it serves as a reminder without being alarming. The purpose is to communicate that edits have real downstream consequences and should be made deliberately.
 
-The four business metric cards: 90 Unique Risks, 306 Unique Controls, 51 Unique Issues, 85 Unique CAPs
+6. Update the status pill below the Proceed button
+Current text:
+"Drop BU_List.xlsx into the upload zone — or click Proceed if your file is already in the working folder"
+This pill is currently doing only operational signaling. Update it to also reinforce the strategic role:
+Replace with:
+"BU list ready · drives downstream BU segmentation in Power BI · drop BU_List.xlsx into the upload zone or click Proceed if it's already in the working folder"
+If the pill is too long for the available space, split into two lines or use a primary/secondary text pattern where the strategic role is primary and the operational instruction is secondary.
+Alternative shorter version if space is constrained:
+"BU list drives Power BI segmentation · ready to load"
 
-Keep on Stage 4:
+7. Update the horizontal stage ribbon subtitle
+The current subtitle for Stage 6 in the horizontal ribbon is "Maintain the in-scope BU list" (partial visibility in screenshot, full text inferred).
+Update to: "Reference data for BU segmentation in Power BI"
+This change makes the ribbon entry consistent with the strategic framing on the page itself. Users scanning the ribbon will see that Stage 6 produces reference data for Power BI, not just a "maintenance" task.
 
-The reconciliation summary panel ("Zero Data Loss — 100% Reconciled" with confidence percentage and the four metrics: input IDs reconciled, matched in output, records lost, feeds passing) — unchanged
-The dataset metrics (Total rows, Total columns, Generated timestamp) — keep these here as they are tied to the integrity check
-The feed-by-feed reconciliation cards — unchanged
+8. Update the Stage 6 badge
+Current: Stage 6 · Maintenance
+Replace with: Stage 6 · Reference Data
+The word "Maintenance" suggests an optional housekeeping task. "Reference Data" correctly positions this stage as producing a structured, authoritative dataset that downstream analytics depend on.
 
-Add to Stage 4:
+9. Apply the language conventions
+Throughout this stage, ensure consistent use of established vocabulary:
 
-A small pointer at the bottom of the metrics section: "For a summary of the risk and controls landscape captured in this dataset, continue to Stage 5: Risk and Controls Coverage."
+"Power BI semantic model" — when referring to the model layer specifically
+"consolidated dataset" or "certified dataset" — not "risk register" or "workbook"
+"authoritative list" / "reference dataset" — to position the BU list as a trusted artifact
+"business unit" in body prose; "BU" acceptable in tables, badges, and tight UI spaces
+"BU segmentation", "per-BU views", "BU-segmented reports" — for downstream Power BI views
 
-Update Stage 4's primary action button:
+Use the analytics vocabulary deliberately and consistently: intelligence layer, analytics foundation, semantic model, dimension, dashboards, scorecards, executive reporting, accountability.
 
-Current: Next: Source Data Health →
-Replace with: Continue to Risk and Controls Coverage →
+10. Update the design specification
+Add a new section to STAGE_PAGE_DESIGN_SPEC.md titled "Reference data stages":
+"Reference data stages — such as the Business Units stage — maintain authoritative lists that are not sourced from upstream systems but are required by downstream analytics. These stages exist because the system of record (e.g., Archer) does not contain the dimension needed for full segmentation in the Power BI semantic model. Reference data stages must clearly explain: (1) what the list is, (2) why it exists outside the system of record, (3) how the list is used downstream — specifically, how it joins to the consolidated dataset and what analytics depend on it, and (4) how edits affect downstream reporting. Always display the current count, the last-modified metadata, and a brief downstream-impact reminder near the editable list. The page badge should use 'Reference Data' rather than 'Maintenance' to correctly signal the stage's role."
 
+11. Add the "Why this list matters" callout pattern to the design specification
+Add a related note to the same design specification:
+"Stages that exist for a non-obvious architectural reason — such as filling a gap in the system of record, providing reference data, or serving a downstream analytics requirement — must include a 'Why this stage matters' or equivalent strategic callout positioned above the operational callout. This ensures users understand the stage's purpose before they understand its mechanics. The strategic callout explains the why; the operational callout explains the how."
 
-4. Update the renumbered Stages 6 and 7 AND BEYOUND
+12. What NOT to change
 
-5. Update the welcome page
-If the welcome page references the number of stages or specific stage numbers, update accordingly. The total number of stages is now 7.
-
-6. Update the design specification
-Add a new section to STAGE_PAGE_DESIGN_SPEC.md titled "Stage architecture: business metrics separation":
-"Business-domain metrics (counts of distinct entities such as risks, controls, issues, and CAPs) live on their own dedicated stage (Stage 5: Risk and Controls Coverage), separate from the pipeline integrity stage. This separation ensures each stage has a single clear purpose: integrity stages confirm the pipeline ran correctly; coverage stages summarize what the dataset contains in domain terms; data health stages report on input quality. Mixing these on a single page forces audiences with different concerns to scan past each other's content. Future BU-enriched metrics (per-BU coverage, BU-to-CAP rollups) will extend Stage 5 — either by expanding its content or by introducing a follow-on stage dedicated specifically to BU-segmented views."
-
-7. What NOT to change
-
-The icon, color treatment, or styling on any existing stage
-The engine logic, calculations, or any backend behavior
-The actual values displayed (90, 306, 51, 85, 479, 72, etc.) — these come from the existing pipeline output
-The substantive content of any stage other than the relocations described above
+The 5 sub-stage cards (Upload, Check, Load, Validate, Review & Edit), their order, their content, or their progressive state behavior
+The Proceed button and its behavior
+The upload zone at the bottom of the page (drag-and-drop and click-to-browse functionality)
+The Business Units icon and its visual treatment
+The horizontal stage ribbon's overall structure (only the Stage 6 subtitle and badge change)
+The engine logic that consumes the BU list
+Any backend behavior or file handling
 
 
-8. Output
+13. Output
 Provide a summary of all changes:
 
-Confirmation that the new Stage 5 (Risk and Controls Coverage) was created
-Confirmation that the four business metric cards were removed from Stage 4
-Confirmation that previous Stages 5 and 6 were renumbered to 6 and 7
-Diff of the welcome page changes (if any)
-Confirmation that no engine code was modified
-Confirmation that the design specification was updated
+Diff of the body intro paragraph
+The new "Why this list matters" callout content and its position relative to the existing callout
+Confirmation of the new summary row (BU count and last-modified)
+Confirmation of the new downstream impact note below the sub-stage cards
+Diff of the status pill text
+Diff of the horizontal stage ribbon subtitle
+Diff of the Stage 6 badge text
+Confirmation that the design specification was updated with the "Reference data stages" and strategic callout sections
+Confirmation that no engine code, file handling, or sub-stage card behavior was modified
+
+
