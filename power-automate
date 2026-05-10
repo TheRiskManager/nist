@@ -1,48 +1,82 @@
-2. Replace the body intro paragraph
-Current:
+Update the Stage 3 page and the Welcome page of the Risk and Controls Data Pipeline to clearly position the pipeline as the trusted analytics foundation that powers the team's risk intelligence capability. The output of this pipeline is not a one-off report — it is the certified dataset that feeds the Power BI semantic model and underpins every dashboard, scorecard, and intelligence view consumed across the organization.
+End users have been asking "what is this pipeline for?" — the current copy does not answer that question. These changes deliver a confident, specific, intelligence-focused message using deliberate vocabulary (Power BI, semantic model, certified dataset, intelligence layer, analytics foundation, dashboards, KPIs, scorecards, decision-grade data), named audiences (leadership, audit committee, risk owners, business unit heads, second line of defense, analytics team), named artifacts (semantic model, executive dashboards, risk committee reports, business unit scorecards, control effectiveness analytics), and authority verbs (anchors, powers, drives, feeds, underpins, governs, certifies).
+Keep the morphing button behavior on Stage 3 unchanged. Do not modify the engine logic, the green color treatment, or the icon. Do not fold pipeline integrity or source data health into Stage 3 — those remain as separate stages (Stages 4 and 5).
+
+Part 1 — Stage 3 changes
+1. Rename Stage 3 from "Output" to "Publish"
+
+In the horizontal stage ribbon, change the Stage 3 name from Output to Publish
+In the horizontal stage ribbon, change the Stage 3 subtitle from "Open the final report" to "Trusted source for the Power BI semantic model"
+On the page itself, change the page-level title from Output to Publish
+Keep the icon unchanged
+
+2. Update the Stage 3 badge
+Replace Stage 3 · Deliverable with Stage 3 · Analytics Foundation.
+3. Replace the Stage 3 body intro paragraph
+Current text:
 "The pipeline has assembled all 8 feeds into a single, consolidated, deduplicated, and enriched Risk Register workbook ready for review."
 Replace with:
-"The pipeline has built the integrated risk and controls data view from all 8 source files. The output is ready in the run folder — open it for review, download a copy, or continue to the next stage when you're ready."
+"The pipeline has produced the certified risk and controls dataset — the decision-grade source that powers your team's risk intelligence. This dataset anchors the Power BI semantic model, drives the executive dashboards relied on by leadership and the audit committee, and feeds the scorecards, KPIs, and intelligence views consumed by risk owners and business unit heads across the organization."
+4. Rewrite the Stage 3 callout
+Update the callout heading from "What happens when you click Review Output" to "What this stage delivers".
+Replace the callout body with the following four paragraphs:
+"This stage delivers the certified, governance-ready risk and controls dataset that anchors your team's analytics ecosystem. It consolidates risks, controls, issues, and corrective action plans from every source system into a single, integrated, audit-defensible dataset — the canonical view of the entire risk and controls landscape, governed end-to-end and certified for downstream consumption."
+"The dataset is engineered specifically to feed the Power BI semantic model, where it is normalized into dimensions and facts, modeled with relationships and measures, and exposed to the analytics team as a certified data product. Once published, it underpins the executive dashboards reviewed by leadership, the risk committee reports presented to the audit committee, the business unit scorecards used by control owners, the control effectiveness analytics consumed by the second line of defense, and the ad-hoc intelligence queries that drive day-to-day decision-making."
+"This is what makes the pipeline more than a data preparation tool. It is the trusted intelligence layer — the analytics foundation between raw source systems and the dashboards, KPIs, scorecards, and reports that risk owners, leadership, the audit committee, and the analytics team depend on every day. Every refresh of this dataset refreshes the entire downstream intelligence capability. Every dashboard your stakeholders trust traces back to this moment in the pipeline."
+"The dataset has been validated for pipeline integrity (no records lost in processing) and source data health (mapping gaps flagged for remediation). Stages 4 and 5 provide the supporting evidence and any items requiring action. From here, you can open the dataset in Excel for a manual review, download a copy for archive or distribution, or continue to the integrity stages to inspect the quality evidence in detail."
+Keep the existing callout background, border, and small-caps heading treatment.
+5. Update the Stage 3 status pill states
+Idle state (before Review Output is clicked):
+Replace existing pill text with:
+"Dataset certified · trusted source for the Power BI semantic model, executive dashboards, and risk intelligence"
+Post-click state (after the button has morphed to Next: Pipeline Integrity):
+Replace existing pill text with:
+"Excel is open — review the certified dataset, then continue to the integrity evidence"
 
-3. Rewrite the "What happens..." callout
-Update the heading from "What happens when you click Review Output" to "What you can do here". The previous heading no longer describes the page accurately because there is no single "Review Output" action.
-Replace the callout body with three short paragraphs:
-"The output is ready in the run folder. You can open it in Excel for review, download a copy to share with stakeholders, or continue to the next stage when you're ready."
-"The summary cards below show the row count, column count, when the file was generated, and how long the pipeline took to run."
-"Opening or downloading is optional — you can continue without doing either."
-Keep the existing callout styling (background color, border, small-caps heading treatment) unchanged.
+Part 2 — Welcome page changes
+6. Update the Welcome page intro paragraph
+Current text:
+"A guided pipeline that integrates risks, controls, issues, and corrective actions into a single governance-ready data view. Includes built-in pipeline integrity checks, source data health signals, and editable scope configuration."
+Replace with:
+"A guided pipeline that integrates risks, controls, issues, and corrective actions into a single, certified dataset — the trusted source that anchors the Power BI semantic model and powers the executive dashboards, scorecards, and risk intelligence consumed across the organization. Includes built-in pipeline integrity checks, source data health signals, and editable scope configuration."
+Keep the rest of the Welcome page (headline, subtitle, three cards, CTA, footer note) unchanged.
 
-4. Update the status pill
-The current page has two pill states ("Ready to review" before click, "Review the output below — continue when ready" after click). Since there is no longer a forced sequence, replace both with a single persistent pill:
-"Output ready · open, download, or continue when ready"
+Part 3 — Vocabulary cleanup across both pages
+Replace any remaining instances of the following terms wherever they appear on the Stage 3 page or Welcome page:
 
-5. File path bar (unchanged from previous prompt)
-The bar showing the full path of the output file should still be improved:
-
-Add a label "File location" above or to the left of the path
-Display the path in a monospace font
-Truncate gracefully with an ellipsis if the path exceeds available width, with the full path in a tooltip on hover
-Add a copy-to-clipboard icon at the right end of the bar
-
-
-6. Summary cards (unchanged from previous prompt)
-The four summary cards (Rows, Columns, Generated, Run time) should:
-
-Use sentence case throughout — change "Run Time" to "Run time"
-Include the year in the "Generated" value: "May 10, 2026 · 1:17 PM"
-
-Keep the layout, colors, and check icons.
-
-7. Apply the design specification's language conventions
-Replace any remaining instances of:
-
-"Risk Register" → "risk and controls data view"
-"feeds" → "source files"
-"workbook" → "output"
+"Risk Register" → "risk and controls dataset"
+"feeds" → "source systems" or "source files" (use whichever fits the context — source systems when referring to the upstream platforms, source files when referring to the actual .xlsx files)
+"workbook" → "dataset" (unless explicitly referring to the Excel UI)
 "enriched" → remove
-"morph" / "morphs into" → remove
+"morph" / "morphs into" → remove from user-facing copy (the button morph behavior remains; only the word goes)
 "local Excel instance" → "Excel"
 
+Use the analytics vocabulary deliberately and consistently: semantic model, certified dataset, intelligence layer, analytics foundation, dashboards, KPIs, scorecards, executive reporting, decision-grade data, single source of truth. These terms should appear naturally throughout the copy where they reinforce the message.
+
+Part 4 — Architectural separation (do not fold integrity into Stage 3)
+Pipeline integrity and source data health checks must remain as separate stages (Stages 4 and 5). Stage 3 references the integrity work in its copy but does not display the integrity details — those remain in their dedicated stages. This preserves auditability and the meaningful separation between process-level integrity and content-level data health.
+Document this decision by adding a new section to STAGE_PAGE_DESIGN_SPEC.md titled "Stage architecture: separation of concerns" with the following content:
+"Stage 3 (Publish) delivers the dataset and articulates its role as the trusted analytics foundation. Stage 4 (Pipeline Integrity) and Stage 5 (Source Data Health) provide the quality evidence that supports the dataset's certification. These three stages are intentionally separate because they answer different questions, are owned by different roles, and serve different audit purposes. Stage 3 references Stages 4 and 5 in its copy but never absorbs their content."
+Also add a section titled "Pipeline purpose statement" with the following content:
+"The pipeline's purpose is to produce the certified risk and controls dataset that serves as the trusted source for the Power BI semantic model. This semantic model powers downstream dashboards, scorecards, KPIs, and risk intelligence consumed across the organization. All user-facing copy must reinforce this purpose using consistent vocabulary (semantic model, certified dataset, intelligence layer, analytics foundation, dashboards, KPIs, scorecards) and named audiences (leadership, audit committee, risk owners, business unit heads, second line of defense, analytics team)."
+
+Part 5 — What NOT to change
+
+The horizontal stage ribbon structure (only Stage 3 name and subtitle change; all other stages remain unchanged in this update)
+The icons and visual treatments throughout
+The morphing button behavior on Stage 3 (the button still transforms from Review Output to Next: Pipeline Integrity → after the user clicks it)
+The green color treatment for Stage 3
+The Welcome page headline, subtitle, three cards, CTA button, and footer note (only the intro paragraph changes)
+Any engine logic, file generation code, or backend behavior
+Stages 4 and 5 — they remain as separate, dedicated stages
 
 
+Part 6 — Output requirements
+After implementation, provide:
 
+A summary of all files modified
+A diff showing the before/after of each text block changed (Stage 3 ribbon, badge, page title, body intro, callout heading, callout body, idle pill, post-click pill, Welcome page intro)
+Confirmation that the morphing button behavior on Stage 3 was preserved
+Confirmation that no engine code or backend behavior was modified
+Confirmation that the design specification was updated with the "Stage architecture: separation of concerns" and "Pipeline purpose statement" sections
+A list of any open questions or assumptions made during implementation that should be confirmed before merging
