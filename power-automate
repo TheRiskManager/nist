@@ -1,116 +1,12 @@
-Here's the focused update for just the upload step (Part 4, replacing Step 1 only). Use this to replace Part 4 in your existing prompt — leave Parts 1, 2, 3, and 5+ as they were.
-Part 4 (revised) — Step 1 (Prepare Files) detailed specification
+2. Replace the stage intro paragraph
+Current text:
+"Assemble the consolidated Risk Register from all validated Archer feeds — the pipeline runs 10 sequential steps below, fully automatically."
+Replace with:
+"Build the integrated risk and controls data view from your validated source files. The pipeline runs 10 steps in sequence, fully automatically — each step's outcome appears below as it completes."
 
-Purpose:
-
-Step 1 stages the run folder. It is non-blocking — the user may proceed to Step 2 with all files, partial files, or no files. Validation does not happen here; it happens in Step 2 (Check). Step 1 simply makes it easy to populate the run folder.
-
-Three equivalent ways to add files:
-
-Users may add files using any combination of the following methods. All three are equivalent in outcome — files end up in the same run folder on disk.
-
-    Drag-and-drop into the UI upload area — files are saved into the run folder
-    Click-to-browse via UI — files are saved into the run folder
-    Manual placement — user opens the run folder directly via OS file explorer and drops files in
-
-Run folder display (top of Step 1):
-
-Display the run folder path prominently at the top of Step 1, with two action buttons:
-
-    Copy path — copies the full folder path to clipboard
-    Open folder — opens the folder in the OS file explorer (where supported by the platform)
-
-Example display:
-
-    Run folder: C:\runs\run_2026-01-15_104237_ahmad [Copy path] [Open folder]
-
-Upload area:
-
-Below the folder display, show a drag-and-drop area with a click-to-browse fallback. The upload area should clearly indicate that it is optional — manual placement in the folder is equally valid. Suggested helper text inside the upload area:
-
-    Drop .xlsx files here, or click to browse. Optional — you can also place files directly in the run folder.
-
-Upload area behavior:
-
-    Accepts one or more .xlsx files per drag/selection
-    Files dropped here are saved into the run folder on disk
-    Uploading additional files adds to the folder, does not replace
-    Folders cannot be uploaded — display message: "Please add individual .xlsx files, not folders"
-    Maximum file size per file: 50 MB (display error if exceeded)
-
-File list (current contents of the run folder):
-
-Below the upload area, display a live list of files currently in the run folder. The list reflects the actual folder contents on disk, not just what was uploaded via UI. This means files placed manually via OS file explorer also appear here.
-
-For each file, display:
-
-    Filename
-    Size
-    Last modified timestamp
-    A "Remove" control that deletes the file from the folder
-    A small badge showing how the file got there: Uploaded via UI or Placed manually
-
-Folder watching / refresh:
-
-The file list must reflect the current folder contents. Implement using one of:
-
-    A file system watcher that auto-refreshes the list when files are added/removed in the folder
-    A manual "Refresh" button at the top of the file list
-    Polling the folder every few seconds
-
-If a file system watcher is not feasible, default to a manual Refresh button with clear messaging: "If you placed files manually in the folder, click Refresh to see them."
-
-Step 1 primary button:
-
-Step 1 has a single primary button at the bottom: Continue to Check →
-
-The button is always enabled, regardless of how many files are in the folder (zero, partial, or all 8). Step 1 is non-blocking by design — validation happens in Step 2.
-
-If the user clicks Continue to Check → with fewer than 8 files in the folder, display a small inline confirmation:
-
-    The run folder currently contains [N] of 8 expected feeds. Continue to Check anyway?
-
-    [Continue] [Stay and add more files]
-
-This is a confirmation, not a block. The user can proceed at any time.
-
-Step 1 completion state:
-
-When the user clicks Continue to Check → (and confirms if prompted), Step 1 is marked complete:
-
-    Step 1 collapses with a green checkmark
-    A summary line shows: "[N] files staged in run folder"
-    Step 2 (Check) is revealed
-
-The user can re-expand Step 1 at any time to add or remove files. If they do so and modify the folder contents after Step 2 has run, Step 2 must re-run before Step 3 can proceed.
-
-State preservation:
-
-    The run folder persists across navigation away from Stage 1 and back
-    Files in the folder persist (the folder is not deleted when the user leaves)
-    If the user returns to Stage 1 in a later session, they may either resume the existing run folder or create a new one (display both options)
-
-What you'll also want to change in other parts
-
-A few small downstream edits to keep the rest of the prompt consistent:
-
-In Part 2 (Stepper structure), update Step 1's name:
-
-    Step 1 — Prepare Files (was Upload Files)
-
-Move all validation logic from Part 4 to Part 5 (Step 2 — Check). The four categories (Missing, Duplicate, Schema, Invalid Type) and all the test cases (TC1.1 through TC-Combo.3) now belong to Step 2, not Step 1. Step 2's purpose becomes: "Validates the contents of the run folder against the expected feed list and schemas. Reports any issues inline. User may return to Step 1 to add or correct files, then re-run Check."
-
-In Part 3 (Run folder behavior), the folder is now created when the user enters Stage 1 under the New (Beta) tab — not when they upload their first file. This is already what Part 3 says; just make sure it's not contradicted by the old Part 4 wording about "first upload."
-
-In Part 7 (Run initialization), confirm the wording matches: the run is initialized when the user enters Stage 1, regardless of whether they upload anything via UI.
-
-That's it — the rest of the prompt (Parts 1, 6, 8, 9, 10) stays unchanged.
-Why this version is better
-
-A quick recap of what this change buys you:
-
-    No artificial barrier between UI upload and manual placement — the folder is the truth, the UI is just one way to populate it
-    Users can re-run faster — they don't have to re-upload through UI if they edit files in the folder
-    Step 1 is genuinely non-blocking — users with no files (or partial files) can still proceed and see exactly what's missing in Step 2
-    Validation lives where it belongs — in Step 2 (Check), against the actual folder contents
-    Better mirrors how compliance teams actually work — files often arrive via SharePoint, email, or batch jobs that drop into a known folder
+3. Rewrite the "What happens..." callout body
+Keep the heading "What happens when you click Run Pipeline" unchanged. Keep the callout's blue background, border, and small-caps heading style.
+Replace the current callout body with three short paragraphs:
+"The pipeline runs 10 steps in sequence, fully automatically. You don't need to do anything once it starts."
+"Each step shows green when it completes successfully, or red if it fails. If a step fails, the system shows a clear error message and a Retry button — you can fix the underlying issue and resume from the failed step without re-running the earlier ones."
+"When you're ready, click Run Pipeline below."
