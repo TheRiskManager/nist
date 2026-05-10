@@ -1,87 +1,77 @@
-Update the Stage 6 (Business Units) page to communicate the strategic role of this stage. The BU list currently powers corrective action plan (CAP) accountability and BU-level CAP reporting in Power BI. The architectural intent is for this list to also serve risk, control, and issue segmentation as analytics capabilities mature, but today it is scoped to CAPs only. The messaging must reflect this accurately — describing the current use truthfully while signaling the forward-looking architectural role.
-Use the established vocabulary (semantic model, certified dataset, authoritative list, reference dataset, dimension, dashboards, scorecards, accountability) but scope claims correctly to current capabilities.
-Do not modify the existing 5 sub-stage cards (Upload, Check, Load, Validate, Review & Edit), their progressive state behavior, the Proceed button, or the upload zone.
+Here's the full prompt for the intro text and "What happens" callout on Stage 7:
 
-1. Replace the body intro paragraph
-Current:
-"Maintain the in-scope Business Unit list used downstream for scoping reports and filtering risk views."
-Replace with:
-"This stage maintains the authoritative list of in-scope business units that the pipeline uses to assign accountability for corrective action plans. Because Archer does not track business unit ownership at the level required for risk intelligence reporting, this list is curated and maintained independently — it is the trusted reference dataset that links every corrective action plan in the consolidated output to a specific business unit, enabling per-BU views in the Power BI semantic model."
+    Update the body intro text and the "What happens when you click Start" callout on the Stage 7 (CAP & BU Reconciliation) page. The current copy is dense, technical, and does not clearly communicate the three-input architecture, the status model, or the downstream Power BI impact. The updated copy must clearly explain what the stage does, what the user needs to upload (vs. what is sourced automatically), what the workflow ahead looks like, what status model the reviewer will encounter, and why the work matters for downstream analytics.
 
-2. Add a "Why this list matters" callout above the existing operational callout
-Add a new callout positioned above the existing "What happens when you click Load Business Units" callout. Use the same visual treatment as other stage callouts.
-Heading: "Why this list matters"
-Body (four short paragraphs):
-"Archer is the system of record for risks, controls, issues, and corrective action plans — but it does not track business unit ownership at the level needed for analytics, reporting, and accountability. This stage closes that gap by maintaining the authoritative, in-scope business unit list as a curated reference dataset alongside the Archer-sourced data."
-"Today, this list is used to assign every corrective action plan in the consolidated dataset to a specific business unit. That assignment is what enables accountability — the right BU heads, control owners, and second-line teams can see, own, and act on the CAPs that belong to them, rather than navigating a single organization-wide list with no clear ownership."
-"Downstream, the Power BI semantic model uses this list as a dimension, joining it to the corrective action plans in the consolidated dataset to produce per-BU views: BU-level CAP coverage and aging reports, owner accountability scorecards by business unit, and executive roll-ups that compare remediation posture across the organization. The accuracy and completeness of this list directly shapes the trust and usefulness of every BU-segmented CAP report and intelligence view consumed across the team."
-"As the analytics capability matures, this list is expected to power BU-level segmentation for risks, controls, and issues as well — making this the central reference dataset for all BU-scoped intelligence. Use this stage to add new business units that have come into scope, remove units that are no longer in scope, or correct existing entries. Changes take effect the next time the pipeline runs."
+    Do not modify the engine logic, the reconciliation calculations, the sub-stage cards, the upload area behavior, the Start button mechanic, the review table, or any backend behavior. This is a text-only update.
+    1. Replace the body intro paragraph
 
-3. Keep the existing operational callout below the new strategic one
-The existing "What happens when you click Load Business Units" callout is correct and should stay. It now sits below the new strategic callout — the strategic one explains why, the operational one explains how.
+    Replace the existing intro paragraph (currently a short single-paragraph description) with the following two-paragraph intro positioned directly below the CAP & BU Reconciliation title:
 
-4. Add a summary header above the sub-stage cards
-Below the body intro and the two callouts, add a small summary row showing:
+    Paragraph 1: "This stage reconciles the corrective action plans against the current in-scope business units to produce the authoritative CAP→BU mapping for downstream analytics. It combines three sources — the fresh CAP list from the Stage 3 output, the current BU list from Stage 6, and the previous CAP→BU mapping you upload here — and flags any CAPs that need a business unit assigned."
 
-In-scope count: "[N] business units in scope" — live count of current BU list
-Last updated: "Last updated: [date] by [username]" — reflects the most recent edit
+    Paragraph 2: "The reconciled mapping feeds the Power BI semantic model as the trusted CAP→BU dimension. Every BU-level CAP coverage report, owner accountability scorecard, aging dashboard, and executive remediation roll-up reads from this mapping — which means the decisions made here directly shape the accuracy of every CAP-related intelligence view consumed across the team."
 
-Display compactly with subdued typography (smaller font, muted color) so it reads as metadata.
+    Render as two distinct paragraphs with appropriate vertical spacing between them. Use the same typography (sans-serif, regular weight, body text size) as the rest of the page.
+    2. Rewrite the "What happens when you click Start" callout
 
-5. Add a downstream impact note below the sub-stage cards
-Below the 5 sub-stage cards and above the Proceed button, add a small info banner:
-"Changes to this list affect: BU-level CAP coverage reports, owner accountability scorecards, aging and remediation dashboards, and executive risk reports in Power BI."
-Use a subtle visual treatment — light background, small text — so it reads as a reminder rather than an alarm.
+    Replace the existing callout body with the following four paragraphs. Keep the callout's existing visual treatment unchanged — same background color, border, small-caps heading style, and positioning below the body intro.
 
-6. Update the status pill below the Proceed button
-Current text:
-"Drop BU_List.xlsx into the upload zone — or click Proceed if your file is already in the working folder"
-Replace with:
-"BU list drives CAP accountability in Power BI · drop BU_List.xlsx into the upload zone or click Proceed if it's already in the working folder"
-If space is constrained, use the shorter form: "BU list drives CAP accountability · ready to load"
+    Heading: "What happens when you click Start"
 
-7. Update the horizontal stage ribbon subtitle for Stage 6
-Current: "Maintain the in-scope BU list"
-Replace with: "Reference data for BU segmentation in Power BI"
+    Body (four short paragraphs):
 
-8. Update the Stage 6 badge
-Current: Stage 6 · Maintenance
-Replace with: Stage 6 · Reference Data
+    "Clicking Start reveals the upload area, where you'll drop the previous CAP→BU mapping — the historical assignment file from the prior run. This is the only file you need to provide at this stage. The other two inputs — the fresh CAP list and the current authoritative BU list — are sourced automatically from the Stage 3 output and from Stage 6, so you don't need to manage them here."
 
-9. Apply the language conventions
-Throughout this stage, use consistent vocabulary:
+    "Once your file is uploaded, the pipeline runs five sub-steps automatically: it confirms all three inputs are present, loads them into memory, joins them on CAP ID, and produces a reconciled output where every CAP is tagged with a clear status — Mapped, Needs BU, or Archived. New CAPs and CAPs whose previously assigned BU has been retired both surface as 'Needs BU' and require your decision."
 
-"Power BI semantic model" when referring to the model layer
-"consolidated dataset" or "certified dataset" — not "risk register"
-"authoritative list" / "reference dataset" — for the BU list
-"business unit" in body prose; "BU" in tight UI spaces
-Scope claims accurately: today the list drives CAP segmentation; future use will extend to risks, controls, and issues
+    "You'll then review each row in an editable table. Rows marked Mapped require no action and carry forward unchanged. Rows marked Needs BU need a current business unit assigned from the dropdown. Rows marked Archived are CAPs that have been closed upstream — they're preserved for audit only and require no action."
 
+    "When you save, the reconciled mapping becomes the trusted CAP→BU dimension that feeds the Power BI semantic model. Every BU-segmented CAP report, scorecard, and dashboard downstream reads from this mapping the next time it refreshes. Resolving every Needs BU row before continuing is what keeps that intelligence accurate."
 
-10. Update the design specification
-Add a new section to STAGE_PAGE_DESIGN_SPEC.md titled "Reference data stages":
-"Reference data stages — such as the Business Units stage — maintain authoritative lists that are not sourced from upstream systems but are required by downstream analytics. These stages exist because the system of record (e.g., Archer) does not contain the dimension needed for segmentation in the Power BI semantic model. Reference data stages must clearly explain: (1) what the list is, (2) why it exists outside the system of record, (3) how the list is used downstream today, (4) the forward-looking architectural role if it differs from current scope, and (5) how edits affect downstream reporting. Always describe current scope accurately — do not overstate what the list does today. If the list's scope is expected to expand in the future, signal that explicitly as forward-looking architectural intent. Always display the current count, the last-modified metadata, and a brief downstream-impact reminder near the editable list. The page badge should use 'Reference Data' rather than 'Maintenance' to correctly signal the stage's role."
-Add a related note about strategic callouts:
-"Stages that exist for a non-obvious architectural reason must include a 'Why this stage matters' or equivalent strategic callout positioned above the operational callout. The strategic callout explains the why; the operational callout explains the how. Scope claims in the strategic callout must accurately reflect current functionality. Forward-looking architectural intent may be included but must be clearly framed as forward-looking, not as current capability."
+    Render the four paragraphs with appropriate vertical spacing so they read as distinct sections rather than one continuous block.
+    3. Apply language conventions
 
-11. What NOT to change
+    Throughout this stage, ensure consistent use of established vocabulary:
 
-The 5 sub-stage cards (Upload, Check, Load, Validate, Review & Edit) and their progressive states
-The Proceed button and its behavior
-The upload zone at the bottom of the page
-The Business Units icon and visual treatment
-The horizontal stage ribbon's overall structure
-The engine logic that consumes the BU list
-Any backend behavior
+        "Power BI semantic model" when referring to the model layer
+        "reconciliation" and "CAP→BU mapping" — the canonical terms for what this stage produces
+        "corrective action plan" in body prose; "CAP" in tight UI spaces, status chips, and tables
+        "business unit" in body prose; "BU" in tight UI spaces, status chips, and tables
+        The three status names: Mapped, Needs BU, Archived — use these consistently in all stage copy
+        Sub-labels for Needs BU rows: New CAP and Retired BU
 
+    Remove any remaining instances of the older status vocabulary (OK, New, Missing BU, Stale BU, Dropped) from user-facing copy. Internal engine code can retain its existing status codes; only the UI-facing labels need to align with the new vocabulary.
+    4. Update the page title (small polish)
 
-12. Output
-Provide a summary of all changes with before/after for each text block. Confirm:
+    If the current title uses a forward slash (CAP / BU Reconciliation), update it to use an ampersand instead:
 
-The new "Why this list matters" callout is positioned above the existing operational callout
-The BU count and last-modified metadata are now displayed
-The downstream impact note is in place below the sub-stage cards
-The status pill, ribbon subtitle, and badge are updated
-Scope claims accurately describe CAP-only current usage with forward-looking framing for future expansion
-The design specification was updated
-No engine code or sub-stage card behavior was modified
+    Current: CAP / BU Reconciliation Replace with: CAP & BU Reconciliation
+    5. What NOT to change
+
+        The Stage 7 badge (Stage 7 · Reconciliation)
+        The stage icon
+        The progressive disclosure pattern (where the upload area and sub-stage cards are revealed after the Start button is clicked)
+        The 5 sub-stage cards (Sources, Check, Load, Reconcile, Review & Edit)
+        The Start button mechanic or its state progression
+        The upload area behavior or any file handling logic
+        The review table layout or behavior (this will be addressed in a separate update)
+        The horizontal stage ribbon
+        Any other stage in the pipeline
+        The engine logic, reconciliation calculations, or backend behavior
+
+    6. Update the design specification
+
+    Add a section to STAGE_PAGE_DESIGN_SPEC.md titled "Multi-input reconciliation stages":
+
+    "Stages that reconcile multiple inputs (some auto-sourced, some user-uploaded) must clearly explain the input architecture in the intro text and 'What happens' callout. Specifically: (1) name each input and where it comes from — including the originating stage for auto-sourced inputs and the upload requirement for user-supplied inputs; (2) explicitly call out which file(s) the user needs to provide and which are automatic, so users don't expect to manage all inputs manually; (3) preview the workflow ahead, including the status model the reviewer will encounter in the review table; (4) close with the downstream impact — specifically what Power BI artifacts depend on the stage's output and how reviewer decisions shape accuracy."
+    7. Output
+
+    Provide a summary of the changes:
+
+        Before/after diff of the body intro paragraphs
+        Before/after diff of the "What happens" callout heading and body
+        Confirmation that the page title was updated to use an ampersand (if applicable)
+        Confirmation that older status vocabulary (OK, New, Missing BU, Stale BU, Dropped) is no longer present in user-facing copy on this page
+        Confirmation that the design specification was updated
+        Confirmation that no engine code, sub-stage card behavior, upload area logic, or review table was modified
+
