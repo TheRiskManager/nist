@@ -1,228 +1,116 @@
-Implement a new vertical stepper layout for Stage 1 (Data Onboarding) of the Risk and Controls Data Pipeline as a parallel implementation alongside the existing layout. Both layouts must coexist so they can be compared side-by-side before a final decision is made about which to keep.
+Here's the focused update for just the upload step (Part 4, replacing Step 1 only). Use this to replace Part 4 in your existing prompt — leave Parts 1, 2, 3, and 5+ as they were.
+Part 4 (revised) — Step 1 (Prepare Files) detailed specification
 
-Part 1 — Parallel implementation structure
-Add a sub-tab control at the top of the Stage 1 content card (immediately below the Stage 1 · Governance Gate badge and Data Onboarding title, above the body intro paragraph). The sub-tab control has two options:
+Purpose:
 
-Tab 1: "Classic" — the existing layout with the three horizontal sub-stage cards (Check / Load / Validate). This is the default tab. The current implementation must remain untouched and fully functional under this tab.
-Tab 2: "New (Beta)" — the new vertical stepper layout described in Part 2 below. Mark with a small "Beta" badge to signal it is under evaluation.
+Step 1 stages the run folder. It is non-blocking — the user may proceed to Step 2 with all files, partial files, or no files. Validation does not happen here; it happens in Step 2 (Check). Step 1 simply makes it easy to populate the run folder.
 
-When a user switches between tabs, all content above the tab control (page header, top stage ribbon, Run Timeline, Stage 1 badge, title, intro, and "What happens when you click..." callout) must remain unchanged and visible. Only the content below the tab control changes.
-The sub-tab selection should persist within the user's session (e.g., remember the choice if they navigate away and return). It does not need to persist across browser sessions.
-Do not modify, restyle, or relocate any of the following:
+Three equivalent ways to add files:
 
-The horizontal stage ribbon at the top of the page
-The page header (Pipeline Console / subtitle)
-The "Run Timeline" section
-The Stage 1 badge, icon, title, body intro, or "What happens when you click..." callout
-Any other stages of the pipeline (Run Pipeline, Output, Pipeline Integrity, Source Data Health, Business Units)
-The existing Stage 1 sub-stage cards, button, and status pill (these remain under the "Classic" tab)
+Users may add files using any combination of the following methods. All three are equivalent in outcome — files end up in the same run folder on disk.
 
-Once both layouts are stable and a decision is made about which to adopt as the default, the unused tab will be removed in a follow-up change. Do not remove either tab in this implementation.
+    Drag-and-drop into the UI upload area — files are saved into the run folder
+    Click-to-browse via UI — files are saved into the run folder
+    Manual placement — user opens the run folder directly via OS file explorer and drops files in
 
-Part 2 — New vertical stepper layout (under "New (Beta)" tab)
-Replace the three horizontal sub-stage cards with a vertical stepper containing four sub-steps revealed progressively as the user completes each one.
-Stepper structure:
+Run folder display (top of Step 1):
 
-Step 1 — Upload Files — visible by default
-Step 2 — Check — hidden until Step 1 completes successfully
-Step 3 — Load — hidden until Step 2 completes successfully
-Step 4 — Validate — hidden until Step 3 completes successfully
+Display the run folder path prominently at the top of Step 1, with two action buttons:
 
-Visual conventions:
+    Copy path — copies the full folder path to clipboard
+    Open folder — opens the folder in the OS file explorer (where supported by the platform)
 
-Numbered circles for each step on the left, connected by a vertical line
-Active step: highlighted with the design system's accent color (consistent with the existing stage ribbon)
-Completed step: green checkmark badge, body content collapsed (clickable to re-expand for review)
-Pending step: muted/disabled appearance, body content hidden
-The vertical line between steps fills with green as steps complete
-Each step has its own inline primary action button (label varies per step)
-The stage-level Run Pipeline → CTA appears below the stepper only after Step 4 completes successfully
+Example display:
 
-Visual style:
-Match the existing stage page design — corporate-safe, professional, reminiscent of Microsoft admin portals, Azure workflows, and Power Platform interfaces. Use the same typography, color tokens, container conventions, and component styling as the rest of the page. The vertical stepper should feel like a natural extension of the existing design.
+    Run folder: C:\runs\run_2026-01-15_104237_ahmad [Copy path] [Open folder]
 
-Part 3 — Step 1 (Upload Files) detailed specification
-Expected file set:
-The pipeline expects exactly 8 source feeds, each as a separate .xlsx file. Each feed has a canonical name and is matched to uploaded files by filename (case-insensitive, with normalization for common suffixes such as _v2, _final, dates, and underscores vs. dashes):
+Upload area:
 
-risk_register — Risk Register: core risk inventory
-risk_library — Risk Library: taxonomy, categories, risk statements
-controls — Controls: control inventory
-control_assessments — Control Assessments: ratings and effectiveness data
-issues — Issues: identified gaps and findings
-corrective_action_plans — CAPs: remediation plans
-business_units — Business Units: organizational scope
-applications — Applications: application inventory
+Below the folder display, show a drag-and-drop area with a click-to-browse fallback. The upload area should clearly indicate that it is optional — manual placement in the folder is equally valid. Suggested helper text inside the upload area:
 
-(This list is provisional. Confirm with the project owner before final implementation. Replace any placeholder names with the actual feed names used by the engine.)
-Define this list, along with each feed's expected schema (column names and required types), in a separate configuration file (e.g., feed_config.yaml or feed_schemas.py) so it can be modified without changing UI code.
+    Drop .xlsx files here, or click to browse. Optional — you can also place files directly in the run folder.
+
 Upload area behavior:
 
-Drag-and-drop area accepting one or more .xlsx files
-Click-to-browse alternative (file picker dialog)
-Multiple files can be uploaded in a single drag or selection
-Uploading additional files adds to the existing list, does not replace it
-Each uploaded file shows: filename, size, matched feed name (if matched), and a per-file remove control
-Folders cannot be uploaded — display message: "Please upload individual .xlsx files, not folders"
-Maximum file size per file: 50 MB (display error if exceeded)
-Uploaded files are held client-side until validation passes; they are not transmitted to any backend until then
+    Accepts one or more .xlsx files per drag/selection
+    Files dropped here are saved into the run folder on disk
+    Uploading additional files adds to the folder, does not replace
+    Folders cannot be uploaded — display message: "Please add individual .xlsx files, not folders"
+    Maximum file size per file: 50 MB (display error if exceeded)
 
-Primary button states inside Step 1:
+File list (current contents of the run folder):
 
-Idle (no files): label Upload Files, button disabled
-Files uploaded, not yet validated: label Validate Files →, button enabled
-Validation in progress: label Validating files…, button disabled
-Validation complete with errors: label Re-validate →, button enabled
-Validation complete with no errors: Step 1 is marked complete, the step body collapses, and Step 2 reveals automatically
+Below the upload area, display a live list of files currently in the run folder. The list reflects the actual folder contents on disk, not just what was uploaded via UI. This means files placed manually via OS file explorer also appear here.
 
+For each file, display:
 
-Part 4 — Validation logic and test cases
-When the user clicks Validate Files →, run all four validation categories in order. Display all results inline within Step 1, grouped by category. Do not clear uploaded files on validation failure. Allow the user to remove or replace individual files and re-validate without losing state.
-Category 1: Missing required feeds
-Compare uploaded files against the 8 expected feeds using filename matching (case-insensitive, normalizing common suffixes).
-Test cases:
+    Filename
+    Size
+    Last modified timestamp
+    A "Remove" control that deletes the file from the folder
+    A small badge showing how the file got there: Uploaded via UI or Placed manually
 
-TC1.1: User uploads 0 files → display "All 8 required feeds are missing" with the list of expected feed names
-TC1.2: User uploads 1 file matching risk_register → display "7 required feeds missing" with the list of the 7 missing feed names
-TC1.3: User uploads 8 files but none match the expected names → display "All 8 required feeds are missing" + 8 unexpected files (see Category 4)
-TC1.4: User uploads 7 of 8 correct feeds → display "1 required feed missing: [feed name]"
-TC1.5: User uploads all 8 correct feeds → no missing-feed error
+Folder watching / refresh:
 
-Each missing-feed error must include:
+The file list must reflect the current folder contents. Implement using one of:
 
-The canonical feed name
-A brief description of what the feed contains
-A clear next step ("Add this feed by uploading a file named [feed_name].xlsx or similar")
+    A file system watcher that auto-refreshes the list when files are added/removed in the folder
+    A manual "Refresh" button at the top of the file list
+    Polling the folder every few seconds
 
-Category 2: Duplicate files
-Detect three types of duplication. Each is reported separately.
-2a — Filename duplicates: same filename uploaded more than once
+If a file system watcher is not feasible, default to a manual Refresh button with clear messaging: "If you placed files manually in the folder, click Refresh to see them."
 
-TC2a.1: User uploads risk_register.xlsx twice → blocking error: "Duplicate filename: risk_register.xlsx was uploaded twice. Remove one copy to proceed."
+Step 1 primary button:
 
-2b — Content duplicates: different filenames, identical file content (compared by file hash)
+Step 1 has a single primary button at the bottom: Continue to Check →
 
-TC2b.1: User uploads risk_register.xlsx and risk_register_copy.xlsx with byte-identical content → warning (non-blocking): "Possible duplicate content: risk_register.xlsx and risk_register_copy.xlsx appear to be identical. Confirm which version to use."
+The button is always enabled, regardless of how many files are in the folder (zero, partial, or all 8). Step 1 is non-blocking by design — validation happens in Step 2.
 
-2c — Feed identifier duplicates: two files matched to the same expected feed
+If the user clicks Continue to Check → with fewer than 8 files in the folder, display a small inline confirmation:
 
-TC2c.1: User uploads risk_register.xlsx and risk_register_v2.xlsx (both match the risk_register feed) → blocking error: "Two files matched to the Risk Register feed: risk_register.xlsx and risk_register_v2.xlsx. Remove one or rename so only one matches."
+    The run folder currently contains [N] of 8 expected feeds. Continue to Check anyway?
 
-Filename duplicates and feed identifier duplicates are blocking errors — Step 1 cannot complete. Content duplicates are warnings — Step 1 can complete but the user is prompted to confirm.
-Category 3: Schema issues
-For each uploaded file matched to an expected feed, validate the schema against the configuration file.
-3a — Missing required columns:
+    [Continue] [Stay and add more files]
 
-TC3a.1: Risk Register file is missing the RiskID column → blocking error: "risk_register.xlsx is missing required column: RiskID. Check the column headers."
+This is a confirmation, not a block. The user can proceed at any time.
 
-3b — Misnamed columns (close match):
+Step 1 completion state:
 
-TC3b.1: Risk Register file has Risk_ID instead of RiskID → blocking error: "risk_register.xlsx has an unexpected column Risk_ID. Did you mean RiskID? Rename the column to match the expected schema."
+When the user clicks Continue to Check → (and confirms if prompted), Step 1 is marked complete:
 
-3c — Wrong data types:
+    Step 1 collapses with a green checkmark
+    A summary line shows: "[N] files staged in run folder"
+    Step 2 (Check) is revealed
 
-TC3c.1: Risk Register has text values in a column that should be numeric → blocking error: "risk_register.xlsx column RiskScore contains non-numeric values in rows [list]. Correct the values or check the column type."
+The user can re-expand Step 1 at any time to add or remove files. If they do so and modify the folder contents after Step 2 has run, Step 2 must re-run before Step 3 can proceed.
 
-3d — Empty mandatory fields:
+State preservation:
 
-TC3d.1: Risk Register has empty cells in the RiskID column (mandatory) → blocking error: "risk_register.xlsx has empty values in mandatory column RiskID at rows [list]. Fill in the missing values."
+    The run folder persists across navigation away from Stage 1 and back
+    Files in the folder persist (the folder is not deleted when the user leaves)
+    If the user returns to Stage 1 in a later session, they may either resume the existing run folder or create a new one (display both options)
 
-3e — Extra columns (informational, not blocking):
+What you'll also want to change in other parts
 
-TC3e.1: Risk Register has all required columns plus 2 extra columns → info only: "risk_register.xlsx has 2 extra columns that will be ignored: [list]. This is informational only."
+A few small downstream edits to keep the rest of the prompt consistent:
 
-3f — Wrong sheet (multi-sheet workbook):
+In Part 2 (Stepper structure), update Step 1's name:
 
-TC3f.1: Uploaded .xlsx has multiple sheets and the first sheet is not the data sheet → blocking error: "risk_register.xlsx contains multiple sheets. Specify which sheet contains the data, or move the data to the first sheet."
+    Step 1 — Prepare Files (was Upload Files)
 
-Category 4: Invalid file types
-4a — Unsupported extensions:
+Move all validation logic from Part 4 to Part 5 (Step 2 — Check). The four categories (Missing, Duplicate, Schema, Invalid Type) and all the test cases (TC1.1 through TC-Combo.3) now belong to Step 2, not Step 1. Step 2's purpose becomes: "Validates the contents of the run folder against the expected feed list and schemas. Reports any issues inline. User may return to Step 1 to add or correct files, then re-run Check."
 
-TC4a.1: User uploads .csv → blocking error: "controls.csv is not a supported file type. Convert to .xlsx and re-upload."
-TC4a.2: User uploads .xls (older Excel format) → warning: "risk_register.xls is an older Excel format. Save as .xlsx for best compatibility."
-TC4a.3: User uploads .pdf → blocking error: "controls.pdf is not a supported file type. Upload .xlsx files only."
+In Part 3 (Run folder behavior), the folder is now created when the user enters Stage 1 under the New (Beta) tab — not when they upload their first file. This is already what Part 3 says; just make sure it's not contradicted by the old Part 4 wording about "first upload."
 
-4b — Corrupted files:
+In Part 7 (Run initialization), confirm the wording matches: the run is initialized when the user enters Stage 1, regardless of whether they upload anything via UI.
 
-TC4b.1: User uploads a .xlsx that cannot be opened → blocking error: "risk_register.xlsx could not be opened. The file may be corrupted. Re-export from the source system."
+That's it — the rest of the prompt (Parts 1, 6, 8, 9, 10) stays unchanged.
+Why this version is better
 
-4c — Empty files:
+A quick recap of what this change buys you:
 
-TC4c.1: User uploads a .xlsx with 0 rows → blocking error: "risk_register.xlsx is empty. Verify the file has content and re-upload."
-TC4c.2: User uploads a .xlsx of 0 bytes → blocking error: "risk_register.xlsx is empty (0 bytes). The file did not upload correctly. Re-upload."
-
-4d — Password-protected files:
-
-TC4d.1: User uploads an encrypted .xlsx → blocking error: "risk_register.xlsx is password-protected. Remove the password and re-upload."
-
-Combination test cases
-The validation must handle multiple simultaneous errors gracefully:
-
-TC-Combo.1: User uploads 5 files: 1 correct, 1 with schema issue, 1 duplicate, 1 invalid type, 1 unmatched filename → display all categories of error simultaneously, grouped by category, with clear separation
-TC-Combo.2: User has prior validation errors, removes 1 problematic file, uploads a corrected version, re-validates → only the resolved errors disappear; remaining errors stay visible
-TC-Combo.3: User uploads 8 valid files, validates successfully, then drags a 9th file → the 9th file is matched against expected feeds; if it duplicates an existing feed, raise duplicate error; if not, raise unexpected-file warning
-
-Error display conventions
-
-All errors appear inline within Step 1, grouped by category in this order: Missing → Duplicate → Schema → Invalid Type → Combination notes
-Each error names the specific file or feed it relates to
-Each error provides a clear, actionable next step
-Errors auto-dismiss when the underlying issue is resolved (no manual close required)
-Blocking errors prevent Step 1 from completing; warnings allow completion but display a confirmation prompt
-When validation completes with no errors, the entire error display area collapses cleanly
-
-
-Part 5 — Steps 2, 3, and 4 (Check, Load, Validate)
-Once Step 1 completes successfully, proceed through Steps 2–4 sequentially. Each step appears with its own action button and inline result display.
-Step 2 — Check: "Confirms every required source feed is present in the working folder." Action button: Run Check →
-Step 3 — Load: "Reads each feed into memory and locks the chosen version so nothing changes underneath the pipeline mid-run." Action button: Run Load →
-Step 4 — Validate: "Verifies that every feed has the columns downstream stages need." Action button: Run Validate →
-Each step's action button changes label and color across idle → in progress → complete states, consistent with the design system. Step results are displayed inline (pass/fail with details).
-Important: With Step 1 now performing upload-time validation (schema, file presence), Steps 2–4 may have overlapping responsibilities with the existing engine logic. Confirm with the project owner whether these steps remain distinct operations (e.g., Check verifies file presence at runtime, Load opens the files in memory, Validate re-verifies columns at the engine level) or whether they should be consolidated. Document the decision in STAGE_PAGE_DESIGN_SPEC.md.
-When Step 4 completes successfully, the stage-level Run Pipeline → CTA appears below the stepper, advancing the user to Stage 2.
-
-Part 6 — State management
-
-Uploaded files persist across navigation away from Stage 1 and back, within the same session
-Validation results persist until the user uploads new files or removes existing ones
-The stepper remembers which steps have been completed and which is currently active, and reflects this when the user returns to Stage 1
-Sub-tab selection ("Classic" or "New (Beta)") persists within the session
-
-
-Part 7 — Run initialization (backend behavior)
-When the user begins Stage 1 by uploading their first file (in either tab) or otherwise starting an action, a new processing session is created on the backend, identified by username and timestamp. This is not exposed prominently in the UI but should appear in the existing "Run Timeline" section as a small label (e.g., "Run started: 10:42 AM by [username]").
-This is a backend specification, not a UI feature. The UI should not surface session creation as a user-visible action.
-
-Part 8 — Implementation requirements
-
-Configuration file: Define the expected feed list, schemas, and validation rules in a separate configuration file (feed_config.yaml or feed_schemas.py). This file is the single source of truth for what files are expected and what their schemas look like.
-Unit tests: Provide unit tests covering each test case listed above (TC1.1 through TC-Combo.3) at the validation logic level. Each test case ID must map to at least one passing unit test.
-Integration tests: Provide integration tests for the upload-to-validation flow, confirming error display, error dismissal, and state preservation across re-validation.
-No regression in the Classic tab: Verify that the existing Classic layout continues to work exactly as before — same buttons, same labels, same state transitions, same engine calls.
-Document any deviations: If any test case is intentionally not implemented, or if the implementation differs from the specification, document the deviation and reasoning in a IMPLEMENTATION_NOTES.md file.
-
-
-Part 9 — Update the design specification
-Add the following patterns to STAGE_PAGE_DESIGN_SPEC.md as canonical patterns for stage pages:
-
-Vertical stepper: when a stage contains 3+ sequential sub-steps with substantial per-step content
-Horizontal sub-stage cards: when a stage contains 2–3 sub-steps with minimal per-step content (the existing pattern)
-Upload area: drag-and-drop with click-to-browse fallback, per-file remove control, file size limits, format validation
-Validation error display: inline, grouped by category, named per file, with actionable next steps and auto-dismissal on resolution
-Sub-tab pattern for parallel implementations: when a stage is being redesigned, use sub-tabs to host both implementations side-by-side until a decision is made
-
-Document when each pattern is appropriate, the visual conventions, and the state management rules.
-
-Part 10 — Output and verification
-After implementation, provide:
-
-A summary listing the files modified, the components added, and the tests written
-A diff or change list showing what was added in the parallel "New (Beta)" tab and confirming nothing in the existing "Classic" tab was modified
-A test results report showing each test case ID and whether it passes
-A list of open questions or assumptions made during implementation that should be confirmed with the project owner before merging
-
-Confirm before completing that:
-
-The Classic tab is byte-for-byte unchanged in behavior
-The New (Beta) tab implements the full vertical stepper, upload area, and validation logic
-Both tabs render correctly and switching between them does not lose state
+    No artificial barrier between UI upload and manual placement — the folder is the truth, the UI is just one way to populate it
+    Users can re-run faster — they don't have to re-upload through UI if they edit files in the folder
+    Step 1 is genuinely non-blocking — users with no files (or partial files) can still proceed and see exactly what's missing in Step 2
+    Validation lives where it belongs — in Step 2 (Check), against the actual folder contents
+    Better mirrors how compliance teams actually work — files often arrive via SharePoint, email, or batch jobs that drop into a known folder
