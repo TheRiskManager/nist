@@ -1,34 +1,48 @@
-1. Rename the 10 step cards
-Update only the displayed name and description on each card. Keep the existing step IDs, function names, and engine logic untouched. Replace bracketed placeholders with the existing dynamic variables already used in the current implementation.
+2. Replace the body intro paragraph
+Current:
+"The pipeline has assembled all 8 feeds into a single, consolidated, deduplicated, and enriched Risk Register workbook ready for review."
+Replace with:
+"The pipeline has built the integrated risk and controls data view from all 8 source files. The output is ready in the run folder — open it for review, download a copy, or continue to the next stage when you're ready."
+
+3. Rewrite the "What happens..." callout
+Update the heading from "What happens when you click Review Output" to "What you can do here". The previous heading no longer describes the page accurately because there is no single "Review Output" action.
+Replace the callout body with three short paragraphs:
+"The output is ready in the run folder. You can open it in Excel for review, download a copy to share with stakeholders, or continue to the next stage when you're ready."
+"The summary cards below show the row count, column count, when the file was generated, and how long the pipeline took to run."
+"Opening or downloading is optional — you can continue without doing either."
+Keep the existing callout styling (background color, border, small-caps heading treatment) unchanged.
+
+4. Update the status pill
+The current page has two pill states ("Ready to review" before click, "Review the output below — continue when ready" after click). Since there is no longer a forced sequence, replace both with a single persistent pill:
+"Output ready · open, download, or continue when ready"
+
+5. File path bar (unchanged from previous prompt)
+The bar showing the full path of the output file should still be improved:
+
+Add a label "File location" above or to the left of the path
+Display the path in a monospace font
+Truncate gracefully with an ellipsis if the path exceeds available width, with the full path in a tooltip on hover
+Add a copy-to-clipboard icon at the right end of the bar
 
 
-Step 1
-Name: Load Source Files
-Description: All 8 source files loaded
-Step 2
-Name: Clean and Standardize
-Description: Data cleaned and ready for processing — [N] records
-Step 3
-Name: Apply Risk Categories
-Description: Risk categories and taxonomy applied — [N] records
-Step 4
-Name: Expand Control Mappings
-Description: Multi-control rows expanded — [N] records
-Step 5
-Name: Add Control Details
-Description: Control descriptions and owners added — [X] unmapped control(s) preserved, [N] records total
-Step 6
-Name: Link Issues to Controls
-Description: Issues connected to their controls — [X] unmapped issue(s) preserved, [N] records total
-Step 7
-Name: Link Corrective Action Plans
-Description: CAPs connected to their issues — [X] unmapped CAP(s) preserved, [N] records total
-Step 8
-Name: Add Remaining Details
-Description: Final details added, [X] duplicate row(s) removed — [N] records remain
-Step 9
-Name: Apply Validation Rules
-Description: Compliance and integrity rules applied — [N] records
-Step 10
-Name: Save Final Output
-Description: Pipeline complete — final risk and controls data view saved ([N]s)
+6. Summary cards (unchanged from previous prompt)
+The four summary cards (Rows, Columns, Generated, Run time) should:
+
+Use sentence case throughout — change "Run Time" to "Run time"
+Include the year in the "Generated" value: "May 10, 2026 · 1:17 PM"
+
+Keep the layout, colors, and check icons.
+
+7. Apply the design specification's language conventions
+Replace any remaining instances of:
+
+"Risk Register" → "risk and controls data view"
+"feeds" → "source files"
+"workbook" → "output"
+"enriched" → remove
+"morph" / "morphs into" → remove
+"local Excel instance" → "Excel"
+
+
+
+
