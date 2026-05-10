@@ -1,12 +1,34 @@
-2. Replace the stage intro paragraph
-Current text:
-"Assemble the consolidated Risk Register from all validated Archer feeds — the pipeline runs 10 sequential steps below, fully automatically."
-Replace with:
-"Build the integrated risk and controls data view from your validated source files. The pipeline runs 10 steps in sequence, fully automatically — each step's outcome appears below as it completes."
+1. Rename the 10 step cards
+Update only the displayed name and description on each card. Keep the existing step IDs, function names, and engine logic untouched. Replace bracketed placeholders with the existing dynamic variables already used in the current implementation.
 
-3. Rewrite the "What happens..." callout body
-Keep the heading "What happens when you click Run Pipeline" unchanged. Keep the callout's blue background, border, and small-caps heading style.
-Replace the current callout body with three short paragraphs:
-"The pipeline runs 10 steps in sequence, fully automatically. You don't need to do anything once it starts."
-"Each step shows green when it completes successfully, or red if it fails. If a step fails, the system shows a clear error message and a Retry button — you can fix the underlying issue and resume from the failed step without re-running the earlier ones."
-"When you're ready, click Run Pipeline below."
+
+Step 1
+Name: Load Source Files
+Description: All 8 source files loaded
+Step 2
+Name: Clean and Standardize
+Description: Data cleaned and ready for processing — [N] records
+Step 3
+Name: Apply Risk Categories
+Description: Risk categories and taxonomy applied — [N] records
+Step 4
+Name: Expand Control Mappings
+Description: Multi-control rows expanded — [N] records
+Step 5
+Name: Add Control Details
+Description: Control descriptions and owners added — [X] unmapped control(s) preserved, [N] records total
+Step 6
+Name: Link Issues to Controls
+Description: Issues connected to their controls — [X] unmapped issue(s) preserved, [N] records total
+Step 7
+Name: Link Corrective Action Plans
+Description: CAPs connected to their issues — [X] unmapped CAP(s) preserved, [N] records total
+Step 8
+Name: Add Remaining Details
+Description: Final details added, [X] duplicate row(s) removed — [N] records remain
+Step 9
+Name: Apply Validation Rules
+Description: Compliance and integrity rules applied — [N] records
+Step 10
+Name: Save Final Output
+Description: Pipeline complete — final risk and controls data view saved ([N]s)
