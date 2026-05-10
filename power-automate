@@ -1,77 +1,66 @@
-Here's the full prompt for the intro text and "What happens" callout on Stage 7:
+Update the post-reconciliation elements on the Stage 7 (CAP & BU Reconciliation) page to clean up inconsistencies and align with the page's existing vocabulary and visual style. The reconciliation has run, the 5 sub-stage cards correctly show progression, and the user is on the Review & Edit step. The elements between the sub-stage cards and the review table need refinement.
+Do not modify the review table, its filter chips, its columns, or its edit-mode behavior at this time — those will be addressed in a separate prompt. This prompt is scoped to the page-level elements above the table only.
 
-    Update the body intro text and the "What happens when you click Start" callout on the Stage 7 (CAP & BU Reconciliation) page. The current copy is dense, technical, and does not clearly communicate the three-input architecture, the status model, or the downstream Power BI impact. The updated copy must clearly explain what the stage does, what the user needs to upload (vs. what is sourced automatically), what the workflow ahead looks like, what status model the reviewer will encounter, and why the work matters for downstream analytics.
+1. Clarify or rename the "Loaded" pill
+Between the sub-stage cards and the inputs panel, there is currently a large pill labeled "Loaded". Its purpose is unclear — it looks like a button but the label suggests a state. Determine whether this is:
 
-    Do not modify the engine logic, the reconciliation calculations, the sub-stage cards, the upload area behavior, the Start button mechanic, the review table, or any backend behavior. This is a text-only update.
-    1. Replace the body intro paragraph
+A button users click to proceed (in which case rename to something like "Continue to Review →")
+A status indicator showing the pipeline completed (in which case style it as a status indicator, not a button — smaller, less prominent, with text like "Pipeline run complete")
+A leftover element that should be removed
 
-    Replace the existing intro paragraph (currently a short single-paragraph description) with the following two-paragraph intro positioned directly below the CAP & BU Reconciliation title:
+Pick the appropriate interpretation based on the engine logic and remove the ambiguity.
 
-    Paragraph 1: "This stage reconciles the corrective action plans against the current in-scope business units to produce the authoritative CAP→BU mapping for downstream analytics. It combines three sources — the fresh CAP list from the Stage 3 output, the current BU list from Stage 6, and the previous CAP→BU mapping you upload here — and flags any CAPs that need a business unit assigned."
+2. Update the small summary pill text
+Currently displays: "Reconciled 85 CAP IDs"
+Update to reflect the new status vocabulary:
+"Reconciled 85 CAPs · [N] Mapped · [N] Needs BU · [N] Archived"
+The total stays as 85; the breakdown by status uses the new vocabulary. Pull live counts from the reconciliation output.
+If [N] Needs BU > 0, optionally append a second smaller line below:
+"[N] new CAPs · [N] retired BUs"
+This gives the reviewer an at-a-glance sense of how much pending work they have before they even scroll to the table.
 
-    Paragraph 2: "The reconciled mapping feeds the Power BI semantic model as the trusted CAP→BU dimension. Every BU-level CAP coverage report, owner accountability scorecard, aging dashboard, and executive remediation roll-up reads from this mapping — which means the decisions made here directly shape the accuracy of every CAP-related intelligence view consumed across the team."
+3. Restructure the inputs panel layout
+The current inputs panel shows three cards in a 2 + 1 grid (two on top, one below). This is visually asymmetric. Restructure to either:
 
-    Render as two distinct paragraphs with appropriate vertical spacing between them. Use the same typography (sans-serif, regular weight, body text size) as the rest of the page.
-    2. Rewrite the "What happens when you click Start" callout
+Option A: Three cards in a horizontal row (preferred if screen width allows)
+Option B: Three cards stacked vertically as full-width rows
 
-    Replace the existing callout body with the following four paragraphs. Keep the callout's existing visual treatment unchanged — same background color, border, small-caps heading style, and positioning below the body intro.
+Either option must present the three inputs in this order, matching the order used in the body intro and callout text:
 
-    Heading: "What happens when you click Start"
+Fresh CAP list (from Stage 3 output)
+Current BU list (from Stage 6)
+Previous CAP→BU mapping (uploaded here)
 
-    Body (four short paragraphs):
 
-    "Clicking Start reveals the upload area, where you'll drop the previous CAP→BU mapping — the historical assignment file from the prior run. This is the only file you need to provide at this stage. The other two inputs — the fresh CAP list and the current authoritative BU list — are sourced automatically from the Stage 3 output and from Stage 6, so you don't need to manage them here."
+4. Update the labels on each input card
+Current labels are inconsistent in tone and length. Update to use a consistent "Source N · what it is · where it comes from" structure:
+Card 1:
 
-    "Once your file is uploaded, the pipeline runs five sub-steps automatically: it confirms all three inputs are present, loads them into memory, joins them on CAP ID, and produces a reconciled output where every CAP is tagged with a clear status — Mapped, Needs BU, or Archived. New CAPs and CAPs whose previously assigned BU has been retired both surface as 'Needs BU' and require your decision."
+Filename (existing): [filename].xlsx
+Label: "Source 1 · Fresh CAP list · from Stage 3 output"
+File path (existing): displayed below the label
+Status: ✅
 
-    "You'll then review each row in an editable table. Rows marked Mapped require no action and carry forward unchanged. Rows marked Needs BU need a current business unit assigned from the dropdown. Rows marked Archived are CAPs that have been closed upstream — they're preserved for audit only and require no action."
+Card 2:
 
-    "When you save, the reconciled mapping becomes the trusted CAP→BU dimension that feeds the Power BI semantic model. Every BU-segmented CAP report, scorecard, and dashboard downstream reads from this mapping the next time it refreshes. Resolving every Needs BU row before continuing is what keeps that intelligence accurate."
+Filename (existing): BU_List.xlsx
+Label: "Source 2 · Current BU list · from Stage 6"
+File path (existing)
+Status: ✅
 
-    Render the four paragraphs with appropriate vertical spacing so they read as distinct sections rather than one continuous block.
-    3. Apply language conventions
+Card 3:
 
-    Throughout this stage, ensure consistent use of established vocabulary:
+Filename (existing): [filename].xlsx
+Label: "Source 3 · Previous CAP→BU mapping · uploaded here"
+File path (existing)
+Status: ✅
 
-        "Power BI semantic model" when referring to the model layer
-        "reconciliation" and "CAP→BU mapping" — the canonical terms for what this stage produces
-        "corrective action plan" in body prose; "CAP" in tight UI spaces, status chips, and tables
-        "business unit" in body prose; "BU" in tight UI spaces, status chips, and tables
-        The three status names: Mapped, Needs BU, Archived — use these consistently in all stage copy
-        Sub-labels for Needs BU rows: New CAP and Retired BU
 
-    Remove any remaining instances of the older status vocabulary (OK, New, Missing BU, Stale BU, Dropped) from user-facing copy. Internal engine code can retain its existing status codes; only the UI-facing labels need to align with the new vocabulary.
-    4. Update the page title (small polish)
+5. What NOT to change in this prompt
 
-    If the current title uses a forward slash (CAP / BU Reconciliation), update it to use an ampersand instead:
+The body intro, the "What happens" callout, and the 5 sub-stage cards
+The review table, its filter chips, its columns, the "READ-ONLY" / "Enable editing" toggle, the "Show details" button, or any table-related behavior
+The Start button and the progressive disclosure pattern
+The engine logic or any backend behavior
 
-    Current: CAP / BU Reconciliation Replace with: CAP & BU Reconciliation
-    5. What NOT to change
-
-        The Stage 7 badge (Stage 7 · Reconciliation)
-        The stage icon
-        The progressive disclosure pattern (where the upload area and sub-stage cards are revealed after the Start button is clicked)
-        The 5 sub-stage cards (Sources, Check, Load, Reconcile, Review & Edit)
-        The Start button mechanic or its state progression
-        The upload area behavior or any file handling logic
-        The review table layout or behavior (this will be addressed in a separate update)
-        The horizontal stage ribbon
-        Any other stage in the pipeline
-        The engine logic, reconciliation calculations, or backend behavior
-
-    6. Update the design specification
-
-    Add a section to STAGE_PAGE_DESIGN_SPEC.md titled "Multi-input reconciliation stages":
-
-    "Stages that reconcile multiple inputs (some auto-sourced, some user-uploaded) must clearly explain the input architecture in the intro text and 'What happens' callout. Specifically: (1) name each input and where it comes from — including the originating stage for auto-sourced inputs and the upload requirement for user-supplied inputs; (2) explicitly call out which file(s) the user needs to provide and which are automatic, so users don't expect to manage all inputs manually; (3) preview the workflow ahead, including the status model the reviewer will encounter in the review table; (4) close with the downstream impact — specifically what Power BI artifacts depend on the stage's output and how reviewer decisions shape accuracy."
-    7. Output
-
-    Provide a summary of the changes:
-
-        Before/after diff of the body intro paragraphs
-        Before/after diff of the "What happens" callout heading and body
-        Confirmation that the page title was updated to use an ampersand (if applicable)
-        Confirmation that older status vocabulary (OK, New, Missing BU, Stale BU, Dropped) is no longer present in user-facing copy on this page
-        Confirmation that the design specification was updated
-        Confirmation that no engine code, sub-stage card behavior, upload area logic, or review table was modified
-
+These will be addressed in a separate prompt focused specifically on the review table redesign.
