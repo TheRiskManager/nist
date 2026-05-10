@@ -1,66 +1,106 @@
-Update the post-reconciliation elements on the Stage 7 (CAP & BU Reconciliation) page to clean up inconsistencies and align with the page's existing vocabulary and visual style. The reconciliation has run, the 5 sub-stage cards correctly show progression, and the user is on the Review & Edit step. The elements between the sub-stage cards and the review table need refinement.
-Do not modify the review table, its filter chips, its columns, or its edit-mode behavior at this time — those will be addressed in a separate prompt. This prompt is scoped to the page-level elements above the table only.
+You're right — this is bad, and the bigger problem is the stuck flow. Let me address both clearly.
+The stuck flow is the critical issue
 
-1. Clarify or rename the "Loaded" pill
-Between the sub-stage cards and the inputs panel, there is currently a large pill labeled "Loaded". Its purpose is unclear — it looks like a button but the label suggests a state. Determine whether this is:
+The pipeline has visibly run successfully — all five sub-stage cards (Upload, Check, Load, Reconcile, Review & Edit) are green or active. The reconciliation produced 85 records. The user is sitting on the Review & Edit step. But there is no primary action button anywhere to:
 
-A button users click to proceed (in which case rename to something like "Continue to Review →")
-A status indicator showing the pipeline completed (in which case style it as a status indicator, not a button — smaller, less prominent, with text like "Pipeline run complete")
-A leftover element that should be removed
+    Save the changes and complete the stage
+    Continue to the next stage
+    Even cancel and start over
 
-Pick the appropriate interpretation based on the engine logic and remove the ambiguity.
+Without a primary action, the user has no way to move forward. They're stuck. This is a much bigger problem than the visual issues with the inputs panel — a stuck flow breaks the whole stage.
 
-2. Update the small summary pill text
-Currently displays: "Reconciled 85 CAP IDs"
-Update to reflect the new status vocabulary:
-"Reconciled 85 CAPs · [N] Mapped · [N] Needs BU · [N] Archived"
-The total stays as 85; the breakdown by status uses the new vocabulary. Pull live counts from the reconciliation output.
-If [N] Needs BU > 0, optionally append a second smaller line below:
-"[N] new CAPs · [N] retired BUs"
-This gives the reviewer an at-a-glance sense of how much pending work they have before they even scroll to the table.
+The earlier "Loaded" pill that was sitting between the cards and the inputs panel? It seems to have been removed (good — it was ambiguous), but nothing replaced it. The result is that the page has no Save / Continue affordance at all.
+What this page needs
 
-3. Restructure the inputs panel layout
-The current inputs panel shows three cards in a 2 + 1 grid (two on top, one below). This is visually asymmetric. Restructure to either:
+Two things, in order of urgency:
 
-Option A: Three cards in a horizontal row (preferred if screen width allows)
-Option B: Three cards stacked vertically as full-width rows
+    A primary action button that lets the user complete the stage — this is broken right now and needs to be restored before anything else
+    Cleanup of the inputs panel and other visual issues — secondary, can wait
 
-Either option must present the three inputs in this order, matching the order used in the body intro and callout text:
+Let me address both in this prompt.
+On the primary action: what should it actually say?
 
-Fresh CAP list (from Stage 3 output)
-Current BU list (from Stage 6)
-Previous CAP→BU mapping (uploaded here)
+The user is at the Review & Edit step. After they've reviewed and resolved any flagged rows in the table, they need to save the reconciled mapping. After saving, they need to continue to the next stage (Power BI publication or wherever Stage 8 lives, if there is one — or just confirm the stage is complete).
 
+The cleanest pattern matches what other stages do:
 
-4. Update the labels on each input card
-Current labels are inconsistent in tone and length. Update to use a consistent "Source N · what it is · where it comes from" structure:
-Card 1:
+    Idle (before any edits made): Save & Continue → (enabled if there are no unresolved Needs BU rows, disabled if there are)
+    With unresolved Needs BU rows: Resolve [N] Needs BU rows to continue (disabled, with a clear explanation of what's blocking)
+    With unsaved changes from the reviewer: Save & Continue → (still the primary CTA, but the sticky save bar at the bottom would also show)
 
-Filename (existing): [filename].xlsx
-Label: "Source 1 · Fresh CAP list · from Stage 3 output"
-File path (existing): displayed below the label
-Status: ✅
+If there are no Needs BU rows at all (everything is Mapped or Archived from the start), the button is just Save & Continue → immediately. The user saves and moves on.
+On the inputs panel
 
-Card 2:
+Looking at the screenshot, the inputs panel is now showing three cards in a horizontal row — that's the right structure. But the file paths and details inside them are masked (red blocks) and the cards look squished. The labels are barely readable. The layout works conceptually but the visual treatment needs to breathe.
 
-Filename (existing): BU_List.xlsx
-Label: "Source 2 · Current BU list · from Stage 6"
-File path (existing)
-Status: ✅
+Issues to address:
 
-Card 3:
+    Cards need more vertical room so the file paths and labels are readable
+    The order is now: Fresh CAP list → BU list → Previous mapping. That matches the new order from our last prompt. Good.
+    Labels look like they're following the new structure but I can't fully verify from the screenshot
 
-Filename (existing): [filename].xlsx
-Label: "Source 3 · Previous CAP→BU mapping · uploaded here"
-File path (existing)
-Status: ✅
+The prompt
 
+    Fix the stuck flow on the Stage 7 (CAP & BU Reconciliation) page and clean up the inputs panel layout. The current implementation has no primary action button after reconciliation, so users have no way to complete the stage and move forward. This is blocking the workflow and must be addressed.
 
-5. What NOT to change in this prompt
+    Do not modify the body intro, the "What happens" callout, the 5 sub-stage cards, the upload area, or the engine logic. The review table redesign is a separate piece of work — this prompt is scoped to the primary action button and the inputs panel only.
+    1. Add a primary action button to complete the stage
 
-The body intro, the "What happens" callout, and the 5 sub-stage cards
-The review table, its filter chips, its columns, the "READ-ONLY" / "Enable editing" toggle, the "Show details" button, or any table-related behavior
-The Start button and the progressive disclosure pattern
-The engine logic or any backend behavior
+    Between the inputs panel and the review table, add a primary action button area with the following behavior:
 
-These will be addressed in a separate prompt focused specifically on the review table redesign.
+    Idle state — no unresolved Needs BU rows in the table:
+
+        Primary button label: Save & Continue →
+        Color: same primary green or blue used on other stage CTAs
+        Always enabled if all rows are either Mapped or Archived
+
+    Idle state — there are unresolved Needs BU rows:
+
+        Primary button label: Resolve [N] Needs BU rows to continue
+        Color: muted / disabled appearance
+        Disabled (cannot be clicked)
+        Below the button, a small explanatory line: "[N] rows still need a business unit assigned before this stage can complete"
+
+    In-progress state — when the user clicks Save & Continue:
+
+        Button label: Saving…
+        Disabled during the save operation
+
+    Complete state — after successful save:
+
+        The stage marks itself complete (green checkmark on the sub-stage cards)
+        The button label changes to a "next stage" CTA, or the user is automatically advanced to the next stage if applicable
+
+    2. Sticky save bar for unsaved changes
+
+    If the user makes edits to any rows in the review table (e.g., assigns a BU to a Needs BU row), a sticky save bar should appear at the bottom of the page:
+
+    "[N] unsaved changes · [Discard] [Save changes]"
+
+    The Save changes button in this sticky bar saves the changes without yet completing the stage. The user can continue editing after saving partial changes. The primary Save & Continue → button above the table is the one that completes the stage.
+
+    This gives the user two distinct actions:
+
+        Save changes (in the sticky bar) — incremental saves during the review
+        Save & Continue → (the primary button above the table) — commits everything and advances the stage
+
+    3. Clean up the inputs panel visual treatment
+
+    The current three-card inputs panel layout is conceptually correct but visually cramped. Adjust as follows:
+
+        Increase vertical padding inside each card so the filename, label, and file path have room to breathe
+        Ensure the file path text is fully visible (not truncated unless absolutely necessary; if truncated, use middle ellipsis and a hover tooltip showing the full path)
+        Confirm the label structure follows the "Source N · what it is · where it comes from" format consistently:
+            Card 1: "Source 1 · Fresh CAP list · from Stage 3 output"
+            Card 2: "Source 2 · Current BU list · from Stage 6"
+            Card 3: "Source 3 · Previous CAP→BU mapping · uploaded here"
+        Each card retains its green checkmark indicator confirming the input is in place
+
+    If horizontal width allows, keep the three cards in a single row. If width is too narrow, stack them vertically as full-width cards with the same structure.
+    4. What NOT to change in this prompt
+
+        The body intro and "What happens" callout
+        The 5 sub-stage cards
+        The review table itself, its filter chips, its columns, the "READ-ONLY" toggle, or any table-level behavior — these are addressed in a separate prompt
+        The Start button and the progressive disclosure pattern
+        The engine logic, reconciliation calculations, or backend behavior
