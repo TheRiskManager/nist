@@ -1,10 +1,81 @@
-Add two more Compose actions right before Find_BU_lookup_ID:
+Step 6 — Inside the loop: capture the trimmed current BU name
+This solves the item() collision problem I mentioned earlier.
 
-Compose 1 — Inputs: just the dynamic content BU from Excel
+Inside the new Apply to each, click Add an action
+Search Compose → add it
+Rename to Current_BU_Name
+Inputs (fx expression):
 
-This shows you the exact value coming from Excel
+toLower(trim(item()))
+This lowercases AND trims, killing both whitespace and case issues at once.
+
+Step 7 — Inside the loop: Filter array against the SP BU list
+
+Still inside For each BU name, below Current_BU_Name, click Add an action
+Search Filter array → add it
+Rename to Find_BU_in_SP
+Configure:
+
+From: the SharePoint BU list array (same source the old Find_BU_lookup_ID used — the value field from the upstream SP Get items)
+Click Edit in advanced mode
+Replace the entire expression with:
 
 
-Compose 2 — Inputs: first(outputs('Loop_feed_rows_upsert')?['body/value'])?['BUName'] (or whatever the SharePoint source step is called — looks like value comes from a step further up)
 
-This shows you what BUName actually looks like in the SP array
+@equals(toLower(trim(item()?['BUName'])), outputs('Current_BU_Name'))
+This compares lowercased+trimmed BUName on the SP side against the already-lowercased+trimmed value from Compose. Both sides normalized → matches reliably.
+
+Step 8 — Inside the loop: check if a match was found, append the ID
+
+Below Find_BU_in_SP, click Add an action
+Search Condition → add it
+Configure:
+
+Left side: fx → length(body('Find_BU_in_SP'))
+Operator: is greater than
+Right side: 0
+
+
+In the "If yes" branch:
+
+Add action → Append to array variable
+Name: BU_IDs_Array
+Value: fx →
+
+
+
+     first(body('Find_BU_in_SP'))?['ID']
+
+In the "If no" branch:
+
+Optional but recommended: add a Compose called Unmatched_BU with input outputs('Current_BU_Name') so you can see in run history which BUs failed to match. Helps with data cleanup later.
+
+
+
+
+Step 9 — Use the array when creating/updating the SP item
+This is back in the original "Create item" / "Update item" action where you saw the BU Id - 1 field.
+
+Open that action
+Find the BU Id field (the multi-value lookup)
+Delete whatever's currently in there (the if(greater(length(...))) expression)
+Click fx and enter:
+
+variables('BU_IDs_Array')
+
+If you get a "must be an object" error when running, change it to:
+
+{
+  "results": @{variables('BU_IDs_Array')}
+}
+(Some SP connector versions want the results wrapper for multi-lookup fields. Try without first; add the wrapper if it complains.)
+
+Step 10 — Test
+
+Save the flow
+Run it manually (or trigger via your normal mechanism)
+Check run history
+Click into For each BU name → you should see one iteration per BU
+Each iteration: Current_BU_Name shows the cleaned BU name, Find_BU_in_SP body should now have a matching row, Append fires
+Final BU_IDs_Array should look like [3, 7] (or whatever the SP BU list IDs are)
+Open the created/updated SharePoint item and verify both BUs are populated in the lookup column
