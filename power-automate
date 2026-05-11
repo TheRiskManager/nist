@@ -1,24 +1,14 @@
-Subject:
-[All Clear] CAP to BU Mapping — All items have BUs assigned
-Body: Click </> to switch to HTML mode, then paste:
-html<div style="font-family: Segoe UI, Arial, sans-serif; max-width: 640px; color: #1a1a1a; line-height: 1.5;">
+Inside the loop:
 
-  <div style="background-color: #0A2540; color: #ffffff; padding: 20px 24px; border-radius: 6px 6px 0 0;">
-    <h2 style="margin: 0; font-size: 20px; font-weight: 600;">CAP to BU Mapping — All Clear</h2>
-    <p style="margin: 6px 0 0 0; font-size: 13px; opacity: 0.85;">Risk Product Engineering &amp; Intelligence</p>
-  </div>
+Click Add an action inside Build CAP rows
+Search for Append to string variable → select it
+Configure:
 
-  <div style="background-color: #f7f9fc; padding: 20px 24px; border: 1px solid #e1e8f0; border-top: none; border-radius: 0 0 6px 6px;">
+Name: CAPRowsHTML (pick from dropdown)
+Value: click into the field, switch to expression (fx if needed) and paste:
 
-    <p style="margin: 0 0 16px 0;">The CAP to BU mapping has been updated successfully. <strong style="color: #0A2540;">All CAP IDs currently have a BU assigned.</strong></p>
 
-    <p style="margin: 0 0 16px 0;">No action is required, but you may want to review the list periodically to ensure assignments remain accurate.</p>
 
-    <p style="margin: 16px 0 0 0;">
-      <a href="<PASTE_YOUR_SP_LIST_URL_HERE>" style="display: inline-block; background-color: #0A2540; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: 500; font-size: 14px;">Review the SP list</a>
-    </p>
-
-    <p style="margin: 24px 0 0 0; padding-top: 16px; border-top: 1px solid #e1e8f0; font-size: 12px; color: #6b7280;">This is an automated notification from the CAP to BU Mapping flow.</p>
-
-  </div>
-</div>
+<tr><td style="padding: 10px 14px; border-bottom: 1px solid #e1e8f0; font-family: monospace; color: #0A2540; font-size: 14px;">@{items('Build_CAP_rows')?['Title']}</td></tr>
+Note: Build_CAP_rows is the loop's internal name (display name with spaces converted to underscores). If hovering the loop header shows a different internal name, use that.
+Reply "done" when configured.
