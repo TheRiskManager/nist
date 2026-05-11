@@ -1,1 +1,10 @@
-@startsWith(triggerOutputs()?['body/{FilenameWithExtension}'], 'CAP_to_BU_Mapping')
+Add two more Compose actions right before Find_BU_lookup_ID:
+
+Compose 1 — Inputs: just the dynamic content BU from Excel
+
+This shows you the exact value coming from Excel
+
+
+Compose 2 — Inputs: first(outputs('Loop_feed_rows_upsert')?['body/value'])?['BUName'] (or whatever the SharePoint source step is called — looks like value comes from a step further up)
+
+This shows you what BUName actually looks like in the SP array
