@@ -1,1 +1,1 @@
-@and(equals(item()?['Title'], items('Loop_feed_rows_upsert')?['CAP ID']), equals(item()?['BU']?['Value'], items('Loop_feed_rows_upsert')?['BU']))
+@and(equals(item()?['CAP ID'], items('Loop_SP_items_reconcile')?['Title']), equals(item()?['BU'], items('Loop_SP_items_reconcile')?['BU']?['Value']))
