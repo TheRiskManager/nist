@@ -1,101 +1,65 @@
-Simplify the Stage 7 (CAP & BU Reconciliation) status model from three statuses (Mapped / Needs BU / Archived) with two sub-labels (New CAP / Retired BU) to a clean two-status model. The new model is significantly simpler and aligned with how the reconciliation logic actually works.
-Why this change: the previous design overcomplicated things. CAPs that were in the previous mapping but no longer appear in the current Stage 3 output are not relevant to the reviewer — those CAPs are audited in the source system (Archer) and don't need to be carried forward in the pipeline. The distinction between "new CAP" and "retired BU" wasn't earning its place either, because the reviewer's action is the same for both: pick a BU. Collapsing to two statuses makes the workflow faster and the UI more scannable.
-Do not modify the engine's underlying status calculation logic — only the user-facing labels, the page copy, the filter chips, the column structure, and the review table presentation are being updated. The reconciliation algorithm itself follows this logic: iterate over every CAP in the current Stage 3 output, look up the CAP in the previously uploaded CAP→BU mapping. If the CAP is not in the previous mapping, status is Unassigned. If the CAP is in the previous mapping AND its BU is in the current Stage 6 BU list, status is OK. If the CAP is in the previous mapping but its BU is no longer in the current Stage 6 BU list, status is Unassigned.
+Trim the "What happens when you click Start" callout on the Stage 7 (CAP & BU Reconciliation) page. The callout currently has three paragraphs that include detailed explanation of the OK and Unassigned statuses. With the simplified two-status model, this level of status explanation in the callout is unnecessary — the reviewer will immediately understand the statuses when they see the table. The callout should focus on the workflow setup and the downstream Power BI impact, not on defining the statuses.
+Do not modify the body intro paragraphs, the sub-stage cards, the inputs panel, the review table, the filter chips, or any backend behavior.
 
-SECTION 1: NEW TWO-STATUS MODEL
-Replace all references to the previous status vocabulary with the new model:
-Status: OK
-When: CAP exists in previous mapping AND its BU is in the current Stage 6 list
-What the reviewer does: Nothing — assignment carries forward
-Status: Unassigned
-When: CAP is not in the previous mapping, OR its previous BU is no longer in the current Stage 6 list
-What the reviewer does: Pick a current BU from the dropdown
-No sub-labels. No third status. The distinction between "new CAP" and "retired BU" is no longer surfaced — both end up as "Unassigned" because the reviewer's action is the same in both cases.
-CAPs that are in the previous mapping but no longer appear in the current Stage 3 output are excluded from the reconciliation entirely. They do not appear in the review table.
-
-SECTION 2: REPLACE THE BODY INTRO PARAGRAPHS
-Replace the existing two-paragraph intro with the following:
-Paragraph 1: "This stage reconciles the corrective action plans against the current in-scope business units to produce the authoritative CAP→BU mapping for downstream analytics. It iterates over every CAP in the current Stage 3 output, looks up its previous BU assignment, validates that the BU is still in scope, and flags any CAP that needs a business unit assigned."
-Paragraph 2: "The reconciled mapping feeds the Power BI semantic model as the trusted CAP→BU dimension. Every BU-level CAP coverage report, owner accountability scorecard, aging dashboard, and executive remediation roll-up reads from this mapping — which means the decisions made here directly shape the accuracy of every CAP-related intelligence view consumed across the team."
-
-SECTION 3: REWRITE THE "WHAT HAPPENS WHEN YOU CLICK START" CALLOUT
+1. Replace the callout body
 Keep the heading "What happens when you click Start" and the existing visual treatment.
-Replace the body with three paragraphs (down from four — the Archived paragraph is removed since that status no longer exists):
+Replace the three-paragraph body with two shorter paragraphs:
 Paragraph 1: "Clicking Start reveals the upload area, where you'll drop the previous CAP→BU mapping — the historical assignment file from the prior run. This is the only file you need to provide at this stage. The other two inputs — the fresh CAP list from Stage 3 and the current authoritative BU list from Stage 6 — are sourced automatically, so you don't need to manage them here."
-Paragraph 2: "Once your file is uploaded, the pipeline runs five sub-steps automatically: it confirms all three inputs are present, loads them into memory, and reconciles them. For every CAP in the current Stage 3 output, it looks up the previous BU assignment and validates that the BU is still in the current in-scope list. Each row is tagged with one of two statuses: OK if the assignment is valid, or Unassigned if the CAP is new or its previous BU is no longer in scope."
-Paragraph 3: "You'll then review each row in an editable table. Rows marked OK require no action and carry forward unchanged. Rows marked Unassigned need a current business unit assigned from the dropdown. When you save, the reconciled mapping becomes the trusted CAP→BU dimension that feeds the Power BI semantic model. Every BU-segmented CAP report, scorecard, and dashboard downstream reads from this mapping the next time it refreshes. Resolving every Unassigned row before continuing is what keeps that intelligence accurate."
+Paragraph 2: "Once your file is uploaded, the pipeline confirms all three inputs are in place, reconciles them, and produces an editable review table. Any CAP that needs a business unit assigned will be clearly flagged. When you save, the reconciled mapping becomes the trusted CAP→BU dimension that feeds the Power BI semantic model — every BU-segmented CAP report, scorecard, and dashboard downstream reads from this mapping the next time it refreshes."
+Remove the previous third paragraph that explained the statuses in detail (it described what reviewers do with OK and Unassigned rows). That content is no longer needed in the callout — the table itself will communicate this to reviewers when they see it.
 
-SECTION 4: UPDATE THE FILTER CHIPS ABOVE THE REVIEW TABLE
-Replace the current six chips with three:
+2. Optionally add a one-line status hint above the review table
+Just above the filter chips and review table, add a small contextual hint in subdued typography:
+"Rows marked Unassigned need a business unit. Rows marked OK carry forward unchanged."
+This puts the status explanation at the point of need (when the user is about to interact with the table) rather than upfront in the callout.
 
-All (N)
-OK (N) — green tint
-Unassigned (N) — amber tint
+3. What NOT to change
 
-The chip counts reflect live values from the reconciliation output. The "Unassigned" chip should be the most visually prominent of the three (slightly stronger amber when active) because it represents the rows that need reviewer action.
-Remove the old chips: OK (old), New CAP, Missing BU, Stale BU, Dropped — none of these apply under the new model.
+The two-paragraph body intro above the callout
+The 5 sub-stage cards
+The inputs panel
+The filter chips, the review table columns, or any table-level behavior
+The status vocabulary (OK and Unassigned remain)
+The engine logic
 
-SECTION 5: UPDATE THE REVIEW TABLE COLUMN STRUCTURE
-Remove the following columns from the review table:
 
-CAP MAPPING (previously showed "Existing CAP" — this distinction no longer exists in the new model)
-BU MAPPING STATUS (consolidated into the new Status column at position 1)
+Update the descriptions on the five sub-stage cards on the Stage 7 (CAP & BU Reconciliation) page. The current descriptions mix accurate user-facing language with internal implementation details that don't serve the reviewer. Update them to consistently describe what the reviewer gets out of each step, not the internal mechanics of how the pipeline does it.
+Do not modify the card titles (Upload, Check, Load, Reconcile, Review & Edit), the card numbering, the progressive state behavior, the icons, or any other element on the page.
 
-The new column order is:
+Card 1 — Upload
+Keep current text unchanged:
+"Drop the previous CAP→BU mapping here. Click Proceed when ready."
 
-Status (leftmost, with color-coded chip showing OK or Unassigned)
-CAP ID (small monospace font)
-CAP Title (human-readable name of the CAP)
-Business Unit (always-editable dropdown — shows the assigned BU or "Pick a BU" placeholder)
+Card 2 — Check
+Current text:
+"Confirm all three source files are present in the working folder. Pauses here with a fixable message if any one is missing."
+Replace with:
+"Confirm all three inputs are in place: the previous mapping you just uploaded, the fresh CAP list from Stage 3, and the current BU list from Stage 6. Pauses with a clear message if anything is missing."
 
-No edit-mode toggle. The Business Unit dropdown is always interactive. When the user assigns a BU to an Unassigned row, the row's status updates to OK in real time.
+Card 3 — Load
+Current text:
+"Read the mapping plus the 14 enrichment columns from the pipeline output (deduped by CAP ID) and the BU catalogue."
+Replace with:
+"Read all three inputs into memory in preparation for reconciliation."
 
-SECTION 6: UPDATE THE SUMMARY METADATA PILL
-Currently displays: "Reconciled 85 CAP IDs"
-Replace with the new two-status breakdown: "Reconciled N CAPs · N OK · N Unassigned"
-If N Unassigned is greater than 0, the "Unassigned" portion of the pill text should be visually emphasized (bold or amber color) so the reviewer immediately sees how much pending work exists.
+Card 4 — Reconcile
+Current text:
+"For each CAP in Stage 3, validate its previous BU against the current Stage 6 list and tag the row as OK or Unassigned."
+Replace with:
+"For each CAP in the Stage 3 output, look up its previous BU and confirm the BU is still in the current Stage 6 list. Tag each row OK or Unassigned."
 
-SECTION 7: UPDATE THE DOWNSTREAM IMPACT NOTE
-Below the sub-stage cards (or near the primary action button, wherever the existing note lives), update from the previous text to:
-"Every CAP marked Unassigned must be resolved before continuing. These become gaps in BU-level CAP reporting in Power BI."
-Use a subtle visual treatment — light background, small text — so it reads as a reminder, not an alarm.
+Card 5 — Review & Edit
+Current text:
+"Resolve every Unassigned row, then Save to write the audit workbook and refresh the baseline."
+Replace with:
+"Resolve every Unassigned row by picking a business unit from the dropdown, then save to commit the reconciled mapping."
 
-SECTION 8: UPDATE THE PRIMARY ACTION BUTTON STATES
-The primary "Save & Continue →" button updates its state based on the new model:
+What NOT to change
 
-All rows OK or all Unassigned rows resolved: Button label "Save & Continue →", enabled, primary color
-Unresolved Unassigned rows exist: Button label "Resolve N Unassigned rows to continue", disabled, muted color
-Saving: Button label "Saving…", disabled
-
-Below the button, when there are unresolved Unassigned rows, display a small explanatory line: "N CAPs still need a business unit assigned before this stage can complete."
-
-SECTION 9: REMOVE THE "READ-ONLY" / "ENABLE EDITING" TOGGLE
-The current table has a "READ-ONLY" mode with an "Enable editing" button. Remove this entirely. The Business Unit column is always editable. There is no read-only state for this table.
-
-SECTION 10: APPLY LANGUAGE CONVENTIONS
-Throughout the stage, ensure consistent use of the new vocabulary:
-
-Statuses: OK and Unassigned (two statuses only)
-CAP and business unit / BU (existing conventions)
-Power BI semantic model, CAP→BU dimension, intelligence views — keep the strategic framing
-
-Remove any remaining instances of: Mapped, Needs BU, Archived, New CAP, Retired BU, Missing BU, Stale BU, Dropped. None of these are part of the current model.
-
-SECTION 11: UPDATE THE DESIGN SPECIFICATION
-Update STAGE_PAGE_DESIGN_SPEC.md to reflect the simplification. In the "Reconciliation stages" section (or equivalent), update the guidance:
-"Reconciliation stage status models should use the minimum number of statuses needed to communicate the reviewer's required action. When two situations require the same reviewer action, they should share a status — sub-labels and additional categories are only justified when they change what the reviewer does. For the CAP & BU Reconciliation stage, the model is two statuses: OK (no action) and Unassigned (assign a BU). CAPs that no longer exist in the current pipeline output are excluded from the review entirely, since they are audited in the source system and do not require reviewer attention in the pipeline."
-Also add a note about the architectural role of Stages 6 and 7 together:
-"Stages 6 (Business Units) and 7 (CAP & BU Reconciliation) exist because the source system (Archer) does not track business unit ownership. The BU dimension required for Power BI segmentation is created entirely outside Archer — Stage 6 maintains the authoritative BU list, and Stage 7 reconciles each CAP against that list to produce the trusted CAP→BU mapping. Both stages are part of the foundational architecture that makes BU-level CAP intelligence possible."
-
-SECTION 12: WHAT NOT TO CHANGE
-
-The body intro structure (still two paragraphs)
-The "What happens" callout heading and visual treatment
-The 5 sub-stage cards (Upload, Check, Load, Reconcile, Review & Edit)
-The progressive disclosure pattern (Start button reveals the workflow)
-The "Three inputs to this reconciliation" panel
-The upload area
-The sticky save bar
-The horizontal stage ribbon
-The engine's underlying logic — only the user-facing labels change
+The card titles (Upload, Check, Load, Reconcile, Review & Edit)
+The card numbering, ordering, or visual layout
+The progressive state behavior (active, completed checkmarks)
+The icons or color treatment on each card
+Any other element on the page
+The engine logic or backend behavior
 
