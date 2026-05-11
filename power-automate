@@ -1,47 +1,24 @@
-Action #3: Send email — Action needed (If yes branch)
-Steps:
-
-Inside the If yes branch of Any CAPs missing BU?, click Add an action
-Search for Send an email (V2) — under the Office 365 Outlook connector → select it
-Rename the action to Email - Action needed
-Configure these fields:
-
-To: your email address (just type it in)
 Subject:
-[Action Needed] CAP to BU Mapping — @{length(body('Get_CAPs_missing_BU')?['value'])} item(s) missing BU
-This puts the count of missing items directly in the subject line.
-Body: Click the small </> icon at the top-right of the Body field to switch to HTML mode (very important — won't render styling otherwise). Then paste this:
+[All Clear] CAP to BU Mapping — All items have BUs assigned
+Body: Click </> to switch to HTML mode, then paste:
 html<div style="font-family: Segoe UI, Arial, sans-serif; max-width: 640px; color: #1a1a1a; line-height: 1.5;">
 
   <div style="background-color: #0A2540; color: #ffffff; padding: 20px 24px; border-radius: 6px 6px 0 0;">
-    <h2 style="margin: 0; font-size: 20px; font-weight: 600;">CAP to BU Mapping — Action Needed</h2>
+    <h2 style="margin: 0; font-size: 20px; font-weight: 600;">CAP to BU Mapping — All Clear</h2>
     <p style="margin: 6px 0 0 0; font-size: 13px; opacity: 0.85;">Risk Product Engineering &amp; Intelligence</p>
   </div>
 
   <div style="background-color: #f7f9fc; padding: 20px 24px; border: 1px solid #e1e8f0; border-top: none; border-radius: 0 0 6px 6px;">
 
-    <p style="margin: 0 0 16px 0;">The CAP to BU mapping has been updated. The following CAP ID(s) are currently <strong style="color: #0A2540;">missing a BU assignment</strong> and require attention:</p>
+    <p style="margin: 0 0 16px 0;">The CAP to BU mapping has been updated successfully. <strong style="color: #0A2540;">All CAP IDs currently have a BU assigned.</strong></p>
 
-    <table style="width: 100%; border-collapse: collapse; margin: 0 0 20px 0; background-color: #ffffff; border: 1px solid #d4dde8;">
-      <thead>
-        <tr style="background-color: #0A2540; color: #ffffff;">
-          <th style="text-align: left; padding: 10px 14px; font-size: 13px; font-weight: 600;">CAP ID</th>
-        </tr>
-      </thead>
-      <tbody>
-        @{join(xpath(xml(json(concat('{"r":', string(body('Get_CAPs_missing_BU')?['value']), '}'))), '//Title/text()'), '')}
-      </tbody>
-    </table>
-
-    <p style="margin: 0 0 8px 0;"><strong style="color: #0A2540;">Next step:</strong></p>
-    <p style="margin: 0 0 16px 0;">Open the CAP to BU Mapping list, locate each CAP ID above, and assign the appropriate Business Unit.</p>
+    <p style="margin: 0 0 16px 0;">No action is required, but you may want to review the list periodically to ensure assignments remain accurate.</p>
 
     <p style="margin: 16px 0 0 0;">
-      <a href="<PASTE_YOUR_SP_LIST_URL_HERE>" style="display: inline-block; background-color: #0A2540; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: 500; font-size: 14px;">Open the SP list</a>
+      <a href="<PASTE_YOUR_SP_LIST_URL_HERE>" style="display: inline-block; background-color: #0A2540; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: 500; font-size: 14px;">Review the SP list</a>
     </p>
 
     <p style="margin: 24px 0 0 0; padding-top: 16px; border-top: 1px solid #e1e8f0; font-size: 12px; color: #6b7280;">This is an automated notification from the CAP to BU Mapping flow.</p>
 
   </div>
 </div>
-Two things you need to do in the HTML above:
