@@ -1,14 +1,26 @@
-Inside the loop:
+Step 3: Wire the variable into the "Email - Action needed" body
+Now replace the broken XPath expression in the email body with our new variable.
 
-Click Add an action inside Build CAP rows
-Search for Append to string variable → select it
-Configure:
+Click on Email - Action needed to expand it
+In the Body field (in HTML mode), find this line:
 
-Name: CAPRowsHTML (pick from dropdown)
-Value: click into the field, switch to expression (fx if needed) and paste:
+@{join(xpath(xml(json(concat('{"r":', string(body('Get_CAPs_missing_BU')?['value']), '}'))), '//Title/text()'), '')}
+
+Delete that entire line — including the @{...} wrapper
+In its place, insert the variable as dynamic content:
+
+Click where the line used to be
+Open dynamic content picker
+Find CAPRowsHTML under Variables → click to insert it
+You should now see a dynamic content pill where the broken expression used to be
 
 
 
-<tr><td style="padding: 10px 14px; border-bottom: 1px solid #e1e8f0; font-family: monospace; color: #0A2540; font-size: 14px;">@{items('Build_CAP_rows')?['Title']}</td></tr>
-Note: Build_CAP_rows is the loop's internal name (display name with spaces converted to underscores). If hovering the loop header shows a different internal name, use that.
-Reply "done" when configured.
+The <tbody> section of your table should now look like:
+html<tbody>
+  [CAPRowsHTML pill]
+</tbody>
+
+Save the flow
+
+Reply "done" when the email body is updated.
