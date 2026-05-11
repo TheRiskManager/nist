@@ -1,53 +1,334 @@
-Update the Stage 7 (CAP & BU Reconciliation) page copy to reflect the updated reconciliation logic. The status column is being removed — the BU column itself carries everything the reviewer needs to know. A CAP can be assigned to one or multiple BUs (comma-separated), or marked as Unassigned if no valid BU exists. Unassigned is mutually exclusive: a CAP marked Unassigned cannot also have other BUs.
-This prompt only updates the page copy (body intro, callout, and the five sub-stage card descriptions). The table column changes, filter chip changes, and visual treatment changes will be addressed in a separate prompt.
-Do not modify the table structure, the filter chips, the upload area, the sub-stage card titles, the Start button mechanic, the progressive disclosure pattern, the 5 sub-stage cards' state behavior, or the engine logic.
+Complete Step-by-Step Build Instructions
+Full instructions, all in one place, copy-paste safe. All expressions are in code blocks for clean copying.
+Setup: Have make.powerautomate.com open in your browser. Sign in.
 
-SECTION 1: REPLACE THE BODY INTRO PARAGRAPHS
-Replace the existing two-paragraph intro with the following:
-Paragraph 1: "This stage reconciles the corrective action plans against the current in-scope business units to produce the authoritative CAP→BU mapping for downstream analytics. It iterates over every CAP in the current Stage 3 output, looks up its previous BU assignments, validates that each BU is still in scope, and flags any CAP without a valid BU as Unassigned."
-Paragraph 2: "The reconciled mapping feeds the Power BI semantic model as the trusted CAP→BU dimension. Every BU-level CAP coverage report, owner accountability scorecard, aging dashboard, and executive remediation roll-up reads from this mapping — which means the decisions made here directly shape the accuracy of every CAP-related intelligence view consumed across the team."
+PART 1 — Create the Flow Shell
+Step 1. In the left sidebar, click Create.
+Step 2. Click the tile labeled Automated cloud flow.
+Step 3. A dialog appears. Fill in:
 
-SECTION 2: REPLACE THE "WHAT HAPPENS WHEN YOU CLICK START" CALLOUT BODY
-Keep the heading "What happens when you click Start" and the existing visual treatment.
-Replace the callout body with three paragraphs:
-Paragraph 1: "Clicking Start reveals the upload area, where you'll drop the previous CAP→BU mapping — the historical assignment file from the prior run. This is the only file you need to provide at this stage. The other two inputs — the fresh CAP list from Stage 3 and the current authoritative BU list from Stage 6 — are sourced automatically, so you don't need to manage them here."
-Paragraph 2: "Once your file is uploaded, the pipeline confirms all three inputs are in place and reconciles them. For every CAP in the current Stage 3 output, it looks up the previous BU assignments — a CAP can have one or multiple BUs — and validates that each BU is still in the current Stage 6 list. BUs that have been retired from the list are dropped. If no valid BU remains, the row is marked Unassigned."
-Paragraph 3: "You'll then review each row in an editable table. Rows with valid BUs require no action and carry forward unchanged. Rows marked Unassigned need a current business unit assigned from the dropdown — you can pick one BU, multiple BUs, or confirm the Unassigned value if no BU applies. When you save, the reconciled mapping becomes the trusted CAP→BU dimension that feeds the Power BI semantic model. Every BU-segmented CAP report, scorecard, and dashboard downstream reads from this mapping the next time it refreshes."
+Flow name: Sync CAP Mapping to SP List
+Choose your flow's trigger: in the search box, type: when a file is created
+From the results, click When a file is created (properties only) — confirm the SharePoint icon (blue/teal), not OneDrive
+Click Create at the bottom
 
-SECTION 3: UPDATE THE FIVE SUB-STAGE CARD DESCRIPTIONS
-Card 1 — Upload
-Current text: "Drop the previous CAP→BU mapping here. Click Proceed when ready."
-Keep unchanged.
-Card 2 — Check
-Current text: "Confirm all three source files are present in the working folder. Pauses here with a fixable message if any one is missing."
-Replace with: "Confirm all three inputs are in place: the previous mapping you just uploaded, the fresh CAP list from Stage 3, and the current BU list from Stage 6. Pauses with a clear message if anything is missing."
-Card 3 — Load
-Current text: "Read the mapping plus the 14 enrichment columns from the pipeline output (deduped by CAP ID) and the BU catalogue."
-Replace with: "Read all three inputs into memory in preparation for reconciliation."
-Card 4 — Reconcile
-Current text: "For each CAP in Stage 3, validate its previous BU against the current Stage 6 list and tag the row as OK or Unassigned."
-Replace with: "For each CAP in the Stage 3 output, look up the previous BU assignments (one or multiple per CAP) and keep only the BUs still in the current Stage 6 list. Rows with no valid BUs are marked Unassigned."
-Card 5 — Review & Edit
-Current text: "Resolve every Unassigned row, then Save to write the audit workbook and refresh the baseline."
-Replace with: "Resolve every Unassigned row by picking one or more business units from the dropdown, then save to commit the reconciled mapping."
 
-SECTION 4: APPLY LANGUAGE CONVENTIONS
-Throughout the stage, ensure consistent use of vocabulary:
+PART 2 — Configure the Trigger
+Step 4. Click the When a file is created (properties only) box to expand it.
+Step 5. Fill in:
 
-Unassigned (the only status-like term that remains)
-CAP and business unit / BU (existing conventions)
-Power BI semantic model, CAP→BU dimension, intelligence views (existing strategic framing)
+Site Address: dropdown → pick your SharePoint site
+Library Name: dropdown → pick the document library
+Folder: click folder icon → navigate to the specific folder → select
 
-Remove any remaining instances of: OK, Mapped, Needs BU, Archived, New CAP, Retired BU, Missing BU, Stale BU, Dropped. None of these are part of the current model.
+Step 6. Rename the action:
 
-SECTION 5: WHAT NOT TO CHANGE
+Click ⋯ (top-right of action box) → Rename
+Type the new name (copy from below):
 
-The two-paragraph body intro structure
-The "What happens" callout heading and visual treatment
-The 5 sub-stage card titles, numbering, ordering, icons, and progressive state behavior
-The progressive disclosure pattern (Start button reveals the workflow)
-The inputs panel
-The upload area
-The review table structure, filter chips, status column, or any table-level behavior (these are addressed in a separate prompt)
-The horizontal stage ribbon
-The engine logic
+When_mapping_file_arrives
+Step 7. Set concurrency:
+
+⋯ → Settings
+Concurrency Control → toggle On
+Slider → drag to 1
+Click Done
+
+Step 8. Click Save (top-right of canvas).
+
+PART 3 — Read the Excel File
+Step 9. Click + New step below the trigger.
+Step 10. Search: list rows present in a table
+Step 11. Click List rows present in a table (Excel Online (Business), green icon).
+Step 12. Fill in:
+
+Location: dropdown → SharePoint Site
+Document Library: dropdown → same library
+File: click inside the field → right panel opens → click Expression tab → paste:
+
+triggerOutputs()?['body/{Identifier}']
+Click OK.
+
+Table: type manually (copy below):
+
+CAP Mapping
+Step 13. Leave other fields at default.
+Step 14. Rename: ⋯ → Rename → paste:
+Get_feed_rows
+Step 15. Click Save.
+
+PART 4 — Get Current SharePoint List
+Step 16. Click + New step.
+Step 17. Search: get items
+Step 18. Click Get items (SharePoint, blue/teal icon).
+Step 19. Fill in:
+
+Site Address: same site
+List Name: dropdown → pick your main SP list (the one with CAPID + BU)
+
+Step 20. Rename: ⋯ → Rename → paste:
+Get_current_SP_items
+Step 21. Set pagination:
+
+⋯ → Settings
+Pagination → toggle On
+Threshold: type:
+
+5000
+
+Click Done
+
+Step 22. Click Save.
+
+PART 5 — Get BU_List for Lookup Resolution
+Step 23. Click + New step.
+Step 24. Search: get items
+Step 25. Click Get items (SharePoint).
+Step 26. Fill in:
+
+Site Address: same site
+List Name: dropdown → pick:
+
+BU_List
+Step 27. Rename: ⋯ → Rename → paste:
+Get_BU_List
+Step 28. Set pagination:
+
+⋯ → Settings → Pagination On → Threshold:
+
+5000
+
+Click Done
+
+Step 29. Click Save.
+
+PART 6 — Upsert Loop (Update or Create)
+Step 30. Click + New step.
+Step 31. Search: apply to each
+Step 32. Click Apply to each (Control, gray icon).
+Step 33. "Select an output from previous steps":
+
+Click inside the field
+Right panel → Dynamic content tab
+Find the Get_feed_rows section
+Click value
+
+Step 34. Rename the loop: ⋯ → Rename → paste:
+Loop_feed_rows_upsert
+Step 35. Concurrency: ⋯ → Settings → Concurrency Control On → set to 20 → Done
+Inside the loop:
+Step 36. Inside the loop box, click Add an action.
+Step 37. Search: filter array
+Step 38. Click Filter array (Data Operation).
+Step 39. Fill in:
+
+From: Expression tab → paste:
+
+outputs('Get_current_SP_items')?['body/value']
+Click OK.
+
+Condition: click Edit in advanced mode → paste exactly:
+
+@equals(item()?['CAPID'], items('Loop_feed_rows_upsert')?['CAP ID'])
+Step 40. Rename: ⋯ → Rename → paste:
+Find_match_in_SP
+
+Step 41. Below Find_match_in_SP, click Add an action.
+Step 42. Search: filter array
+Step 43. Click Filter array.
+Step 44. Fill in:
+
+From: Expression tab → paste:
+
+outputs('Get_BU_List')?['body/value']
+Click OK.
+
+Condition: Edit in advanced mode → paste:
+
+@equals(item()?['BUName'], items('Loop_feed_rows_upsert')?['BU'])
+Step 45. Rename: ⋯ → Rename → paste:
+Find_BU_lookup_ID
+
+Step 46. Below Find_BU_lookup_ID, click Add an action.
+Step 47. Search: condition
+Step 48. Click Condition (Control).
+Step 49. Fill in:
+
+Left: Expression → paste:
+
+length(body('Find_match_in_SP'))
+Click OK.
+
+Middle: dropdown → is greater than
+Right: type:
+
+0
+Step 50. Rename: ⋯ → Rename → paste:
+Match_found
+
+YES branch — UPDATE existing SP item
+Step 51. In If yes, click Add an action.
+Step 52. Search: update item
+Step 53. Click Update item (SharePoint).
+Step 54. Fill in:
+
+Site Address: same site
+List Name: main SP list (same as Get_current_SP_items)
+Id: Expression → paste:
+
+first(body('Find_match_in_SP'))?['ID']
+Click OK.
+
+CAPID: Expression → paste:
+
+items('Loop_feed_rows_upsert')?['CAP ID']
+Click OK.
+
+BU Id (lookup column — see note below): Expression → paste:
+
+if(greater(length(body('Find_BU_lookup_ID')), 0), first(body('Find_BU_lookup_ID'))?['ID'], null)
+Click OK.
+⚠️ About the BU field: the connector may show the lookup column as either:
+
+a single field labeled BU (modern UI) — paste the expression there
+two fields: BU Id (numeric) and BU Value (text display) — paste in BU Id only, leave BU Value alone
+
+If unsure which you see, screenshot and ask before saving.
+Step 55. Rename: ⋯ → Rename → paste:
+Update_existing_SP_item
+
+NO branch — CREATE new SP item
+Step 56. In If no, click Add an action.
+Step 57. Search: create item
+Step 58. Click Create item (SharePoint).
+Step 59. Fill in:
+
+Site Address: same site
+List Name: main SP list
+CAPID: Expression → paste:
+
+items('Loop_feed_rows_upsert')?['CAP ID']
+Click OK.
+
+BU Id: Expression → paste (same expression as in Update):
+
+if(greater(length(body('Find_BU_lookup_ID')), 0), first(body('Find_BU_lookup_ID'))?['ID'], null)
+Click OK.
+Step 60. Rename: ⋯ → Rename → paste:
+Create_new_SP_item
+Step 61. Click Save.
+
+PART 7 — Reconcile Loop (Delete Stale Rows)
+⚠️ This loop goes OUTSIDE Loop_feed_rows_upsert, at the top level. Click below the entire upsert loop box (in the empty canvas area) to make sure the next + button is the top-level one, not the inner one.
+Step 62. Click + New step at the bottom of the flow canvas.
+Step 63. Search: apply to each
+Step 64. Click Apply to each.
+Step 65. "Select an output from previous steps":
+
+Click inside field → Expression tab → paste:
+
+outputs('Get_current_SP_items')?['body/value']
+Click OK.
+Step 66. Rename: ⋯ → Rename → paste:
+Loop_SP_items_reconcile
+Step 67. Concurrency: ⋯ → Settings → On → 20 → Done
+Inside the reconcile loop:
+Step 68. Click Add an action.
+Step 69. Search: filter array
+Step 70. Click Filter array.
+Step 71. Fill in:
+
+From: Dynamic content tab → find Get_feed_rows → click value
+Condition: Edit in advanced mode → paste:
+
+@equals(item()?['CAP ID'], items('Loop_SP_items_reconcile')?['CAPID'])
+Step 72. Rename: ⋯ → Rename → paste:
+Find_in_feed
+
+Step 73. Below Find_in_feed, click Add an action.
+Step 74. Search: condition
+Step 75. Click Condition.
+Step 76. Fill in:
+
+Left: Expression → paste:
+
+length(body('Find_in_feed'))
+Click OK.
+
+Middle: is equal to
+Right: type:
+
+0
+Step 77. Rename: ⋯ → Rename → paste:
+Not_in_feed
+
+YES branch — DELETE stale item
+Step 78. In If yes, click Add an action.
+Step 79. Search: delete item
+Step 80. Click Delete item (SharePoint).
+Step 81. Fill in:
+
+Site Address: same site
+List Name: main SP list
+Id: Expression → paste:
+
+items('Loop_SP_items_reconcile')?['ID']
+Click OK.
+Step 82. Rename: ⋯ → Rename → paste:
+Delete_stale_SP_item
+NO branch: leave empty.
+Step 83. Click Save.
+✅ Flow built.
+
+PART 8 — Test the Flow
+Step 84. Make sure BU_List has these entries (or whatever your real ones are — just need at least 2-3 real ones):
+
+BUName = Finance
+BUName = IT
+BUName = Operations
+BUName = Marketing
+
+Step 85. Manually set up the main SP list with this state:
+CAPIDBU1001Finance1002IT9999Operations
+Step 86. Have your Python script produce an Excel file with this table (named exactly CAP Mapping):
+CAP IDBU1001Operations1002IT1003Marketing1004unassigned
+Step 87. Drop the Excel file into the SharePoint folder watched by the trigger.
+Step 88. Go to Power Automate → left sidebar → My flows → click your flow.
+Step 89. Click the 28-day run history section (or Run history tab). Within ~30 seconds, a new run appears.
+Step 90. Wait for the run to finish (green check = succeeded, red X = failed).
+Step 91. Click into the run. If succeeded, go check your main SP list. Expected end state:
+CAPIDBU1001Operations (updated)1002IT (unchanged)1003Marketing (new)1004(blank — unassigned)9999(gone — deleted)
+
+If It Fails
+In the run history, click the failed run → find the red-X action → click to expand → look at Inputs, Outputs, and the error message.
+Common errors and what they mean:
+
+"The expression is invalid" — typo in an expression. Compare letter-by-letter against this guide.
+"Field 'CAPID' not found" — SP column internal name doesn't match. Verify.
+"Table 'CAP Mapping' not found in file" — Python isn't naming the table correctly, file isn't .xlsx, or table name has a typo.
+"Invalid lookup value" — the BU Id expression isn't producing a number, or it's writing to the wrong field. Check whether the action UI shows BU or BU Id.
+All rows look "new" and existing rows got deleted — usually a space mismatch: 'CAP ID' (Excel header, with space) vs 'CAPID' (SP internal name, no space). Check actions 39, 44, and 71.
+
+To report back: paste the exact error text and which named action failed. I'll diagnose.
+
+Summary
+You've built:
+
+Trigger — fires when file lands in SharePoint folder
+Get_feed_rows — reads the Excel table
+Get_current_SP_items — snapshot of main SP list before changes
+Get_BU_List — snapshot of lookup source list
+Loop_feed_rows_upsert — for each Excel row:
+
+Find matching SP item (if any)
+Find BU lookup ID (if any — blank if unassigned or not in BU_List)
+If match → Update; if no match → Create
+
+
+Loop_SP_items_reconcile — for each original SP item:
+
+If CAP ID no longer in feed → Delete
+
+
+
+Total: ~9 actions plus branches. Build it, test it, report back. 🚀
