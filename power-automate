@@ -1,29 +1,20 @@
-Cleaner fix — add a Filter array step:
+Skip the Filter array entirely. Use a simpler expression directly in the Archive existing file action's "File to Move" field:
 
-Click + right after Check existing live file
-Add action → Filter array (Data Operation)
-Configure:
+Delete Filter files only action
+Revert Live file exists? Condition's left side to:
 
-From: body('Check_existing_live_file')?['value']
-Condition: click Edit in advanced mode, enter:
+   length(body('Check_existing_live_file')?['value'])
+(back to what it was)
+3. In Archive existing file, change File to Move to:
+   body('Check_existing_live_file')?['value'][1]?['{Identifier}']
+This grabs the second item in the array (index 1) instead of the first. If SharePoint consistently returns [folder, file] order, the file is always at index 1. Worth trying as a quick test before going deeper into syntax debugging.
 
+Or actually the cleanest workaround: use a name filter instead of an IsFolder filter. The file is always called CAP_to_BU_Mapping.xlsx — filter on that:
+In Filter files only advanced mode:
+@equals(item()?['Name'], 'CAP_to_BU_Mapping.xlsx')
+This avoids the IsFolder property entirely and just matches by exact filename.
+Try in this order:
 
-
-     @equals(item()?['{IsFolder}'], false)
-
-Rename to Filter files only
-
-Now update everything downstream to reference this filter instead:
-
-Click Live file exists? Condition
-Update left side to:
-
-   length(body('Filter_files_only'))
-
-Click Archive existing file
-Update File to Move:
-
-   first(body('Filter_files_only'))?['{Identifier}']
-Save and retest.
-Why this works: Filter files only strips out subfolders, leaving only actual files. first(...) then reliably picks the live .xlsx file regardless of SharePoint sort order.
-Reply "done" or paste any error.
+Name-based filter (@equals(item()?['Name'], 'CAP_to_BU_Mapping.xlsx')) — most reliable
+Plain equals(...) without @
+The index-based hack
