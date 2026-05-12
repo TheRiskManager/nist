@@ -1,6 +1,29 @@
-   body('Check_existing_live_file')?['value']
+Step 2: Update Check existing live file to filter by filename
 
-Condition row: click Edit in advanced mode
-Paste exactly:
+Click Check existing live file
+Click Show advanced options (link near the bottom)
+Find the Filter Query field
+Enter exactly:
 
-   @equals(item()?['Name'], 'CAP_to_BU_Mapping.xlsx')
+   FileLeafRef eq 'CAP_to_BU_Mapping.xlsx'
+
+Save
+
+FileLeafRef is SharePoint's internal field name for the file's name. This filter makes the action return ONLY files with that exact name, in that folder — so we get either zero items (no live file) or one item (the live file). No folders, no other files.
+
+Step 3: Revert Live file exists? to use Check existing live file directly
+
+Click Live file exists?
+Left side fx:
+
+   length(body('Check_existing_live_file')?['value'])
+
+Step 4: Revert Archive existing file to use Check existing live file directly
+
+Click Archive existing file
+File to Move fx:
+
+   first(body('Check_existing_live_file')?['value'])?['{Identifier}']
+
+That's it. No Filter array action, no template language fights. Save and test.
+Reply with the result.
