@@ -1,1 +1,2 @@
-@less(sub(ticks(triggerOutputs()?['body/Modified']), ticks(triggerOutputs()?['body/Created'])), 50000000)
+   triggerOutputs()?['body/{Identifier}']
+
