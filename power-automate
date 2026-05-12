@@ -1,48 +1,55 @@
+The component cards are now correctly sized — good. But the surrounding layout still has too much empty space. Three specific fixes:
+
 ================================================================
-VISUAL DENSITY CORRECTION — APPLY SOURCE SYSTEMS PATTERN GLOBALLY
+1. SHRINK BAND CONTAINER HEIGHTS
 ================================================================
 
-The Source Systems column on the left has the correct visual treatment for EMS — compact, icon-led, horizontal-row component cards with consistent sizing and tight spacing. This is the template pattern.
+Each band (USER INTERFACES, AI & INTELLIGENCE, INTEGRATION & AUTOMATION, RECORDS, REPORTING) currently has large empty regions inside it because the cards became compact but the band height stayed at the original generous proportions.
 
-APPLY THIS PATTERN TO ALL COMPONENT CARDS ACROSS THE DIAGRAM:
+Reduce each band's container height to hug its content. No band should have more than ~10-15% empty vertical space inside its container. The band header (label and FOUNDATION/ROADMAP tag) stays at the top; the content immediately follows; the container ends just below the last card.
 
-For every component card in every band (User Interfaces, AI Assist Plane, AI Engineering Plane, Automation Plane, Integration Bridge, Data Plane, Content Plane, Reporting), restructure the card to match the Source Systems pattern:
+Specifically:
+- USER INTERFACES band: should be tall enough for one row of cards (Power Apps MDA + Outlook) and the band header. No more.
+- AI & INTELLIGENCE band: should be tall enough for the two Planes (AI Assist Plane, AI Engineering Plane) stacked or side-by-side as they are now, with each Plane hugging its compact content.
+- INTEGRATION & AUTOMATION band: should be tall enough for the two Planes (Automation Plane, Integration Bridge) with their compact content.
+- RECORDS band: should be tall enough for the two Planes (Data Plane, Content Plane) with their compact content.
+- REPORTING band: should be tall enough for one row containing Power BI. No more.
 
-- Small square icon tile on the LEFT of the card, in the product's brand color background
-  - Same icon tile size as Source Systems cards (e.g., RSA Archer, GitHub, ServiceNow tiles)
-  - Same icon size, same border radius, same internal padding
-- Component name as plain text label to the RIGHT of the icon tile
-  - Same font size, weight, and color as Source Systems labels
-  - Optional secondary text (one-line role) BELOW the name, in muted color, smaller font — only if essential
-- Card height matches Source Systems cards exactly
-- Card width fills the available column width within its parent Plane container
-- Tight vertical spacing between stacked cards within a Plane — match the Source Systems column spacing
+================================================================
+2. SHRINK PLANE CONTAINER HEIGHTS
+================================================================
 
-REMOVE from the resized cards:
-- Floating large product logos centered above text (replace with the icon tile on the left)
-- Generic price tags ("$20/user", "$5/user") if any remain
-- Excess internal whitespace and padding
+Within each band, the Plane containers (AI Assist Plane, AI Engineering Plane, Automation Plane, Integration Bridge, Data Plane, Content Plane) also have excess vertical space. Shrink each Plane container to hug its compact cards. Plane title and FOUNDATION/ROADMAP tag at the top; cards immediately follow; container ends just below the last card.
 
-RESIZE THE PLANE CONTAINERS to fit the new compact card sizes:
-- AI Assist Plane, AI Engineering Plane, Automation Plane, Integration Bridge, Data Plane, Content Plane containers should shrink vertically to fit their content without large empty regions
-- Maintain the FOUNDATION / ROADMAP tags on each Plane container exactly as they are now
-- Maintain the small CORE / EXTENDED labels or replace with FOUNDATION / ROADMAP if those are already in use
-- The Plane title (e.g. "AI Assist Plane", "Automation Plane") stays as the Plane container header
+================================================================
+3. SHRINK INTER-BAND VERTICAL GAPS
+================================================================
 
-PRESERVE EXACTLY (do not change):
-- The overall band structure (USER INTERFACES, AI & INTELLIGENCE, INTEGRATION & AUTOMATION, RECORDS, REPORTING bands)
-- The "SECURITY & GOVERNANCE TRUST BOUNDARY" outer dashed boundary
-- The Source Systems column on the left (it's already correct — use it as the reference, don't modify it)
+The vertical space between bands is excessive — currently there are large empty corridors between AI & Intelligence and Integration & Automation, between Integration & Automation and Records, and between Records and Reporting.
+
+Reduce inter-band vertical spacing to a tight, visually clear separator — just enough to distinguish bands without creating empty corridors. Approximately 20-30 pixels between band boundaries should be sufficient.
+
+================================================================
+PRESERVE EVERYTHING ELSE
+================================================================
+
+Preserve exactly:
+- The Source Systems column on the left (it's correct — do not modify)
+- The SECURITY & GOVERNANCE TRUST BOUNDARY outer dashed boundary
 - The cross-cutting bottom band (Microsoft Entra ID, Security Roles, Audit Logging, Key Vault)
-- All FOUNDATION and ROADMAP tag styling and placement
-- Color palette, typography, dashed-vs-solid border conventions, animations, hover states, click-to-focus behavior, side panel structure
-- Connection topology (the arrows between components)
+- All FOUNDATION / ROADMAP tag styling and placement
+- All component card content (icon, name, tag)
+- Color palette, typography, dashed-vs-solid border conventions
+- All animations, hover states, click-to-focus behavior, side panel structure
+- Connection topology between components
 
-The goal is a diagram where every component card has the same visual rhythm as the Source Systems column — compact, scannable, density-honest. Plane containers and band headers preserve their grouping role but shrink to fit the new card sizes.
+The Trust Boundary's overall dimensions should shrink to match the now-compact internal layout. The diagram as a whole should become approximately 50-60% of its current vertical height.
 
-Verify after restructuring:
-- No band has large unused vertical space
-- No card has a generic price tag or floating centered logo
-- Every component card has the icon-tile-left + name-label-right pattern
-- The Source Systems column itself is unchanged (it was already correct)
-- The FOUNDATION/ROADMAP visual story remains intact
+The horizontal layout stays as-is — Source Systems column on the left, main bands centered in the remaining width. If empty space remains on the right, leave it; do not redistribute bands horizontally.
+
+After restructuring, verify:
+- No band has more than ~15% empty vertical space inside it
+- No Plane container has excess vertical padding around its compact cards
+- Inter-band gaps are tight visual separators, not empty corridors
+- The overall diagram height is meaningfully reduced
+- Nothing else has changed (cards, content, colors, animations, interactivity)
