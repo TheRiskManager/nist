@@ -1,1 +1,6 @@
-first(body('Check_existing_live_file')?['value'])?['{Identifier}']
+     triggerOutputs()?['body/{Identifier}']
+
+Rename to Move new file to CAP_BU_Mapping
+
+
+
