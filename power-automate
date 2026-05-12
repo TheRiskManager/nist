@@ -1,74 +1,188 @@
-I'm attaching an interactive Power Platform architecture diagram (HTML/SVG). I need you to produce an updated version that replaces the architecture's content with my actual system (EMS — Evidence Management System) while preserving EVERYTHING about the visual style, layout pattern, layer structure, click-to-focus interaction, side-panel open behavior, typography, color palette, iconography style, and connector animation.
+I'm attaching the complete source HTML for an interactive Power Platform reference architecture diagram. The diagram organizes Microsoft components into named bands (User Interfaces, AI & Intelligence, Integration & Automation, Data, Insights & Reporting) with a "Core / Extended" card pattern in each band — Power Platform components labeled CORE, Azure services labeled EXTENDED. Clicking a component opens a side panel with detailed role description and interaction notes.
 
-WHAT TO PRESERVE EXACTLY (do not change):
-- The overall page layout, dimensions, background, typography
-- The layered architecture pattern (top user-interfaces band, middle orchestration band, records band, reporting band, cross-cutting bottom band)
-- The click-on-component → dim others + show side panel interaction
-- The side panel's structure: header with component name + bullet, italic role description, numbered sections (e.g. "1. AI Document Pipeline"), nested step lists, color-coded direction arrows (← receives from / → sends to)
-- The component card style: white card with the Microsoft product icon, name, one-line role, optional small "P" marker, and connection labels below the card ("← receives from", "sends to")
-- The cross-cutting bottom band with horizontal pills (Entra ID, Security Roles, DLP Policies, etc.)
-- All animations, hover states, and the "locked — scroll to read" side-panel header style
+I need you to produce an updated version that converts this from a GENERIC reference architecture into the EMS (Evidence Management System) SPECIFIC architecture. EMS is a GRC continuous-evidence platform built on Microsoft Power Platform.
 
-WHAT TO REPLACE — the components, the layer membership, the connection topology, and all side-panel descriptions must be replaced with EMS-specific content as specified below.
+================================================================
+ABSOLUTE PRESERVATION RULES — DO NOT MODIFY
+================================================================
 
-EMS ARCHITECTURE TO RENDER:
+Preserve EXACTLY, byte-for-byte where possible:
+- All CSS (every selector, every property, every rule)
+- All JavaScript (every function, every event handler, every animation)
+- All SVG markup and styling
+- The HTML structural skeleton (band containers, card containers, panel containers)
+- The Core / Extended card pattern (with the small CORE and EXTENDED labels and product-marker icons)
+- The click-to-focus interaction behavior
+- The "LOCKED — SCROLL TO READ" side-panel header style
+- The "receives from" / "sends to" connection labels under cards
+- The numbered-section structure inside side panels
+- Color palette, typography, spacing, animations, hover states
+- The dashed-line background grid pattern
+- The "P" product marker, the small icons in the top corner of cards
 
-Layer 1 — USER INTERFACES (top row, two components only):
-- PowerApps MDA (Microsoft Power Apps model-driven app icon) — "Core Users — Risk Manager, Control Owner, Auditor, System Admin". Receives from: nothing. Sends to: Power Automate, AI Builder. Side-panel role: "The sole user surface for EMS — all Risk Manager / Control Owner / Auditor interactions occur through this model-driven app. Forms, queues, business process flow stages, role-aware views. EMS architectural rule: 100% native MDA, no Canvas App, no Power Pages, no custom JavaScript, no PCF."
-- Outlook — "Notifications, Actionable Messages". Receives from: Power Automate. Sends to: nothing (terminal). Side-panel role: "Notification surface — Power Automate flows emit notifications and approval/review requests through Outlook (via standard connector). Stakeholders receive actionable emails for cycle progression, evidence-due reminders, exception reviews."
+Do NOT "improve" the design, change colors, adjust spacing, modify animations, or restyle anything. The visual style is final.
 
-DO NOT INCLUDE: Canvas App, Power Pages, Copilot Agent, Teams. These are explicitly prohibited or out-of-scope for EMS.
+================================================================
+WHAT TO REPLACE — CONTENT ONLY
+================================================================
 
-Layer 2 — INGESTION + ORCHESTRATION (middle row):
-- Power Automate (Power Automate icon) — "Flow orchestration: ingestion, cycle stages, evidence workflow". Side-panel role: "The orchestration backbone — Monthly Sync flow ingests Archer and LeanIX source data; Cycle flows orchestrate the 6-stage Business Process Flow; Evidence flows handle confirmation/request/review; future automated evidence flows will consume GitHub, ServiceNow, Qualys, SailPoint IIQ, application-layer APIs via standard or custom connectors."
-- AI Builder (AI Builder icon) — "Prompt-based reasoning — embedded in flows". Side-panel role: "Foundation AI surface — invoked from Power Automate via 'Run a prompt' action. Use cases: evidence reuse suggestions, classification hints. Sufficient for foundation scope; advanced use cases route to Copilot Studio in the strategic AI stack."
-- Copilot Studio (Copilot Studio icon, marked OPTIONAL / FUTURE) — "Advanced AI — conversational + agentic patterns (target trajectory, not foundation)". Side-panel role: "Part of the strategic Power Platform AI stack. Reserved for advanced AI use cases beyond AI Builder's prompt model — multi-turn evidence interpretation, agentic workflows over heterogeneous evidence sources. Not part of the current foundation; available through the same platform investment when warranted."
+Replace component contents, card labels, side panel text, and connection topology with the EMS-specific content below.
 
-Layer 3 — TARGET EVIDENCE SOURCES (new layer, between orchestration and records, marked clearly as ROADMAP / TARGET ARCHITECTURE with dashed borders or a distinct visual treatment):
-- GitHub — "Code evidence: PRs, branch policies, deployment approvals"
-- ServiceNow — "Ticket evidence: change records, incidents, access requests"
-- Qualys — "Scan evidence: vulnerability + configuration scans"
-- SailPoint IIQ — "Identity evidence: access certifications, role assignments, SoD"
-- Application-Layer APIs — "Direct app evidence: config snapshots, audit logs, transaction samples"
-All five send to Power Automate (ingestion). Side-panel for each: brief description of what evidence is consumed, which control families it serves, integration mechanism (standard connector vs. custom connector via the Power Platform custom-connector framework).
+ARCHITECTURAL RULES TO ENFORCE (these are non-negotiable for EMS):
+- 100% native Power Apps model-driven app
+- NO Canvas App in any layer
+- NO Power Pages in any layer
+- NO Copilot Agent as a separate component
+- NO custom JavaScript or PCF
+- NO Teams (remove from User Interfaces)
+- NO DLP Policies pill in any cross-cutting band (DLP is environment configuration, not architectural)
 
-Layer 4 — FOUNDATION SOURCE SYSTEMS (alongside or in same band as target evidence sources, but live not roadmap):
-- RSA Archer — "Controls catalogue (source of truth for control definitions)"
-- LeanIX — "Application portfolio (source of truth for in-scope applications)"
-Both send to Power Automate.
+================================================================
+LAYER-BY-LAYER REPLACEMENT
+================================================================
 
-Layer 5 — RECORDS:
-- Dataverse — "System of record — structured operational data". Side-panel role: list the major tables: Business Unit, Application, Control Procedure, Reference Control, Business Process, Import Cycle, Staged Records, Evidence, Rule, Rule Version, Applicability, BU Match Tokens, BP-to-BU Mapping, Engagement.
-- SharePoint — "Evidence files document library — strategic file platform". Side-panel role: "All evidence files (PDFs, screenshots, exports) stored in SharePoint document library. Strategic file platform — Azure Blob Storage was considered and declined in favor of SharePoint per organizational strategic-platform alignment. Dataverse holds metadata + SharePoint URL; SharePoint holds the file bytes."
+=== NEW BAND TO ADD: SOURCE SYSTEMS ===
 
-Layer 6 — REPORTING (single component for now):
-- Power BI — "Dashboards + analytics over Dataverse + SharePoint". Side-panel role: "Reporting surface for executive view, coverage metrics, freshness tracking, audit readiness. Reads from Dataverse (operational data) and SharePoint (evidence inventory)."
+Add a new band at the TOP of the diagram, ABOVE the existing User Interfaces band. Label it: "SOURCE SYSTEMS"
 
-Cross-cutting bottom band (preserve exact style from source):
-- Microsoft Entra ID (identity + access)
-- Security Roles (Dataverse role-based security)
-- Audit Logging (Dataverse audit + flow run history)
-- Key Vault (secrets management for source-system credentials)
-(REMOVE the "DLP Policies" pill from the source — DLP is environment configuration, not part of the EMS architecture story.)
+Structure it as two sub-zones following the same Core/Extended visual pattern that the rest of the diagram uses — but instead of CORE/EXTENDED, use the labels FOUNDATION (for live sources) and ROADMAP (for target evidence sources).
 
-Connections to render between components:
-- Archer → Power Automate (ingestion)
-- LeanIX → Power Automate (ingestion)
-- Target evidence sources (GitHub, ServiceNow, Qualys, SailPoint IIQ, App-Layer APIs) → Power Automate (roadmap — use dashed lines)
-- Power Automate ↔ Dataverse (read+write)
-- Power Automate ↔ AI Builder (invokes AI Builder for prompt reasoning)
-- Power Automate ↔ Copilot Studio (future — dashed)
+Card 1 — Foundation Sources Plane
+  Card label: "Foundation Sources Plane"
+  Subtitle: "Source-of-truth systems (live today)"
+  FOUNDATION component 1: RSA Archer — Controls catalogue
+  FOUNDATION component 2: LeanIX — Application portfolio
+  Footer text: "Power Automate Monthly Sync"
+
+Card 2 — Target Evidence Plane
+  Card label: "Target Evidence Plane"
+  Subtitle: "Automated evidence consumption (roadmap)"
+  ROADMAP component 1: GitHub — Code evidence
+  ROADMAP component 2: ServiceNow — Ticket evidence
+  ROADMAP component 3: Qualys — Scan evidence
+  ROADMAP component 4: SailPoint IIQ — Identity evidence
+  ROADMAP component 5: Application-Layer APIs — App-specific evidence
+  Footer text: "Direct connectors + Azure Functions for complex sources"
+
+Apply a visual distinction for ROADMAP cards — use the same approach the existing diagram uses for any "future" or "optional" treatment (likely dashed borders or reduced opacity). If no such pattern exists in the source, use dashed borders and ~75% opacity with a small "ROADMAP" tag.
+
+=== USER INTERFACES BAND (REPLACE CONTENTS) ===
+
+Remove from the source: Canvas App, Power Pages, Copilot Agent, Teams.
+
+Keep and update:
+- Power Apps (MDA) — Replace "$20/user" with "Core User Surface"
+  Side-panel role: "The sole user surface for EMS — Risk Manager, Control Owner, Auditor, System Admin. Forms, queues, the 6-stage Business Process Flow for evidence cycles, role-aware views. EMS architectural rule: 100% native MDA, no Canvas App, no Power Pages, no custom JavaScript, no PCF."
+- Outlook — Keep as-is ("Notifications, Approvals, Actionable Messages")
+  Side-panel role: "Notification surface — Power Automate flows emit notifications and approval requests via the standard connector. Stakeholders receive actionable emails for cycle progression, evidence requests, exception reviews."
+
+The user interfaces band should now contain ONLY these two components.
+
+=== AI & INTELLIGENCE BAND (KEEP STRUCTURE, UPDATE CONTENT) ===
+
+Card 1: AI Assist Plane — KEEP exact structure
+  CORE: AI Builder — "Prompt-based reasoning"
+    Side-panel role: "Foundation AI surface for EMS. Invoked from Power Automate via 'Run a prompt' action. Use cases today: evidence reuse suggestions, classification hints during cycle stages. Sufficient for foundation scope."
+  EXTENDED: Azure AI Search — "Vector search over evidence corpus"
+    Side-panel role: "Available when target-state automated evidence consumption requires similarity search over historical evidence (e.g., 'has similar evidence been collected before?'). Composed via custom connector or Azure Functions. Not part of current foundation."
+  Footer: "Prompts + Vector Search"
+
+Card 2: AI Engineering Plane — KEEP exact structure
+  CORE: Copilot Studio — "Agent flows, prompt orchestration"
+    Side-panel role: "Part of strategic Power Platform AI stack. Reserved for advanced AI use cases — multi-turn evidence interpretation, agentic workflows over heterogeneous sources. Available through the same platform investment when target-state evidence scope warrants it."
+  EXTENDED: Azure AI Foundry — "Base models, embeddings, RAG pipelines"
+    Side-panel role: "Composed for specialized AI work beyond Copilot Studio's native patterns — e.g., domain-specific embedding pipelines over evidence corpus, custom RAG for compliance-aware retrieval. Not part of current foundation; available within the same strategic Microsoft stack."
+  Footer: "Prompt Orchestration · Models · RAG"
+
+=== INTEGRATION & AUTOMATION BAND (KEEP STRUCTURE, UPDATE CONTENT) ===
+
+Card 1: Automation Plane — KEEP exact structure
+  CORE: Power Automate — "Cycle orchestration, evidence workflow"
+    Side-panel role: "The orchestration backbone for EMS. Monthly Sync flow ingests Archer and LeanIX; Cycle flows orchestrate the 6-stage Business Process Flow; Evidence flows handle confirmation, request, review. Invokes AI Builder for prompt-based reasoning. For target evidence trajectory: standard connectors for GitHub and ServiceNow; complex sources (Qualys, SailPoint IIQ, app APIs) route through Azure Functions for transformation."
+  EXTENDED: Azure Functions — "Python compute for complex integrations"
+    Side-panel role: "Hybrid integration layer for source systems where Power Automate's expression language and Dataverse-centric pattern aren't a graceful fit. Handles Qualys scan payload parsing, SailPoint long-running task orchestration, and complex application-layer extractions. Part of the same strategic Microsoft stack as Power Platform — Microsoft's reference hybrid pattern. Transforms complex payloads, hands clean structured data to Power Automate."
+  Footer: "Workflows + Functions"
+
+Card 2: Integration Bridge — KEEP exact structure
+  CORE: Connectors — "Standard + Premium connectors"
+    Side-panel role: "Power Platform's connector ecosystem covers EMS's foundation integrations (Archer files, LeanIX exports, SharePoint, Outlook, Entra ID) and a portion of the target evidence sources (GitHub, ServiceNow with premium license). Custom connectors handle the rest where standard connectors don't exist."
+  EXTENDED: Logic Apps — "Enterprise integration patterns"
+    Side-panel role: "Azure-side workflow orchestration available for scenarios beyond Power Automate's natural envelope — large message volumes, complex enterprise integration patterns, B2B integration. Not currently planned for EMS but preserved as an architectural option within the same strategic Microsoft stack."
+  Footer: "Standard + Enterprise"
+
+=== DATA BAND (KEEP STRUCTURE, UPDATE CONTENT) ===
+
+Card 1: Data Plane — KEEP exact structure with three components (CORE + two EXTENDED)
+  CORE: Dataverse — "System of record"
+    Side-panel role: "Structured operational data for EMS. Major tables: Business Unit, Application, Control Procedure, Reference Control, Business Process, Import Cycle, Staged Records, Evidence, Rule, Rule Version, Applicability, BU Match Tokens, BP-to-BU Mapping, Engagement, Engagement Members. Audit logging and role-based security inherited from the platform — not built."
+  EXTENDED: Synapse Link — "Analytical replication"
+    Side-panel role: "Composed when EMS's reporting workload exceeds Dataverse's natural query patterns — e.g., cross-table aggregations over years of evidence history, complex coverage analytics. Replicates Dataverse to Azure Data Lake. Not part of current foundation."
+  EXTENDED: Azure SQL — "Analytical store"
+    Side-panel role: "Available for analytical workloads requiring SQL semantics beyond Synapse. Not part of current foundation; preserved as an option."
+  Footer: "Dataverse + Synapse + SQL"
+
+Card 2: Content Plane — KEEP exact structure
+  CORE: SharePoint — "Evidence files document library"
+    Side-panel role: "All evidence files (PDFs, screenshots, exports, attestations) stored in SharePoint — the organization's strategic file platform. Dataverse holds metadata + SharePoint URL; SharePoint holds the file bytes."
+  EXTENDED: Azure Blob — "Object storage"
+    Side-panel role: "Considered and declined for EMS evidence files in favor of SharePoint (strategic platform alignment). Preserved as an option for specialized scenarios where SharePoint isn't a fit — e.g., very-large-file ingestion, raw telemetry storage."
+  Footer: "Documents + Blob"
+
+=== INSIGHTS & REPORTING BAND (KEEP STRUCTURE, UPDATE CONTENT) ===
+
+Power BI — "Dashboards & Reports"
+  Side-panel role: "Reporting surface for executive view, coverage metrics, evidence freshness tracking, audit readiness. Reads from Dataverse (operational data) and SharePoint (evidence inventory). Scheduled refreshes."
+
+=== CROSS-CUTTING BOTTOM BAND ===
+
+If the source diagram has a cross-cutting bottom band with horizontal pills, include:
+- Microsoft Entra ID — Identity + access
+- Security Roles — Dataverse role-based security
+- Audit Logging — Dataverse audit + flow run history
+- Key Vault — Secrets management
+
+If the source does NOT have a cross-cutting band, add one at the bottom using the same visual style as the source's existing footer/legend.
+
+REMOVE any "DLP Policies" pill if present in the source.
+
+================================================================
+CONNECTION TOPOLOGY
+================================================================
+
+Foundation connections (solid lines):
+- RSA Archer → Power Automate
+- LeanIX → Power Automate
+- Power Automate ↔ Dataverse (bidirectional)
+- Power Automate → AI Builder (invocation)
+- AI Builder → Power Automate (returns)
 - Power Automate → SharePoint (file management)
 - Power Automate → Outlook (notifications)
 - Power Apps MDA ↔ Dataverse (UI binds to data)
 - Power Apps MDA ↔ Power Automate (UI triggers flows)
 - Power BI → Dataverse (read)
 - Power BI → SharePoint (read)
-- Cross-cutting services (Entra ID, Security Roles, Audit, Key Vault) tie to all layers via faint vertical lines
 
-Style requirements:
-- Foundation components (live today): solid borders, full opacity
-- Target / roadmap components (GitHub, ServiceNow, Qualys, SailPoint IIQ, App-Layer APIs, Copilot Studio): dashed borders or distinct visual treatment that clearly says "future / target"
-- Color palette: same as source (Microsoft purple for Power Apps, gradient blue for Power Automate, etc.)
+Roadmap connections (dashed lines or same future-treatment as the source):
+- GitHub → Power Automate (direct, standard connector)
+- ServiceNow → Power Automate (direct, premium connector)
+- Qualys → Azure Functions → Power Automate
+- SailPoint IIQ → Azure Functions → Power Automate
+- Application-Layer APIs → Azure Functions → Power Automate (with note that simple cases may route direct to Power Automate)
+- Power Automate ↔ Copilot Studio (future invocation)
+- Azure Functions ↔ Key Vault (source-system credentials)
 
-Output a single complete HTML file ready to open in a browser. Preserve all CSS, all JavaScript for interactivity, and all SVG that's in the source. Replace only the architecture content.
+================================================================
+SIDE PANEL CONTENT FORMAT
+================================================================
+
+For each component, the side panel should follow the source's existing structure (italic role description at top, then numbered sections with sub-bullets describing interactions). Use the EMS-specific content provided above for the role descriptions. Build out the numbered sections to describe upstream/downstream interactions using the connection topology above as the source of truth.
+
+For each numbered section, follow the source's existing pattern of using ← (receives from) and → (sends to) arrow markers, colored according to the source's existing convention.
+
+================================================================
+OUTPUT
+================================================================
+
+A single complete HTML file. Same filename pattern as the source. Open-in-browser ready. Preserve all assets (icons, fonts, CSS, JS) exactly as in the source.
+
+IMPORTANT: When in doubt, preserve the source. Only modify content that the instructions above explicitly direct you to change.
