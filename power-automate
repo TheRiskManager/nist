@@ -1,6 +1,29 @@
-     triggerOutputs()?['body/{Identifier}']
+Cleaner fix — add a Filter array step:
 
-Rename to Move new file to CAP_BU_Mapping
+Click + right after Check existing live file
+Add action → Filter array (Data Operation)
+Configure:
+
+From: body('Check_existing_live_file')?['value']
+Condition: click Edit in advanced mode, enter:
 
 
 
+     @equals(item()?['{IsFolder}'], false)
+
+Rename to Filter files only
+
+Now update everything downstream to reference this filter instead:
+
+Click Live file exists? Condition
+Update left side to:
+
+   length(body('Filter_files_only'))
+
+Click Archive existing file
+Update File to Move:
+
+   first(body('Filter_files_only'))?['{Identifier}']
+Save and retest.
+Why this works: Filter files only strips out subfolders, leaving only actual files. first(...) then reliably picks the live .xlsx file regardless of SharePoint sort order.
+Reply "done" or paste any error.
