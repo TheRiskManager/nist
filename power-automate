@@ -1,55 +1,208 @@
-The component cards are now correctly sized — good. But the surrounding layout still has too much empty space. Three specific fixes:
+You are editing a Key Design Decision (KDD) document for an Evidence
+Management System (EMS) built on Microsoft Power Platform. The KDD is going
+to a Technical Architecture / LARB review. I am pasting Sections 1 through 7
+of the current document below. Make the following surgical edits — preserve
+all other text exactly as written. Do not add new content beyond what these
+edits explicitly request. Do not invent claims.
 
-================================================================
-1. SHRINK BAND CONTAINER HEIGHTS
-================================================================
+═══════════════════════════════════════════════════════════════════
+PROJECT CONTEXT (read once, then apply to edits below)
+═══════════════════════════════════════════════════════════════════
 
-Each band (USER INTERFACES, AI & INTELLIGENCE, INTEGRATION & AUTOMATION, RECORDS, REPORTING) currently has large empty regions inside it because the cards became compact but the band height stayed at the original generous proportions.
+The EMS project is in production build phase, NOT post-completion. The
+foundation has been partially built:
+- Layer 0 (POC foundation): 60 of 61 stories complete
+- Layer 1 (production cycle engine): partially in flight. BU resolution for
+  Applications is complete; BU resolution for Parent Business Processes and
+  Control Procedures is NOT YET BUILT. The Rules Engine workstream (14
+  stories) is NOT YET STARTED. The 6-stage cycle UI is NOT YET BUILT — the
+  current cycle UI is a 5-stage POC.
+- Layer 2 (continuous evidence): 0 of 31 stories complete — entirely
+  trajectory.
+- Layer 3 (audit engagements): 0 of 27 stories complete — entirely trajectory.
 
-Reduce each band's container height to hug its content. No band should have more than ~10-15% empty vertical space inside its container. The band header (label and FOUNDATION/ROADMAP tag) stays at the top; the content immediately follows; the container ends just below the last card.
+Relevant Architecture Decision Records (ADRs) in the project Decision Log:
+- ADR-023: EMS does not own source-system data quality; source systems
+  (Archer, LeanIX) are upstream and authoritative.
+- ADR-024: Engagement scope is immutable once activated.
+- ADR-025: Evidence immutability; files in SharePoint, Dataverse stores
+  metadata + URL + snapshot copies of key fields.
+- ADR-033: No human override path for master records; bad-state fixes go
+  through service principal flow.
+- ADR-035: Flat BU model, no hierarchy.
+- ADR-038: Two-tier BU resolution (Tier 1 admin-curated tokens + Tier 2
+  full-path mapping fallback).
+- ADR-045 (drafted, pending insertion): Future evidence-bearing sources may
+  include GitHub, ServiceNow, Qualys, SailPoint IIQ, and application-layer
+  APIs.
+- ADR-046 (drafted, pending insertion): Data Loss Prevention (DLP) is
+  environment configuration, not an architectural constraint. DLP must
+  never be framed as a platform limitation in formal documents.
 
-Specifically:
-- USER INTERFACES band: should be tall enough for one row of cards (Power Apps MDA + Outlook) and the band header. No more.
-- AI & INTELLIGENCE band: should be tall enough for the two Planes (AI Assist Plane, AI Engineering Plane) stacked or side-by-side as they are now, with each Plane hugging its compact content.
-- INTEGRATION & AUTOMATION band: should be tall enough for the two Planes (Automation Plane, Integration Bridge) with their compact content.
-- RECORDS band: should be tall enough for the two Planes (Data Plane, Content Plane) with their compact content.
-- REPORTING band: should be tall enough for one row containing Power BI. No more.
+Hard architectural constraint (locked): the EMS user surface is 100% native
+Power Apps model-driven app. No Canvas Apps, no Power Pages, no PCF
+controls, no custom HTML, no Copilot-Agents-as-UI, no Teams-embedded
+primary surfaces.
 
-================================================================
-2. SHRINK PLANE CONTAINER HEIGHTS
-================================================================
+═══════════════════════════════════════════════════════════════════
+EDITS TO APPLY
+═══════════════════════════════════════════════════════════════════
 
-Within each band, the Plane containers (AI Assist Plane, AI Engineering Plane, Automation Plane, Integration Bridge, Data Plane, Content Plane) also have excess vertical space. Shrink each Plane container to hug its compact cards. Plane title and FOUNDATION/ROADMAP tag at the top; cards immediately follow; container ends just below the last card.
+EDIT 1 — Section 2 (Problem Statement)
+───────────────────────────────────────────────────────────────────
+Find the sentence: "A POC was authorized to validate platform fit. Foundation
+work followed, building out the core data model, the cycle engine, and the
+Business Unit (BU) resolution layer."
 
-================================================================
-3. SHRINK INTER-BAND VERTICAL GAPS
-================================================================
+Replace with: "A POC was authorized to validate platform fit. Foundation
+work is in flight against this validated platform — core data model is
+established; BU resolution is implemented for Applications, with extensions
+for Parent Business Processes and Control Procedures in flight; the
+production cycle engine architecture is locked and implementation is
+underway. This KDD records the platform decision against which that
+foundation work is being executed."
 
-The vertical space between bands is excessive — currently there are large empty corridors between AI & Intelligence and Integration & Automation, between Integration & Automation and Records, and between Records and Reporting.
+EDIT 2 — Section 3 (Motivation)
+───────────────────────────────────────────────────────────────────
+Find the sentence describing what the BU resolution layer does: "...it
+derives evidence ownership from application ownership and parent business
+processes, and then uses that resolved ownership to route evidence requests,
+reviews, reminders, and escalations to the correct accountable owners."
 
-Reduce inter-band vertical spacing to a tight, visually clear separator — just enough to distinguish bands without creating empty corridors. Approximately 20-30 pixels between band boundaries should be sufficient.
+Replace with: "...it derives evidence ownership from application ownership
+and parent business processes. The resolved ownership becomes the routing
+basis for evidence requests, reviews, reminders, and escalations to
+accountable owners — this routing is the target operating model the
+foundation enables; specific request, reminder, and escalation mechanisms
+are scoped as follow-on Layer 2 work."
 
-================================================================
-PRESERVE EVERYTHING ELSE
-================================================================
+EDIT 3 — Section 4 (Options Description), platform components list
+───────────────────────────────────────────────────────────────────
+Find any reference to "Power Pages" in the Option 1 (Native Microsoft Power
+Platform) component list. Remove "Power Pages" from that list.
 
-Preserve exactly:
-- The Source Systems column on the left (it's correct — do not modify)
-- The SECURITY & GOVERNANCE TRUST BOUNDARY outer dashed boundary
-- The cross-cutting bottom band (Microsoft Entra ID, Security Roles, Audit Logging, Key Vault)
-- All FOUNDATION / ROADMAP tag styling and placement
-- All component card content (icon, name, tag)
-- Color palette, typography, dashed-vs-solid border conventions
-- All animations, hover states, click-to-focus behavior, side panel structure
-- Connection topology between components
+Specifically, in the row "Strategic alignment" for Option 1, the text reads:
+"Lives on the strategic application platform (Power Apps, Dataverse, Power
+Automate, Copilot Studio, AI Builder, Power Pages, Power BI)."
 
-The Trust Boundary's overall dimensions should shrink to match the now-compact internal layout. The diagram as a whole should become approximately 50-60% of its current vertical height.
+Replace with: "Lives on the strategic application platform (Power Apps,
+Dataverse, Power Automate, Copilot Studio, AI Builder, Power BI)."
 
-The horizontal layout stays as-is — Source Systems column on the left, main bands centered in the remaining width. If empty space remains on the right, leave it; do not redistribute bands horizontally.
+The remainder of that row's text stays exactly as written.
 
-After restructuring, verify:
-- No band has more than ~15% empty vertical space inside it
-- No Plane container has excess vertical padding around its compact cards
-- Inter-band gaps are tight visual separators, not empty corridors
-- The overall diagram height is meaningfully reduced
-- Nothing else has changed (cards, content, colors, animations, interactivity)
+EDIT 4 — Section 4 (Options Description), DLP framing
+───────────────────────────────────────────────────────────────────
+Audit every mention of "DLP" or "Data Loss Prevention" in Section 4. If any
+mention frames DLP as a platform constraint, limitation, restriction, or
+governance enforcement, reframe it as environment configuration.
+
+Specifically, in the row "Maintainability" for Option 1, the text reads:
+"Governance and security are platform-managed (row-level security in
+Dataverse, Entra ID auth, DLP policies). Business-led evolution is
+feasible without a permanent engineering team."
+
+Replace with: "Governance and security are platform-managed (row-level
+security in Dataverse, Entra ID authentication). DLP policies are applied
+as environment configuration. Business-led evolution is feasible without
+a permanent engineering team."
+
+EDIT 5 — Section 5 (Architectural Diagrams), 9-step data flow
+───────────────────────────────────────────────────────────────────
+The current section lists a 9-step end-to-end data flow (Archer ingestion,
+LeanIX ingestion, applicability computation, BU resolution, evidence
+requests, evidence submission, reviewer validation, freshness/coverage
+reporting, audit packages).
+
+Immediately AFTER the numbered list of 9 steps and BEFORE the next paragraph
+or section, insert this paragraph:
+
+"This end-to-end data flow describes the foundation's target operating
+model. Implementation status varies by step: source ingestion (steps 1-2)
+is implemented in the current foundation. Applicability computation, BU
+resolution, evidence workflow, reviewer validation, and reporting (steps
+3-9) are scoped across in-flight Layer 1 and trajectory Layer 2 work, with
+completion tracked in the project's execution plan. The platform decision
+recorded by this KDD enables this target model; the platform choice does
+not by itself constitute its implementation."
+
+EDIT 6 — Section 6 (Assumptions), source-system sub-section
+───────────────────────────────────────────────────────────────────
+Find the bullet: "Source-system data quality is sufficient to support scope
+and ownership resolution, with exception handling for gaps."
+
+Replace with: "Source-system data quality is sufficient to support scope
+and ownership resolution, with exception handling for gaps. EMS does not
+take responsibility for source-system data quality remediation — only for
+detecting and handling exceptions on the EMS side. (See ADR-023.)"
+
+EDIT 7 — Section 6 (Assumptions), integration sub-section
+───────────────────────────────────────────────────────────────────
+Find the bullet: "Future evidence-bearing sources may include GitHub,
+ServiceNow, Qualys, SailPoint IIQ, and application-layer APIs."
+
+Replace with: "Future evidence-bearing sources may include GitHub,
+ServiceNow, Qualys, SailPoint IIQ, and application-layer APIs. The
+specific integration pattern for each future source is a separate design
+decision; (See ADR-045 — Future ingestion sources.)"
+
+EDIT 8 — Section 7 (Constraints), RSA Archer constraint
+───────────────────────────────────────────────────────────────────
+Find the constraint: "RSA Archer's data model is upstream and authoritative.
+EMS adapts to the schema and field semantics of the controls catalogue
+rather than redefining them. EMS should not become the system of record
+for controls. Changes to the Archer model require a sync-flow and mapping
+update on the EMS side."
+
+Append at the end of that constraint: " (See ADR-023.)"
+
+EDIT 9 — Section 7 (Constraints), LeanIX constraint
+───────────────────────────────────────────────────────────────────
+Find the constraint: "LeanIX's export schema is upstream and authoritative.
+EMS adapts to the field semantics of the application portfolio rather than
+redefining them. EMS should not become the system of record for
+applications. Changes to the LeanIX export require a sync-flow and mapping
+update on the EMS side."
+
+Append at the end of that constraint: " (See ADR-023.)"
+
+EDIT 10 — Section 7 (Constraints), evidence retention constraint
+───────────────────────────────────────────────────────────────────
+Find the constraint: "Evidence retention. Evidence records and evidence
+files must follow approved retention, legal-hold, sensitivity, and
+disposition policies."
+
+Append at the end of that constraint: " Evidence records are immutable —
+files are stored in SharePoint and never deleted; Dataverse stores
+metadata, file URL, and snapshot copies of key fields. (See ADR-025.)"
+
+EDIT 11 — Section 7 (Constraints), no direct uncontrolled updates
+───────────────────────────────────────────────────────────────────
+Find the constraint: "No direct uncontrolled updates. Direct updates to EMS
+operational data must occur only through approved application, integration,
+administrative, or controlled support pathways. Ad-hoc data changes must be
+restricted and auditable."
+
+Append at the end of that constraint: " There is no human override path
+for master records on the cycle engine; bad-state fixes are executed
+through a service principal flow with full audit trail. (See ADR-033.)"
+
+═══════════════════════════════════════════════════════════════════
+WHEN YOU APPLY THESE EDITS
+═══════════════════════════════════════════════════════════════════
+
+- Preserve all formatting (bold, italic, lists, table structure) exactly.
+- Do not paraphrase or summarize the existing text outside of the specified
+  finds-and-replaces.
+- Do not add ADR references where the prompt doesn't explicitly request them.
+- Do not change Section headings, sub-headings, or numbering.
+- Do not change any text in Sections 8, 9, 10, 11, or 12 — those are out of
+  scope for this pass.
+- Return the modified Sections 1 through 7 in full, with edits applied.
+- If you cannot find a specified passage exactly as quoted, do not invent
+  the location — flag the discrepancy and continue with the remaining edits.
+
+═══════════════════════════════════════════════════════════════════
+CURRENT KDD SECTIONS 1-7 TEXT
+═══════════════════════════════════════════════════════════════════
+
+[PASTE THE CURRENT § 1-7 TEXT HERE]
