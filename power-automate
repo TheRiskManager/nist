@@ -1,27 +1,7 @@
-Step C7b — Case Unmapped branch
-When the mapping row exists but Target BU is null (admin hasn't resolved it yet). We do nothing to the Parent BP — leave pei_owningbu as-is — and just increment the counter so end-of-run telemetry shows how many BPs are waiting on admin resolution.
-Where exactly
-Inside Route BP Mapping State → Case Unmapped. Click the + / Add an action.
-What to add
-Action: Variable → Increment variable
-Configure
-Rename via "..." → Rename:
-Increment BP Unmapped Counter
-Name (dropdown):
-varBPOwningBUUnmapped
-Value:
+C7c-1 — Create new mapping rowWhat to addAction: Dataverse → Add a new rowConfigureRename via "..." → Rename:
+Create BP Mapping RowTable name:
+BP To BU Mappings(Or pei_bptobumapping if the dropdown shows schema names.)Business Process Identifier field — click into it, switch to fx, paste:
+items('Loop_BP_Rows')?['Business Process Identifier'](This is the BP identifier from the current Excel row — same value we filtered the mapping lookup on. We're stamping the new mapping row with it.)Leave Target BU completely empty. That's the whole point — admin will fill this in later. Do NOT set a binding format, do NOT use null literal, just leave the field untouched. Power Automate will write the row with pei_targetbu = null.Leave all other fields blank (if there are auto-populated audit columns or similar, those handle themselves).C7c-2 — Increment AutoCreated counterWhat to addAction: Variable → Increment variableConfigureRename via "..." → Rename:
+Increment BP AutoCreated CounterName (dropdown):
+varBPOwningBUAutoCreatedValue:
 1
-Save and verify
-Save the flow.
-Verify before saying "done"
-
- Inside Route BP Mapping State → Case Unmapped, exactly one action: Increment BP Unmapped Counter
- Name = varBPOwningBUUnmapped
- Value = 1
- Flow saved without errors
-
-Why only one action
-There's a subtle design decision here worth surfacing: when we're in Case Unmapped, the BP might already have a non-null pei_owningbu from a previous cycle (when admin had resolved the mapping, BP got the BU written, then admin later un-resolved the mapping by clearing Target BU). The current Parent BP value should NOT be cleared just because the mapping is now blank — that would silently break BPs whose admin un-mapped them temporarily.
-So Case Unmapped deliberately leaves Parent BP's pei_owningbu alone. ADR-024 (engagement scope immutability) backs this — once a BU is assigned to a BP in an active cycle, the only way to clear it is admin action, not auto-revert from blank mapping.
-If you'd ever want to change this behavior (e.g., add a "clear BP Owning BU when mapping is unmapped" step), that's a separate decision and a separate ADR. For L1-A08 we keep it conservative.
-Reply "done" when verified. Then C7c — the last case branch, where we auto-create the missing mapping row.
