@@ -1,7 +1,1 @@
-C7c-1 — Create new mapping rowWhat to addAction: Dataverse → Add a new rowConfigureRename via "..." → Rename:
-Create BP Mapping RowTable name:
-BP To BU Mappings(Or pei_bptobumapping if the dropdown shows schema names.)Business Process Identifier field — click into it, switch to fx, paste:
-items('Loop_BP_Rows')?['Business Process Identifier'](This is the BP identifier from the current Excel row — same value we filtered the mapping lookup on. We're stamping the new mapping row with it.)Leave Target BU completely empty. That's the whole point — admin will fill this in later. Do NOT set a binding format, do NOT use null literal, just leave the field untouched. Power Automate will write the row with pei_targetbu = null.Leave all other fields blank (if there are auto-populated audit columns or similar, those handle themselves).C7c-2 — Increment AutoCreated counterWhat to addAction: Variable → Increment variableConfigureRename via "..." → Rename:
-Increment BP AutoCreated CounterName (dropdown):
-varBPOwningBUAutoCreatedValue:
-1
+concat('pei_ParentBusinessProcessIdentifier eq ''', items('Loop_BP_Rows')?['Business Process Identifier'], '''')
