@@ -1,49 +1,79 @@
-Variable 1
-Action title:
-Initialize varBPOwningBU
-Name:
-varBPOwningBU
-Type:
-String
-Value:
-(leave empty)
+Step 1 — Navigate to the Parent BP table
 
-Variable 2
-Action title:
-Initialize varBPOwningBUResolved
-Name:
-varBPOwningBUResolved
-Type:
-Integer
-Value:
-0
+Open Power Apps maker portal: https://make.powerapps.com
+Pick the EMS environment.
+Left nav → Tables (under Dataverse).
+Find and click into Parent Business Process (tenant display may show "Business Process" if singular).
+You should see existing columns including pei_owningbu (added April 30, L1-A06).
 
-Variable 3
-Action title:
-Initialize varBPOwningBUUnmapped
-Name:
-varBPOwningBUUnmapped
-Type:
-Integer
-Value:
-0
 
-Variable 4
-Action title:
-Initialize varBPOwningBUAutoCreated
-Name:
-varBPOwningBUAutoCreated
-Type:
-Integer
-Value:
-0
+Step 2 — Add the new column
 
-Variable 5
-Action title:
-Initialize varBPOwningBUManualSkipped
-Name:
-varBPOwningBUManualSkipped
-Type:
-Integer
-Value:
-0
+Click + New → Column (top of the columns list).
+Fill the side panel:
+
+Display name:
+Owning BU Manual Override
+
+CRITICAL — expand Advanced options and set the schema name explicitly:
+
+Name (schema name — under Advanced options):
+owningbumanual
+(Power Platform will prepend the pei_ publisher prefix automatically — final logical name: pei_owningbumanual. Do NOT type pei_ yourself; the maker portal adds it.)
+
+Data type:
+
+Yes/No
+(In the dropdown: Choice → Yes/No)
+
+Required:
+
+Optional
+
+Searchable: Yes (default; leave as-is)
+Default value:
+
+No
+(In the Yes/No default selector — pick No, not Yes. This means new BPs default to not having override active.)
+
+Enable auditing. Scroll down in the side panel → Advanced options → Enable auditing → toggle ON.
+Description (helps future implementers — paste this in the Description field):
+
+When Yes, Flow 1 will skip BU resolution for this Parent BP and preserve any existing Owning BU value. Use this when a BP's BU assignment differs from what the BP-to-BU mapping table would resolve. Symmetric with pei_owningbumanual on Application (ADR-036).
+
+Verify everything before clicking Save — re-check Name field shows owningbumanual (lowercase, no pei_ prefix typed by you), Type is Yes/No, Default is No, Audit is ON.
+Save.
+
+
+Step 3 — Add to main form
+The field needs to be on the form so users can see/edit it.
+
+From the Parent Business Process table view → Forms tab.
+Open the Information form (main form — same one Owning BU was added to per L1-A06).
+Drag Owning BU Manual Override from the right-side column palette onto the form, immediately below the existing Owning BU field.
+Save the form.
+Publish the form (button next to Save).
+
+
+Step 4 — Add to main view
+
+Back on the Parent Business Process table → Views tab.
+Open Active Parent Business Processes (main view).
+Add Owning BU Manual Override column. Position it immediately after Owning BU.
+Save and Publish the view.
+
+
+Verify before saying "done"
+
+ New column exists on Parent BP table
+ Display name: Owning BU Manual Override
+ Logical name (visible in column properties): pei_owningbumanual — all lowercase after the pei_ prefix (not pei_OwningBUManual — case matters; the lookup must be lowercase to match the L1-A07 pattern)
+ Type: Yes/No
+ Default: No
+ Audit: ON
+ Description filled in
+ Added to the Information form, positioned below Owning BU
+ Added to Active Parent Business Processes view, after Owning BU
+ Form and view both published (not just saved)
+
+Reply "done" when verified. I'll update the schema doc in the same step you confirm, per Schema Discipline.
