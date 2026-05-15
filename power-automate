@@ -1,208 +1,49 @@
-You are editing a Key Design Decision (KDD) document for an Evidence
-Management System (EMS) built on Microsoft Power Platform. The KDD is going
-to a Technical Architecture / LARB review. I am pasting Sections 1 through 7
-of the current document below. Make the following surgical edits — preserve
-all other text exactly as written. Do not add new content beyond what these
-edits explicitly request. Do not invent claims.
+Variable 1
+Action title:
+Initialize varBPOwningBU
+Name:
+varBPOwningBU
+Type:
+String
+Value:
+(leave empty)
 
-═══════════════════════════════════════════════════════════════════
-PROJECT CONTEXT (read once, then apply to edits below)
-═══════════════════════════════════════════════════════════════════
+Variable 2
+Action title:
+Initialize varBPOwningBUResolved
+Name:
+varBPOwningBUResolved
+Type:
+Integer
+Value:
+0
 
-The EMS project is in production build phase, NOT post-completion. The
-foundation has been partially built:
-- Layer 0 (POC foundation): 60 of 61 stories complete
-- Layer 1 (production cycle engine): partially in flight. BU resolution for
-  Applications is complete; BU resolution for Parent Business Processes and
-  Control Procedures is NOT YET BUILT. The Rules Engine workstream (14
-  stories) is NOT YET STARTED. The 6-stage cycle UI is NOT YET BUILT — the
-  current cycle UI is a 5-stage POC.
-- Layer 2 (continuous evidence): 0 of 31 stories complete — entirely
-  trajectory.
-- Layer 3 (audit engagements): 0 of 27 stories complete — entirely trajectory.
+Variable 3
+Action title:
+Initialize varBPOwningBUUnmapped
+Name:
+varBPOwningBUUnmapped
+Type:
+Integer
+Value:
+0
 
-Relevant Architecture Decision Records (ADRs) in the project Decision Log:
-- ADR-023: EMS does not own source-system data quality; source systems
-  (Archer, LeanIX) are upstream and authoritative.
-- ADR-024: Engagement scope is immutable once activated.
-- ADR-025: Evidence immutability; files in SharePoint, Dataverse stores
-  metadata + URL + snapshot copies of key fields.
-- ADR-033: No human override path for master records; bad-state fixes go
-  through service principal flow.
-- ADR-035: Flat BU model, no hierarchy.
-- ADR-038: Two-tier BU resolution (Tier 1 admin-curated tokens + Tier 2
-  full-path mapping fallback).
-- ADR-045 (drafted, pending insertion): Future evidence-bearing sources may
-  include GitHub, ServiceNow, Qualys, SailPoint IIQ, and application-layer
-  APIs.
-- ADR-046 (drafted, pending insertion): Data Loss Prevention (DLP) is
-  environment configuration, not an architectural constraint. DLP must
-  never be framed as a platform limitation in formal documents.
+Variable 4
+Action title:
+Initialize varBPOwningBUAutoCreated
+Name:
+varBPOwningBUAutoCreated
+Type:
+Integer
+Value:
+0
 
-Hard architectural constraint (locked): the EMS user surface is 100% native
-Power Apps model-driven app. No Canvas Apps, no Power Pages, no PCF
-controls, no custom HTML, no Copilot-Agents-as-UI, no Teams-embedded
-primary surfaces.
-
-═══════════════════════════════════════════════════════════════════
-EDITS TO APPLY
-═══════════════════════════════════════════════════════════════════
-
-EDIT 1 — Section 2 (Problem Statement)
-───────────────────────────────────────────────────────────────────
-Find the sentence: "A POC was authorized to validate platform fit. Foundation
-work followed, building out the core data model, the cycle engine, and the
-Business Unit (BU) resolution layer."
-
-Replace with: "A POC was authorized to validate platform fit. Foundation
-work is in flight against this validated platform — core data model is
-established; BU resolution is implemented for Applications, with extensions
-for Parent Business Processes and Control Procedures in flight; the
-production cycle engine architecture is locked and implementation is
-underway. This KDD records the platform decision against which that
-foundation work is being executed."
-
-EDIT 2 — Section 3 (Motivation)
-───────────────────────────────────────────────────────────────────
-Find the sentence describing what the BU resolution layer does: "...it
-derives evidence ownership from application ownership and parent business
-processes, and then uses that resolved ownership to route evidence requests,
-reviews, reminders, and escalations to the correct accountable owners."
-
-Replace with: "...it derives evidence ownership from application ownership
-and parent business processes. The resolved ownership becomes the routing
-basis for evidence requests, reviews, reminders, and escalations to
-accountable owners — this routing is the target operating model the
-foundation enables; specific request, reminder, and escalation mechanisms
-are scoped as follow-on Layer 2 work."
-
-EDIT 3 — Section 4 (Options Description), platform components list
-───────────────────────────────────────────────────────────────────
-Find any reference to "Power Pages" in the Option 1 (Native Microsoft Power
-Platform) component list. Remove "Power Pages" from that list.
-
-Specifically, in the row "Strategic alignment" for Option 1, the text reads:
-"Lives on the strategic application platform (Power Apps, Dataverse, Power
-Automate, Copilot Studio, AI Builder, Power Pages, Power BI)."
-
-Replace with: "Lives on the strategic application platform (Power Apps,
-Dataverse, Power Automate, Copilot Studio, AI Builder, Power BI)."
-
-The remainder of that row's text stays exactly as written.
-
-EDIT 4 — Section 4 (Options Description), DLP framing
-───────────────────────────────────────────────────────────────────
-Audit every mention of "DLP" or "Data Loss Prevention" in Section 4. If any
-mention frames DLP as a platform constraint, limitation, restriction, or
-governance enforcement, reframe it as environment configuration.
-
-Specifically, in the row "Maintainability" for Option 1, the text reads:
-"Governance and security are platform-managed (row-level security in
-Dataverse, Entra ID auth, DLP policies). Business-led evolution is
-feasible without a permanent engineering team."
-
-Replace with: "Governance and security are platform-managed (row-level
-security in Dataverse, Entra ID authentication). DLP policies are applied
-as environment configuration. Business-led evolution is feasible without
-a permanent engineering team."
-
-EDIT 5 — Section 5 (Architectural Diagrams), 9-step data flow
-───────────────────────────────────────────────────────────────────
-The current section lists a 9-step end-to-end data flow (Archer ingestion,
-LeanIX ingestion, applicability computation, BU resolution, evidence
-requests, evidence submission, reviewer validation, freshness/coverage
-reporting, audit packages).
-
-Immediately AFTER the numbered list of 9 steps and BEFORE the next paragraph
-or section, insert this paragraph:
-
-"This end-to-end data flow describes the foundation's target operating
-model. Implementation status varies by step: source ingestion (steps 1-2)
-is implemented in the current foundation. Applicability computation, BU
-resolution, evidence workflow, reviewer validation, and reporting (steps
-3-9) are scoped across in-flight Layer 1 and trajectory Layer 2 work, with
-completion tracked in the project's execution plan. The platform decision
-recorded by this KDD enables this target model; the platform choice does
-not by itself constitute its implementation."
-
-EDIT 6 — Section 6 (Assumptions), source-system sub-section
-───────────────────────────────────────────────────────────────────
-Find the bullet: "Source-system data quality is sufficient to support scope
-and ownership resolution, with exception handling for gaps."
-
-Replace with: "Source-system data quality is sufficient to support scope
-and ownership resolution, with exception handling for gaps. EMS does not
-take responsibility for source-system data quality remediation — only for
-detecting and handling exceptions on the EMS side. (See ADR-023.)"
-
-EDIT 7 — Section 6 (Assumptions), integration sub-section
-───────────────────────────────────────────────────────────────────
-Find the bullet: "Future evidence-bearing sources may include GitHub,
-ServiceNow, Qualys, SailPoint IIQ, and application-layer APIs."
-
-Replace with: "Future evidence-bearing sources may include GitHub,
-ServiceNow, Qualys, SailPoint IIQ, and application-layer APIs. The
-specific integration pattern for each future source is a separate design
-decision; (See ADR-045 — Future ingestion sources.)"
-
-EDIT 8 — Section 7 (Constraints), RSA Archer constraint
-───────────────────────────────────────────────────────────────────
-Find the constraint: "RSA Archer's data model is upstream and authoritative.
-EMS adapts to the schema and field semantics of the controls catalogue
-rather than redefining them. EMS should not become the system of record
-for controls. Changes to the Archer model require a sync-flow and mapping
-update on the EMS side."
-
-Append at the end of that constraint: " (See ADR-023.)"
-
-EDIT 9 — Section 7 (Constraints), LeanIX constraint
-───────────────────────────────────────────────────────────────────
-Find the constraint: "LeanIX's export schema is upstream and authoritative.
-EMS adapts to the field semantics of the application portfolio rather than
-redefining them. EMS should not become the system of record for
-applications. Changes to the LeanIX export require a sync-flow and mapping
-update on the EMS side."
-
-Append at the end of that constraint: " (See ADR-023.)"
-
-EDIT 10 — Section 7 (Constraints), evidence retention constraint
-───────────────────────────────────────────────────────────────────
-Find the constraint: "Evidence retention. Evidence records and evidence
-files must follow approved retention, legal-hold, sensitivity, and
-disposition policies."
-
-Append at the end of that constraint: " Evidence records are immutable —
-files are stored in SharePoint and never deleted; Dataverse stores
-metadata, file URL, and snapshot copies of key fields. (See ADR-025.)"
-
-EDIT 11 — Section 7 (Constraints), no direct uncontrolled updates
-───────────────────────────────────────────────────────────────────
-Find the constraint: "No direct uncontrolled updates. Direct updates to EMS
-operational data must occur only through approved application, integration,
-administrative, or controlled support pathways. Ad-hoc data changes must be
-restricted and auditable."
-
-Append at the end of that constraint: " There is no human override path
-for master records on the cycle engine; bad-state fixes are executed
-through a service principal flow with full audit trail. (See ADR-033.)"
-
-═══════════════════════════════════════════════════════════════════
-WHEN YOU APPLY THESE EDITS
-═══════════════════════════════════════════════════════════════════
-
-- Preserve all formatting (bold, italic, lists, table structure) exactly.
-- Do not paraphrase or summarize the existing text outside of the specified
-  finds-and-replaces.
-- Do not add ADR references where the prompt doesn't explicitly request them.
-- Do not change Section headings, sub-headings, or numbering.
-- Do not change any text in Sections 8, 9, 10, 11, or 12 — those are out of
-  scope for this pass.
-- Return the modified Sections 1 through 7 in full, with edits applied.
-- If you cannot find a specified passage exactly as quoted, do not invent
-  the location — flag the discrepancy and continue with the remaining edits.
-
-═══════════════════════════════════════════════════════════════════
-CURRENT KDD SECTIONS 1-7 TEXT
-═══════════════════════════════════════════════════════════════════
-
-[PASTE THE CURRENT § 1-7 TEXT HERE]
+Variable 5
+Action title:
+Initialize varBPOwningBUManualSkipped
+Name:
+varBPOwningBUManualSkipped
+Type:
+Integer
+Value:
+0
