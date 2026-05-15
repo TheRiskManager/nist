@@ -1,1 +1,1 @@
-concat('pei_businessprocessidentifier eq ''', items('Loop_BP_Rows')?['Business Process Identifier'], '''')
+pei_businessprocessid,pei_owningbumanual,_pei_owningbu_value
