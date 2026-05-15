@@ -1,42 +1,44 @@
-Step 3a — Rename the action first
-Top-bar "..." on the new Condition → Rename:
-BP Manual Override
-Step 3b — Left value (use fx / expression mode)
-Click into the left field of the condition, switch to fx (expression editor). Paste:
-coalesce(first(outputs('Get_BP_After_Upsert')?['body/value'])?['pei_owningbumanual'], false)
-What this does:
-
-outputs('Get_BP_After_Upsert')?['body/value'] — the array returned by List rows
-first(...) — pull the single row (we set Row count = 1)
-?['pei_owningbumanual'] — read the override flag from that row
-coalesce(..., false) — treat null/missing as false. This matters for legacy BPs created before today's schema change (they don't have the field set yet)
-
-Step 3c — Operator
-is equal to
-Step 3d — Right value — CRITICAL: use fx / expression mode
-Click into the right field, switch to fx, paste:
-true
-Why fx not text: typing true as plain text creates the string "true". Yes/No fields evaluate as boolean true / false at runtime. String-vs-boolean comparison always returns false. The fx mode makes it a boolean literal.
-Step 3e — Save
+Step C5 — Find BP Mapping
+Where exactly
+Inside the If no branch of BP Manual Override Condition (the red branch). Click the + / Add an action there.
+What to add
+Action: Dataverse → List rows
+Configure the action
+Step 5a — Rename via "..." → Rename:
+Find BP Mapping
+Step 5b — Table name (dropdown):
+BP To BU Mappings
+(If the dropdown shows the schema name instead of display name, look for pei_bptobumapping.)
+Step 5c — Click "Show advanced options" and fill in:
+Filter rows — click into the field, switch to fx (expression mode), paste:
+concat('pei_businessprocessidentifier eq ''', items('Loop_BP_Rows')?['Business Process Identifier'], '''')
+(Same concat pattern that worked for C2's Get BP After Upsert. We're filtering the mapping table by the same BP identifier we used to find the BP itself. The mapping table's pei_businessprocessidentifier column is the join key per L1-A03.)
+Select columns:
+pei_bptobumappingid,_pei_targetbu_value
+(Two columns: the mapping row's GUID (in case we need to update it later or write back the resolution) and the Target BU lookup raw value. We need _pei_targetbu_value rather than pei_targetbu because the underscore-prefix-and-_value-suffix gives us the raw GUID, which is what we'll compare/use in the next step.)
+Row count:
+1
+(BP-to-mapping is 1:1 per ADR-035 / L1-A03 spec. We expect at most one row.)
+Save and verify
 Save the flow.
 
-Internal-name watch
-If the left expression errors with something like "cannot find action Get_BP_After_Upsert", the action's internal name doesn't match its display name. To check:
+What happens next
+Find BP Mapping will return one of three states:
 
-Click on Get BP After Upsert action header
-Click the "..." menu → Settings
-Look for the action ID / internal name shown there
+Empty array (no row found) → C6 Switch case "NotFound" → C7 auto-creates a new mapping row with NULL Target BU + increments AutoCreated counter
+One row with non-null _pei_targetbu_value → C6 Switch case "Resolved" → write that BU to Parent BP's pei_owningbu + increment Resolved counter
+One row with NULL _pei_targetbu_value → C6 Switch case "Unmapped" → leave Parent BP's pei_owningbu as-is + increment Unmapped counter (admin hasn't resolved it yet)
 
-If it's something else like List_rows_5 or Get_BP_After_Upsert_2, replace Get_BP_After_Upsert in the expression with that exact internal name (underscores replace spaces).
-Same issue we hit on the filter expression for C2 — Power Automate internal names follow rename history, not always the current display name.
+C6 is the Switch action that branches on these three states. C7 is the three branches' contents.
 
 Verify before saying "done"
 
- BP Manual Override Condition exists immediately after Get BP After Upsert
- Left value: the coalesce(first(outputs(...))?[...], false) expression
- Operator: is equal to
- Right value: expression literal true (entered via fx)
- Condition has two empty branches: If yes and If no
+ Find BP Mapping action exists inside BP Manual Override → If no branch
+ Table name: BP To BU Mappings (or pei_bptobumapping)
+ Filter rows: the concat expression above
+ Select columns: pei_bptobumappingid,_pei_targetbu_value (no spaces, lowercase)
+ Row count: 1
  Flow saved without errors
 
-Reply "done" when verified. C4 will fill the If-yes branch (skip resolution, increment ManualSkipped counter). It's a 1-action step — quick.
+Watch: if the loop's internal name was different from Loop_BP_Rows for C2, use the same name here. Whatever worked in C2's filter will work here verbatim.
+Reply "done" when verified. Then C6 — the Switch action that classifies mapping state.
