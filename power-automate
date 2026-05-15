@@ -1,44 +1,87 @@
-Step C5 — Find BP Mapping
-Where exactly
-Inside the If no branch of BP Manual Override Condition (the red branch). Click the + / Add an action there.
+C5 done. Now C6 — the classifier that decides which of the three states we're in.
+A Switch action needs something deterministic to switch on. We can't switch directly on "the array length" + "the value of _pei_targetbu_value" in one go — Switch takes a single expression. So we build a Compose action just above the Switch that classifies the state into a single string ("NotFound" / "Resolved" / "Unmapped"), then Switch branches on that string.
+This is the same Compose-classify-then-Switch pattern L1-A07 Phase C Option-D used (per the May 3 backup notes in the registry). Mirroring it keeps the two BU resolution chains structurally identical and auditable.
+
+Step C6 — Classify + Switch
+Two sub-actions: C6a (Compose) then C6b (Switch).
+C6a — Compose the mapping state
+Where
+Immediately AFTER Find BP Mapping, still inside BP Manual Override → If no. Click the + below Find BP Mapping → Add an action.
 What to add
-Action: Dataverse → List rows
-Configure the action
-Step 5a — Rename via "..." → Rename:
-Find BP Mapping
-Step 5b — Table name (dropdown):
-BP To BU Mappings
-(If the dropdown shows the schema name instead of display name, look for pei_bptobumapping.)
-Step 5c — Click "Show advanced options" and fill in:
-Filter rows — click into the field, switch to fx (expression mode), paste:
-concat('pei_businessprocessidentifier eq ''', items('Loop_BP_Rows')?['Business Process Identifier'], '''')
-(Same concat pattern that worked for C2's Get BP After Upsert. We're filtering the mapping table by the same BP identifier we used to find the BP itself. The mapping table's pei_businessprocessidentifier column is the join key per L1-A03.)
-Select columns:
-pei_bptobumappingid,_pei_targetbu_value
-(Two columns: the mapping row's GUID (in case we need to update it later or write back the resolution) and the Target BU lookup raw value. We need _pei_targetbu_value rather than pei_targetbu because the underscore-prefix-and-_value-suffix gives us the raw GUID, which is what we'll compare/use in the next step.)
-Row count:
-1
-(BP-to-mapping is 1:1 per ADR-035 / L1-A03 spec. We expect at most one row.)
-Save and verify
-Save the flow.
+Action: Data Operation → Compose
+Configure
+Step 6a-1 — Rename via "..." → Rename:
+Classify BP Mapping State
+Step 6a-2 — Inputs field — click into it, switch to fx mode, paste:
+if(equals(length(outputs('Find_BP_Mapping')?['body/value']), 0), 'NotFound', if(equals(coalesce(first(outputs('Find_BP_Mapping')?['body/value'])?['_pei_targetbu_value'], ''), ''), 'Unmapped', 'Resolved'))
+What this expression does
+Reading inside-out:
 
-What happens next
-Find BP Mapping will return one of three states:
+length(outputs('Find_BP_Mapping')?['body/value']) — array length of mapping rows returned (0 or 1, since Row count = 1)
+Outer if(equals(..., 0), 'NotFound', ...) — if array empty, classify as NotFound
+Otherwise drop into nested check: first(...)?['_pei_targetbu_value'] reads the Target BU raw GUID from the single row
+coalesce(..., '') treats null/missing as empty string
+Inner if(equals(..., ''), 'Unmapped', 'Resolved') — empty Target BU = Unmapped, anything else = Resolved
 
-Empty array (no row found) → C6 Switch case "NotFound" → C7 auto-creates a new mapping row with NULL Target BU + increments AutoCreated counter
-One row with non-null _pei_targetbu_value → C6 Switch case "Resolved" → write that BU to Parent BP's pei_owningbu + increment Resolved counter
-One row with NULL _pei_targetbu_value → C6 Switch case "Unmapped" → leave Parent BP's pei_owningbu as-is + increment Unmapped counter (admin hasn't resolved it yet)
+So the Compose output is exactly one of three strings: 'NotFound', 'Unmapped', or 'Resolved'.
+Step 6a-3 — Save.
 
-C6 is the Switch action that branches on these three states. C7 is the three branches' contents.
+C6b — Switch on the classified state
+Where
+Immediately AFTER Classify BP Mapping State, still inside BP Manual Override → If no. Click the + below the Compose → Add an action.
+What to add
+Action: Control → Switch
+Configure
+Step 6b-1 — Rename via "..." → Rename:
+Route BP Mapping State
+Step 6b-2 — On field — click into it. You can either:
+
+(a) Pick Outputs of Classify BP Mapping State from the Dynamic content panel (cleanest)
+(b) Or switch to fx and paste: outputs('Classify_BP_Mapping_State')
+
+Either works. (a) is preferred because it shows as a tidy dynamic-content lozenge instead of raw expression text.
+Step 6b-3 — Configure the three Switch cases.
+Switch starts with one default case slot. You'll need three cases (Resolved, Unmapped, NotFound) plus a fallback Default that does nothing.
+Case 1:
+
+Click into Case header → rename via "..." → Rename Case:
+
+Case Resolved
+
+Equals field (the value the case matches on):
+
+Resolved
+(Plain text, NOT fx — must be a literal string that matches the Compose output exactly.)
+Case 2: Click + Add at the bottom of the Switch to add another case.
+
+Rename:
+
+Case Unmapped
+
+Equals:
+
+Unmapped
+Case 3: Add another case.
+
+Rename:
+
+Case NotFound
+
+Equals:
+
+NotFound
+Default case: leave it as-is and empty. If the classifier ever returned a value outside our three (it shouldn't, but defensive), Default fires and does nothing — the BP just isn't resolved this iteration.
+Step 6b-4 — Save.
 
 Verify before saying "done"
 
- Find BP Mapping action exists inside BP Manual Override → If no branch
- Table name: BP To BU Mappings (or pei_bptobumapping)
- Filter rows: the concat expression above
- Select columns: pei_bptobumappingid,_pei_targetbu_value (no spaces, lowercase)
- Row count: 1
+ Classify BP Mapping State Compose exists, with the if(equals(length(...), 0), ..., if(equals(coalesce(...), ''), ..., ...)) expression
+ Route BP Mapping State Switch exists immediately after Classify
+ Switch is set to switch on Outputs of Classify BP Mapping State
+ Three cases exist: Case Resolved (Equals: Resolved), Case Unmapped (Equals: Unmapped), Case NotFound (Equals: NotFound)
+ Default case is empty (no actions inside)
+ All three case branches are currently empty (we fill them in C7)
  Flow saved without errors
 
-Watch: if the loop's internal name was different from Loop_BP_Rows for C2, use the same name here. Whatever worked in C2's filter will work here verbatim.
-Reply "done" when verified. Then C6 — the Switch action that classifies mapping state.
+Watch: if Classify's expression errors on Find_BP_Mapping, same internal-name issue we've hit twice — get the actual internal name from the action's Settings and substitute.
+Reply "done" when verified. Then C7 — populating the three case branches (the actual BU-writing actions and counter increments). C7 has three small parallel sub-builds; I'll give them one at a time.
