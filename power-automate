@@ -1,1 +1,42 @@
-pei_businessprocessid,pei_owningbumanual,_pei_owningbu_value
+Step 3a — Rename the action first
+Top-bar "..." on the new Condition → Rename:
+BP Manual Override
+Step 3b — Left value (use fx / expression mode)
+Click into the left field of the condition, switch to fx (expression editor). Paste:
+coalesce(first(outputs('Get_BP_After_Upsert')?['body/value'])?['pei_owningbumanual'], false)
+What this does:
+
+outputs('Get_BP_After_Upsert')?['body/value'] — the array returned by List rows
+first(...) — pull the single row (we set Row count = 1)
+?['pei_owningbumanual'] — read the override flag from that row
+coalesce(..., false) — treat null/missing as false. This matters for legacy BPs created before today's schema change (they don't have the field set yet)
+
+Step 3c — Operator
+is equal to
+Step 3d — Right value — CRITICAL: use fx / expression mode
+Click into the right field, switch to fx, paste:
+true
+Why fx not text: typing true as plain text creates the string "true". Yes/No fields evaluate as boolean true / false at runtime. String-vs-boolean comparison always returns false. The fx mode makes it a boolean literal.
+Step 3e — Save
+Save the flow.
+
+Internal-name watch
+If the left expression errors with something like "cannot find action Get_BP_After_Upsert", the action's internal name doesn't match its display name. To check:
+
+Click on Get BP After Upsert action header
+Click the "..." menu → Settings
+Look for the action ID / internal name shown there
+
+If it's something else like List_rows_5 or Get_BP_After_Upsert_2, replace Get_BP_After_Upsert in the expression with that exact internal name (underscores replace spaces).
+Same issue we hit on the filter expression for C2 — Power Automate internal names follow rename history, not always the current display name.
+
+Verify before saying "done"
+
+ BP Manual Override Condition exists immediately after Get BP After Upsert
+ Left value: the coalesce(first(outputs(...))?[...], false) expression
+ Operator: is equal to
+ Right value: expression literal true (entered via fx)
+ Condition has two empty branches: If yes and If no
+ Flow saved without errors
+
+Reply "done" when verified. C4 will fill the If-yes branch (skip resolution, increment ManualSkipped counter). It's a 1-action step — quick.
