@@ -1,63 +1,27 @@
-Step C7a — Case Resolved branch
-When the mapping row exists with a non-null Target BU. We pull that BU GUID, stash it in varBPOwningBU, write it to the Parent BP's pei_owningbu field, and increment the Resolved counter.
+Step C7b — Case Unmapped branch
+When the mapping row exists but Target BU is null (admin hasn't resolved it yet). We do nothing to the Parent BP — leave pei_owningbu as-is — and just increment the counter so end-of-run telemetry shows how many BPs are waiting on admin resolution.
 Where exactly
-Inside Route BP Mapping State → Case Resolved. Click the + / Add an action there. We'll add three actions in sequence inside this case.
-
-C7a-1 — Set varBPOwningBU from mapping
-What to add
-Action: Variable → Set variable
-Configure
-Rename via "..." → Rename:
-Set varBPOwningBU From Mapping
-Name (dropdown):
-varBPOwningBU
-Value — click into field, switch to fx, paste:
-first(outputs('Find_BP_Mapping')?['body/value'])?['_pei_targetbu_value']
-(Pulls the single mapping row's Target BU raw GUID into the per-iteration scratch variable. We've already classified this case as Resolved so we know this value is non-null.)
-
-C7a-2 — Update Parent BP with Owning BU
-What to add
-Action: Dataverse → Update a row
-Configure
-Rename via "..." → Rename:
-Update BP Owning BU
-Table name:
-Parent Business Processes
-Row ID — click into field, switch to fx, paste:
-first(outputs('Get_BP_After_Upsert')?['body/value'])?['pei_businessprocessid']
-(This is the GUID of the BP we're currently iterating on — fetched in C2.)
-Click "Show advanced options" and find the Owning BU field. Click into it, switch to fx, paste:
-concat('/pei_businessunits(', variables('varBPOwningBU'), ')')
-About this format: Dataverse lookup writes require this OData binding format — slash, plural-collection-name of the target table, parens around the GUID. The plural collection name for the Business Unit table is pei_businessunits (note the s). This is the same pattern used in the existing Update App actions for pei_owningbu writes — if you see them and the table name suffix differs, copy that exactly.
-Leave all other fields blank — we're only writing the one column.
-
-C7a-3 — Increment Resolved counter
+Inside Route BP Mapping State → Case Unmapped. Click the + / Add an action.
 What to add
 Action: Variable → Increment variable
 Configure
 Rename via "..." → Rename:
-Increment Resolved Counter
+Increment BP Unmapped Counter
 Name (dropdown):
-varBPOwningBUResolved
+varBPOwningBUUnmapped
 Value:
 1
-
-Save and verify Case Resolved
+Save and verify
 Save the flow.
 Verify before saying "done"
 
- Inside Route BP Mapping State → Case Resolved, three actions in this order:
-
- Set varBPOwningBU From Mapping (Set variable, varBPOwningBU = first(...)?['_pei_targetbu_value'])
- Update BP Owning BU (Dataverse Update a row, target = Parent BP, Row ID = first(...)?['pei_businessprocessid'], Owning BU = concat-binding)
- Increment Resolved Counter (Increment varBPOwningBUResolved by 1)
-
-
+ Inside Route BP Mapping State → Case Unmapped, exactly one action: Increment BP Unmapped Counter
+ Name = varBPOwningBUUnmapped
+ Value = 1
  Flow saved without errors
 
-Watches:
-
-Same internal-name watch as before for Find_BP_Mapping and Get_BP_After_Upsert — if they error, substitute the real internal names from Settings.
-The Owning BU lookup binding format is the most common slip. If the Update action errors at runtime with something like "InvalidLookupReference" or "binding format invalid", the issue is almost always missing the leading slash or wrong table-collection name (pei_businessunits plural with s, not pei_businessunit singular).
-
-Reply "done" when verified. Then C7b (Case Unmapped, one action) and C7c (Case NotFound, two actions).
+Why only one action
+There's a subtle design decision here worth surfacing: when we're in Case Unmapped, the BP might already have a non-null pei_owningbu from a previous cycle (when admin had resolved the mapping, BP got the BU written, then admin later un-resolved the mapping by clearing Target BU). The current Parent BP value should NOT be cleared just because the mapping is now blank — that would silently break BPs whose admin un-mapped them temporarily.
+So Case Unmapped deliberately leaves Parent BP's pei_owningbu alone. ADR-024 (engagement scope immutability) backs this — once a BU is assigned to a BP in an active cycle, the only way to clear it is admin action, not auto-revert from blank mapping.
+If you'd ever want to change this behavior (e.g., add a "clear BP Owning BU when mapping is unmapped" step), that's a separate decision and a separate ADR. For L1-A08 we keep it conservative.
+Reply "done" when verified. Then C7c — the last case branch, where we auto-create the missing mapping row.
