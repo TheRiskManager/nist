@@ -1,11 +1,1 @@
-Click "Show advanced options" and fill in:
-Filter rows:
-pei_businessprocessidentifier eq '@{items('Loop_BP_Rows')?['Business Process Identifier']}'
-Note on that expression: Loop_BP_Rows is the internal name of the Loop BP Rows action. If your loop's internal name is different (Power Automate sometimes shows Apply_to_each_2 or similar in expression mode), use whatever name Find Existing BP already uses in its own filter. Easiest way to verify: open Find Existing BP first, copy the exact items(...) reference it uses in its filter, and reuse the same one here — just swap the column reference if needed.
-Select columns:
-pei_businessprocessid,pei_owningbumanual,_pei_owningbu_value
-(Lowercase, comma-separated, no spaces. This pulls only the 3 columns we need: the GUID, the override flag, and the current Owning BU lookup value — keeping the payload small.)
-Row count:
-1
-(We expect exactly one match — the BP we just created or updated.)
-Save and verify
+concat('pei_businessprocessidentifier eq ''', items('Loop_BP_Rows')?['Business Process Identifier'], '''')
