@@ -1,1 +1,26 @@
-concat('pei_ParentBusinessProcessIdentifier eq ''', items('Loop_BP_Rows')?['Business Process Identifier'], '''')
+Step D-1 — Edit the Compose
+
+Open the Run Summary / Log Summary Compose action in Section 8.
+Click into the Inputs field. You should see existing lines like:
+
+   BPs new: <varBPNew>
+   BPs updated: <varBPUpdated>
+   BPs removed: <varBPRemoved>
+(Where <varBPNew> is a dynamic-content lozenge, not literal text.)
+3. After the last BP line (BPs removed: ...), add a blank line, then add 4 new lines:
+BPs BU resolved: <varBPOwningBUResolved>
+BPs BU unmapped: <varBPOwningBUUnmapped>
+BPs BU auto-created mapping: <varBPOwningBUAutoCreated>
+BPs BU manual override skipped: <varBPOwningBUManualSkipped>
+IMPORTANT — each <varBPOwningBU*> placeholder is a dynamic-content lozenge, not literal text. For each one:
+
+Type the label text (BPs BU resolved: )
+Then click the Dynamic content panel on the right
+Find the variable under its appropriate section (Variables → search the name)
+Click to insert as a lozenge
+
+Repeat for all 4 lines.
+Step D-2 — Mirror the L1-A07 grouping
+If L1-A07 added a separator line or comment-style line before its Apps BU * block (like a blank line, or --- BU Resolution ---), mirror that pattern between the BP CRUD block and the new BP BU block. Just for readability in logs. If L1-A07 didn't, skip.
+Step D-3 — Save
+Save the flow.
