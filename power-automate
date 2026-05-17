@@ -1,1 +1,2 @@
-outputs('Log_BP_BU_Resolution_Summary')
+items('Check_BP_Removals')?['pei_businessprocessid']
+
