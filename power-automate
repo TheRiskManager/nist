@@ -1,43 +1,28 @@
-Filter rows (fx mode):
-concat('pei_parentbusinessprocessidentifier eq ''', items('Check_BP_Removals')?['pei_businessprocessidentifier'], '''')
-Note: lowercase OData column name (pei_parentbusinessprocessidentifier) per ADR-049 lesson. The right side references the BP's identifier from the iteration item using lowercase column name too — because items() references against List Active BPs results follow Dataverse's runtime lowercase convention.
-Select columns:
-pei_bptobumappingid,pei_mappingstatus
-Row count:
-1
-(BP-to-mapping is 1:1, expect at most one row.)
-Save.
+Block A — Create the Global Choice "Ownership Type"
+This is the choice object (the option set), not yet attached to any column. We'll attach it in Block B.
+Steps
 
-Step 2 — Add Soft Mark Mapping Inactive (conditional update)
-Where exactly
-Click + between Find BP Mapping For Decom and Increment variable 8 → Add an action → Control → Condition.
-Configure the Condition
-Rename via "..." → Rename:
-BP Mapping Exists For Decom
-Left value (fx mode):
-length(outputs('Find_BP_Mapping_For_Decom')?['body/value'])
-Operator:
-is greater than
-Right value (fx mode — must be expression not text):
-0
-Inside the If yes branch
-Click into the If yes branch → Add an action → Dataverse → Update a row.
-Rename via "..." → Rename:
-Soft Mark Mapping Inactive
-Table name:
-BP-to-BU Mappings
-Row ID (fx mode):
-first(outputs('Find_BP_Mapping_For_Decom')?['body/value'])?['pei_bptobumappingid']
-Mapping Status (find this field in the Update Row action — it should be a dropdown for choice values):
+Open Power Apps maker portal (make.powerapps.com) in the EMS environment
+Left nav: Solutions → open the EMS solution where the existing tables live (the same solution that holds pei_bptobumapping)
+Inside the solution: top bar + New → More → Choice
 
-Click into the field, switch to fx, paste:
+A "New choice" panel opens on the right.
+Fields to set
+FieldValueNotesDisplay nameOwnership TypeHuman-readable labelNamepei_ownershiptypeLogical/schema name. Important: type this all lowercase explicitly — don't rely on auto-derivation, which may capitalize. Save-before-rename lesson per ADR-049 applies to choices too.External Name(leave blank / auto)Not used in this projectDescriptionPer ADR-040: classifies a Parent Business Process as BU-owned, Horizontal, or Unresolved. Used on pei_bptobumapping table to drive Control Procedure BU inheritance via L1-A09.Helpful for future devs
+The three Items (option values)
+Click + Add new item three times. For each, set Label, Value, and optionally Color:
+LabelValueColor (optional)BU-owned890920000Green or blue (any consistent choice)Horizontal890920001Purple or amberUnresolved890920002Grey/red
+Critical: the Value field must be set explicitly to 890920000, 890920001, 890920002. Power Apps auto-assigns option values starting at some default; we want to lock these specific numbers because L1-A09's flow code (and any future code) will reference these numeric values, and they need to be predictable.
+Save & publish
 
-890920003
-(That's the Inactive choice value we added in Block A.)
-Leave all other fields blank. Update Row only writes fields you populate.
-Leave the If no branch empty
-If no mapping row exists for this BP (some Active BPs may genuinely have no mapping — rare but possible per the override skip path or manual creation), the soft-mark simply skips. No action needed.
+Click Save
+Wait for the save toast confirmation
+Top of the solution: click Publish all customizations (or just Publish for this choice)
+Wait for the publish to complete (the spinner clears)
 
-Step 3 — Save
-Save the flow.
+Verification before Block B
+After save + publish, the new Choice should appear in the solution's Choices list (left nav inside the solution → Choices). Click it open and confirm:
 
+Schema name shows as pei_ownershiptype (lowercase)
+Three items are listed with the exact values 890920000 / 890920001 / 890920002
+The labels match BU-owned / Horizontal / Unresolved
