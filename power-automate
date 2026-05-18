@@ -1,1 +1,43 @@
-Mapping row whose master record has been transitioned to EMS Lifecycle Status = Removed. Soft-marked Inactive by Flow 1 decom sweep to preserve audit trail
+Filter rows (fx mode):
+concat('pei_parentbusinessprocessidentifier eq ''', items('Check_BP_Removals')?['pei_businessprocessidentifier'], '''')
+Note: lowercase OData column name (pei_parentbusinessprocessidentifier) per ADR-049 lesson. The right side references the BP's identifier from the iteration item using lowercase column name too — because items() references against List Active BPs results follow Dataverse's runtime lowercase convention.
+Select columns:
+pei_bptobumappingid,pei_mappingstatus
+Row count:
+1
+(BP-to-mapping is 1:1, expect at most one row.)
+Save.
+
+Step 2 — Add Soft Mark Mapping Inactive (conditional update)
+Where exactly
+Click + between Find BP Mapping For Decom and Increment variable 8 → Add an action → Control → Condition.
+Configure the Condition
+Rename via "..." → Rename:
+BP Mapping Exists For Decom
+Left value (fx mode):
+length(outputs('Find_BP_Mapping_For_Decom')?['body/value'])
+Operator:
+is greater than
+Right value (fx mode — must be expression not text):
+0
+Inside the If yes branch
+Click into the If yes branch → Add an action → Dataverse → Update a row.
+Rename via "..." → Rename:
+Soft Mark Mapping Inactive
+Table name:
+BP-to-BU Mappings
+Row ID (fx mode):
+first(outputs('Find_BP_Mapping_For_Decom')?['body/value'])?['pei_bptobumappingid']
+Mapping Status (find this field in the Update Row action — it should be a dropdown for choice values):
+
+Click into the field, switch to fx, paste:
+
+890920003
+(That's the Inactive choice value we added in Block A.)
+Leave all other fields blank. Update Row only writes fields you populate.
+Leave the If no branch empty
+If no mapping row exists for this BP (some Active BPs may genuinely have no mapping — rare but possible per the override skip path or manual creation), the soft-mark simply skips. No action needed.
+
+Step 3 — Save
+Save the flow.
+
