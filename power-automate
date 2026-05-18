@@ -1,2 +1,1 @@
-items('Check_BP_Removals')?['pei_businessprocessid']
-
+Mapping row whose master record has been transitioned to EMS Lifecycle Status = Removed. Soft-marked Inactive by Flow 1 decom sweep to preserve audit trail
