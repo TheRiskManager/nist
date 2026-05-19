@@ -1,7 +1,15 @@
-C4-Yes — Increment varCPManualSkipped
-Inside If yes branch of C4.
+C5 — Find BP Mapping for CP
+Inside If no branch of C4.
 
-Action: Variable → Increment variable
-Title: Increment varCPManualSkipped
-Name: varCPManualSkipped
-Value: 1
+Action: Dataverse → List rows
+Title: Find BP Mapping for CP
+Table name: BP-to-BU Mappings
+Filter rows:
+
+pei_parentbusinessprocessidentifier eq '@{variables('varCPParentBP')}' and (pei_mappingstatus eq 890920000 or pei_mappingstatus eq 890920001)
+
+Select columns: pei_bptobumappingid,pei_ownershiptype,_pei_targetbu_value,pei_mappingstatus
+Row count: 1
+All other advanced fields: blank
+
+Save. Tell me "done" or paste error.
