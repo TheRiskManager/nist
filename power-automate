@@ -1,18 +1,1 @@
-C2 of 14 — Loop CPs For BU
-Where to insert
-Click the "+" circle that appears immediately below List Active CPs for BU Pass (visible in your screenshot — there's an "Add an action" placeholder right there). This will be the loop that iterates over C1's results.
-Action configuration
-
-Action type: Control → Apply to each
-Action title (header at top — decoration only): Loop CPs For BU
-Select an output from previous steps (the items-to-iterate field):
-
-Click into the field
-In Dynamic content, find and select value from the List Active CPs for BU Pass action
-The expression that lands should be: outputs('List_Active_CPs_for_BU_Pass')?['body/value']
-(Or, in expression-builder form: pick that exact expression manually if Dynamic content doesn't show it cleanly)
-
-
-
-Critical note on the name
-The action name shown in the header (Loop CPs For BU) — Power Automate auto-converts spaces in action names to underscores when used in expressions. So later references will be outputs('Loop_CPs_For_BU'). Keep that in mind for C3-C6.
+pei_controlprocedureid,pei_controlprocedureidentifier,pei_parentbusinessprocess,pei_owningbumanual,_pei_owningbu_value
