@@ -1,5 +1,15 @@
-Title: Append CP BU Summary to Warnings
-Name: varWarnings
-Value (Expression tab):
+Brief Steps — Approach 1
+Inside Loop CP Rows, after Clean CP ID
+Step 1 — Add Filter array Filter BP For CP Translation
 
-concat(outputs('Log_CP_BU_Resolution_Summary'), ' | ')
+From: body('Read_BP_Excel')?['value']
+Condition: item()?['Process Name'] is equal to items('Loop_CP_Rows')?['Parent Business Processes']
+
+Step 2 — Add Compose Translate CP Parent BP
+
+Inputs: coalesce(first(body('Filter_BP_For_CP_Translation'))?['Business Process ID'], '')
+
+Modify 3 existing actions
+Step 3 — Create CP: find Parent Business Process field, change binding to outputs('Translate_CP_Parent_BP')
+Step 4 — Update CP With Changes: same change
+Step 5 — Update CP Silent: same change
