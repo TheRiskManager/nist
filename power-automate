@@ -1,1 +1,8 @@
-Title: Increment varCPHorizontal
+C10a — Update CP Owning BU (Unresolved — clear)
+
+Action: Dataverse → Update a row
+Title: Update CP Owning BU - Unresolved
+Table name: Control Procedures
+Row ID:
+
+items('Loop_CPs_For_BU')?['pei_controlprocedureid']
