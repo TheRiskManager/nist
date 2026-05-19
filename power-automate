@@ -1,17 +1,1 @@
-C8 — Inside Case BU-owned body
-Two actions inside this case body.
-C8a — Update CP Owning BU (BU-owned)
-
-Action: Dataverse → Update a row
-Title: Update CP Owning BU - BU-owned
-Table name: Control Procedures
-Row ID:
-
-items('Loop_CPs_For_BU')?['pei_controlprocedureid']
-
-Owning BU field (lookup picker — find the field labeled "Owning BU (Business Units)" in the Update form):
-
-/pei_businessunits(@{first(outputs('Find_BP_Mapping_for_CP')?['body/value'])?['_pei_targetbu_value']})
-
-All other fields: leave blank
-
+first(outputs('Find_BP_Mapping_for_CP')?['body/value'])?['_pei_targetbu_value']
