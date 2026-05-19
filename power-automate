@@ -1,16 +1,7 @@
-Where to insert
-Inside the Loop CPs For BU Apply-to-each, immediately below the C3 Set varCPParentBP action. Click the "Add an action" placeholder directly under C3.
-Action configuration
+C4-Yes — Increment varCPManualSkipped
+Inside If yes branch of C4.
 
-Action type: Control → Condition
-Action title (header at top — decoration only): CP Manual Override Check
-Condition row:
-
-Left value (expression — NOT Dynamic content):
-
-
-
-    items('Loop_CPs_For_BU')?['pei_owningbumanual']
-
-Operator: is equal to
-Right value: true — type this lowercase as the boolean literal (no quotes around it in the field; PA accepts the literal true/false)
+Action: Variable → Increment variable
+Title: Increment varCPManualSkipped
+Name: varCPManualSkipped
+Value: 1
