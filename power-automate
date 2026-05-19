@@ -1,4 +1,5 @@
-Title: Log CP BU Resolution Summary
-Inputs (Expression tab):
+Title: Append CP BU Summary to Warnings
+Name: varWarnings
+Value (Expression tab):
 
-concat('CP BU Resolution: Inherited=', string(variables('varCPInheritedBU')), ', Horizontal=', string(variables('varCPHorizontal')), ', Unresolved BP=', string(variables('varCPUnresolvedBP')), ', Missing Mapping=', string(variables('varCPMissingMapping')), ', Manual Skipped=', string(variables('varCPManualSkipped')))
+concat(outputs('Log_CP_BU_Resolution_Summary'), ' | ')
