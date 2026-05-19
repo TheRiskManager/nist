@@ -1,15 +1,9 @@
-C5 — Find BP Mapping for CP
-Inside If no branch of C4.
+C6 — Build CP Classifier (Compose)
+Inside If no branch of C4, after C5.
 
-Action: Dataverse → List rows
-Title: Find BP Mapping for CP
-Table name: BP-to-BU Mappings
-Filter rows:
+Action: Data Operation → Compose
+Title: Build CP Classifier
+Inputs (expression):
 
-pei_parentbusinessprocessidentifier eq '@{variables('varCPParentBP')}' and (pei_mappingstatus eq 890920000 or pei_mappingstatus eq 890920001)
-
-Select columns: pei_bptobumappingid,pei_ownershiptype,_pei_targetbu_value,pei_mappingstatus
-Row count: 1
-All other advanced fields: blank
-
+if(greater(length(outputs('Find_BP_Mapping_for_CP')?['body/value']), 0), if(equals(first(outputs('Find_BP_Mapping_for_CP')?['body/value'])?['pei_ownershiptype'], 890920000), 'bu-owned', if(equals(first(outputs('Find_BP_Mapping_for_CP')?['body/value'])?['pei_ownershiptype'], 890920001), 'horizontal', 'unresolved')), 'missing')
 Save. Tell me "done" or paste error.
