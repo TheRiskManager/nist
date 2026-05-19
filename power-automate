@@ -1,1 +1,18 @@
-pei_controlprocedureid,pei_controlprocedureidentifier,pei_parentbusinessprocess,pei_owningbumanual,_pei_owningbu_value
+Where to insert
+Inside the Loop CPs For BU Apply-to-each (C2). Click the "Add an action" placeholder INSIDE the loop body (not after the loop).
+Action configuration
+
+Action type: Variable → Set variable
+Action title (header at top — decoration only): Set varCPParentBP
+Name (dropdown — picks from existing initialized variables): select varCPParentBP
+Value (the expression that reads Parent BP Identifier from the current CP iteration item):
+
+  items('Loop_CPs_For_BU')?['pei_parentbusinessprocess']
+Critical notes
+
+Use the Expression tab when entering the Value, NOT Dynamic content. Dynamic content may show a lozenge for "Parent Business Process" from List Active CPs for BU Pass, but using Dynamic content can paste the wrong reference (often outputs(...) instead of items(...)). The expression form locks the reference to the current loop iteration.
+items('Loop_CPs_For_BU') with underscores — Power Automate converts spaces in action names to underscores in expressions. The action title Loop CPs For BU becomes Loop_CPs_For_BU in references.
+Field name is lowercase (pei_parentbusinessprocess) — per ADR-049, even though the schema doc displays pei_ParentBusinessProcess with mixed case. OData runtime normalizes to lowercase.
+Defensive coalesce — if you want bulletproof null handling, you could wrap with coalesce(items('Loop_CPs_For_BU')?['pei_parentbusinessprocess'], '') so varCPParentBP is always a string, never null. Worth doing because downstream Filter rows expression breaks ungracefully on null. My recommendation: add the coalesce. Revised expression:
+
+   coalesce(items('Loop_CPs_For_BU')?['pei_parentbusinessprocess'], '')
