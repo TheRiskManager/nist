@@ -1,1 +1,1 @@
-concat(substring(coalesce(items('Loop_Old_Staged_Records')?['pei_impactonevidence'], ''), 0, if(greater(length(coalesce(items('Loop_Old_Staged_Records')?['pei_impactonevidence'], '')), 1900), 1900, length(coalesce(items('Loop_Old_Staged_Records')?['pei_impactonevidence'], '')))), ' [CARRIED FORWARD — originally detected in a previous import cycle that was superseded without review.]')
+concat('/pei_businessunits(', first(outputs('Find_BP_Mapping_for_CP')?['body/value'])?['_pei_targetbu_value'], ')')
