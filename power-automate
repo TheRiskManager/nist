@@ -1,15 +1,1 @@
-C9 — Inside Case Horizontal body
-Two actions.
-C9a — Update CP Owning BU (Horizontal — clear)
-
-Action: Dataverse → Update a row
-Title: Update CP Owning BU - Horizontal
-Table name: Control Procedures
-Row ID:
-
-items('Loop_CPs_For_BU')?['pei_controlprocedureid']
-
-Owning BU field — enter expression (Expression tab):
-
-null
-All other fields: blank.
+Title: Increment varCPHorizontal
