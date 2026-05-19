@@ -1,5 +1,4 @@
-Title: Append Missing Mapping Warning
-Name: varWarnings
-Value (Expression tab):
+Title: Log CP BU Resolution Summary
+Inputs (Expression tab):
 
-concat('CP ', items('Loop_CPs_For_BU')?['pei_controlprocedureidentifier'], ' has Parent BP ', variables('varCPParentBP'), ' with no active mapping row. ')
+concat('CP BU Resolution: Inherited=', string(variables('varCPInheritedBU')), ', Horizontal=', string(variables('varCPHorizontal')), ', Unresolved BP=', string(variables('varCPUnresolvedBP')), ', Missing Mapping=', string(variables('varCPMissingMapping')), ', Manual Skipped=', string(variables('varCPManualSkipped')))
