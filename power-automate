@@ -1,1 +1,5 @@
- Increment varCPMissingMapping
+Title: Append Missing Mapping Warning
+Name: varWarnings
+Value (Expression tab):
+
+concat('CP ', items('Loop_CPs_For_BU')?['pei_controlprocedureidentifier'], ' has Parent BP ', variables('varCPParentBP'), ' with no active mapping row. ')
