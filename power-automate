@@ -1,1 +1,16 @@
-Manual Override flag per ADR-036 + ADR-048. When set to Yes, Flow 1's CP BU inheritance logic skips the write entirely and preserves whatever pei_owningbu is on the record (admin's manual choice). When No (default), Flow 1 derives Owning BU from the Parent BP's classification per ADR-040 / ADR-051. Used for the rare CP that needs ownership different from its Parent BP's classification (e.g., a CP under a Horizontal BP that legitimately belongs to a specific BU's audit scope).
+Action configuration
+
+Action type: Dataverse → List rows
+Action title (header at top — decoration only): List Active CPs for BU Pass
+Table name: Control Procedures (pei_controlprocedures — note plural set name)
+Filter rows (the OData filter — lowercase per ADR-049):
+
+  pei_emslifecyclestatus eq 890920000
+
+Select columns (comma-separated, lowercase):
+
+  pei_controlprocedureid,pei_controlprocedureidentifier,_pei_parentbusinessprocess_value,pei_owningbumanual,_pei_owningbu_value
+
+Row count: leave blank (no row limit; if you want a safety ceiling, 5000 is fine)
+Pagination: leave default (off unless you expect >5000 active CPs, which would be unusual)
+Expand query / Order by / Group by: all leave blank
