@@ -1,9 +1,25 @@
-C6 — Build CP Classifier (Compose)
-Inside If no branch of C4, after C5.
 
-Action: Data Operation → Compose
-Title: Build CP Classifier
-Inputs (expression):
+C7 — CP BU Switch
+Inside If no branch of C4, after C6.
 
-if(greater(length(outputs('Find_BP_Mapping_for_CP')?['body/value']), 0), if(equals(first(outputs('Find_BP_Mapping_for_CP')?['body/value'])?['pei_ownershiptype'], 890920000), 'bu-owned', if(equals(first(outputs('Find_BP_Mapping_for_CP')?['body/value'])?['pei_ownershiptype'], 890920001), 'horizontal', 'unresolved')), 'missing')
+Action: Control → Switch
+Title: CP BU Switch
+On (expression):
+outputs('Build_CP_Classifier')
+Cases — you need 3 explicit cases + the Default that auto-exists. Add cases by clicking + Add a case twice (Switch starts with one case + default; we need three cases + default).
+Case 1:
+
+Case title: Case BU-owned
+Equals: bu-owned
+Case 2:
+
+Case title: Case Horizontal
+Equals: horizontal
+Case 3:
+
+Case title: Case Unresolved
+Equals: unresolved
+Default case (auto-exists):
+
+Rename title: Default Missing
 Save. Tell me "done" or paste error.
