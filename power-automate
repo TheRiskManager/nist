@@ -1,1 +1,8 @@
-BP classification. BU-owned = Parent BP belongs to a specific BU; CPs under it inherit Owning BU from this row's Target BU. Horizontal = Parent BP is centrally owned (no specific BU); CPs under it have no Owning BU and anchor to the BP itself for applicability (per ADR-040). Unresolved = default for newly imported BPs awaiting admin classification at Stage 3. Manual override field pattern not applicable here — classification IS the manual signal.
+varCPParentBP — temporary storage for the current CP's Parent BP Identifier during Loop CP Rows iteration. String. Empty.
+varCPOwningBU — temporary storage for the resolved BU lookup (or empty). String. Empty.
+varCPResolved — counter — CPs whose BU was successfully derived (any of: BU-owned-inherited, Horizontal, Unresolved-BP, Missing-BP — i.e., the write happened). Integer. 0.
+varCPInheritedBU — counter — CPs where Ownership Type was BU-owned and Target BU was inherited. Integer. 0.
+varCPHorizontal — counter — CPs where Ownership Type was Horizontal (BU written as NULL). Integer. 0.
+varCPUnresolvedBP — counter — CPs where the BP-to-BU mapping row was Status=Unresolved (BP awaiting classification). Integer. 0.
+varCPMissingMapping — counter — CPs where no active mapping row existed (no row at all, or row was Ignored/Inactive). Integer. 0.
+varCPManualSkipped — counter — CPs whose Manual Override (pei_owningbumanual = Yes) caused the write to be skipped. Integer. 0.
