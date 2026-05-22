@@ -1,1 +1,75 @@
-concat('/pei_businessunits(', first(outputs('Find_BP_Mapping_for_CP')?['body/value'])?['_pei_targetbu_value'], ')')
+Substantive accuracy issue surfaced — much bigger than the "under build" 
+phrasing. The deck implies evidence is being collected today; it isn't. 
+The 42-record validation was synthetic test records to prove the 
+mechanism — no actual compliance evidence has been uploaded or 
+reviewed. The Evidence table holds test rows with Status = Gap / 
+Pending, no SharePoint files attached, no Risk Manager approvals.
+
+Reframe the deck around what's actually true:
+
+WHAT IS TRUE TODAY
+- The complete platform mechanism is built and end-to-end tested on 
+  real source-system data
+- Source-system sync, cycle workflow, applicability computation, AI 
+  change review, evidence record substrate with immutable snapshots, 
+  audit gate validation — all built, all run end-to-end on real data
+- 42 evidence records produced in validation cycles — these are test 
+  records demonstrating the mechanism, not actual collected evidence
+
+WHAT IS NOT YET TRUE
+- No actual compliance evidence has been uploaded or reviewed
+- No Control Owners have used the system to upload evidence content
+- No Risk Managers have reviewed and approved evidence
+- Collection begins at production launch
+
+Apply across the deck:
+
+SLIDE 2 — RUNNING TODAY footer revision:
+Remove "evidence collection and confirmation" and "audit-immutable 
+evidence records" from the running-today list. They overclaim. 
+Replace with:
+   "source-system integration, cycle workflow, source-derived 
+   applicability, AI-assisted change review, evidence record 
+   substrate with immutable snapshots"
+   
+The phrase "evidence record substrate" captures what's built (the 
+data model + immutability + snapshot mechanism) without claiming 
+operational collection.
+
+SLIDE 2 — closer revision:
+Current closer: "The structural shift is no longer theoretical — 
+it's running, on cycle, against real source systems."
+
+Replace with: "The platform is built end-to-end and tested against 
+real source-system data. Operational collection begins at production 
+launch."
+
+This is the honest framing. Still strong. Just true.
+
+SLIDE 3 — change-review agent description:
+Current: "Live today — running on every monthly cycle."
+This stays true (Flow 1's AI Import Assessment does run on every 
+test cycle). Keep.
+
+DEMO — Evidence record segment voiceover:
+Current: "Every evidence record carries an immutable snapshot... 
+Captured at the moment, kept forever."
+
+Replace with: "The platform produces evidence records like this — 
+every record carries an immutable snapshot of the control, the 
+application, and the scope as they stood at the moment of 
+collection. The record on screen is from our end-to-end validation 
+cycle. At production launch, Control Owners begin uploading actual 
+evidence content into this structure."
+
+DEMO — closing segment voiceover:
+Current implies operational collection. Replace with framing about 
+"platform built, ready to run, collection begins at production launch."
+
+This is a substantive truthfulness fix, not a wording polish. Catching 
+this now is critical — a CIO who realizes mid-meeting that "running 
+today" meant "tested today, not collecting today" will lose 
+confidence in everything else on the deck.
+
+Rebuild with these changes. Re-run vocabulary audit grep. Surface 
+for review.
