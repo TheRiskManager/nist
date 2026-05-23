@@ -1,1 +1,42 @@
-.
+Step — Edit Flow 1 to populate the new column
+We're adding two actions to Flow 1 (EMS Monthly Sync), positioned right after the existing AI Import Assessment action that produces the HTML:
+
+Compose action — strips wrapper/style tags from the AI HTML, keeps body formatting tags
+Update Cycle Record action — writes the stripped result to pei_copilotassessmentdisplay
+
+(Or extend an existing Update Cycle action if one already runs after AI Import Assessment.)
+Sub-step 1 — Open the original Flow 1 for editing
+In make.powerautomate.com:
+
+My flows → EMS Monthly Sync (NOT the backup) → Edit
+
+Tell me when you're in the flow editor.
+Sub-step 2 — Locate the AI Import Assessment action
+Per project context, the AI Builder "Run a prompt" action is named AI Import Assessment. It calls the EMS Import Assessment prompt with the ImportResults input variable. Its output field name is likely Text (the AI Builder prompt output).
+Scroll through the flow until you find it. Tell me:
+
+What action sits immediately after AI Import Assessment? Is it an Update Cycle Record action, a Compose, or something else?
+Is there already an Update Cycle Record action somewhere later in the flow that writes pei_copilotassessment (the existing HTML column)?
+
+Screenshot of the section around AI Import Assessment is fastest.
+What I'm planning to add
+Once I see the existing structure, the two new actions will be:
+Action A — Compose — Strip HTML For Form Display
+inputs:
+@{replace(
+  replace(
+    replace(
+      replace(
+        outputs('AI_Import_Assessment')?['body/text'],
+        '<html>', ''
+      ),
+      '</html>', ''
+    ),
+    '<head>...</head>', ''
+  ),
+  '<body>', ''
+)}
+Actual expression will be cleaner — using a regex-style chained replace() to strip <html>, <head>...</head> (including the <style> block), <body>, </body>, </html> while preserving inner <p>, <em>, <strong>, <ul>, <li>, etc.
+Action B — Update Cycle Record (or extend existing one) writes the Compose output to pei_copilotassessmentdisplay.
+The exact expression depends on what the AI output actually looks like at runtime. Once you confirm the flow structure, I'll write the precise expression for you to paste in.
+Standing by for the screenshot or description of the area around AI Import Assessment.
