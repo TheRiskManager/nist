@@ -1,14 +1,21 @@
-substring(
-  outputs('AI_Import_Assessment')?['body/responsev2/predictionOutput/text'],
-  add(
-    indexOf(outputs('AI_Import_Assessment')?['body/responsev2/predictionOutput/text'], '<body>'),
-    6
+if(
+  contains(
+    outputs('AI_Import_Assessment')?['body/responsev2/predictionOutput/text'],
+    '<body>'
   ),
-  sub(
-    indexOf(outputs('AI_Import_Assessment')?['body/responsev2/predictionOutput/text'], '</body>'),
+  substring(
+    outputs('AI_Import_Assessment')?['body/responsev2/predictionOutput/text'],
     add(
       indexOf(outputs('AI_Import_Assessment')?['body/responsev2/predictionOutput/text'], '<body>'),
       6
+    ),
+    sub(
+      indexOf(outputs('AI_Import_Assessment')?['body/responsev2/predictionOutput/text'], '</body>'),
+      add(
+        indexOf(outputs('AI_Import_Assessment')?['body/responsev2/predictionOutput/text'], '<body>'),
+        6
+      )
     )
-  )
+  ),
+  outputs('AI_Import_Assessment')?['body/responsev2/predictionOutput/text']
 )
