@@ -1,21 +1,16 @@
 if(
-  contains(
-    outputs('AI_Import_Assessment')?['body/responsev2/predictionOutput/text'],
-    '<body>'
-  ),
-  substring(
-    outputs('AI_Import_Assessment')?['body/responsev2/predictionOutput/text'],
-    add(
-      indexOf(outputs('AI_Import_Assessment')?['body/responsev2/predictionOutput/text'], '<body>'),
-      6
-    ),
-    sub(
-      indexOf(outputs('AI_Import_Assessment')?['body/responsev2/predictionOutput/text'], '</body>'),
-      add(
-        indexOf(outputs('AI_Import_Assessment')?['body/responsev2/predictionOutput/text'], '<body>'),
-        6
+  contains(coalesce(items('Loop_Old_Staged_Records')?['pei_impactonevidence'], ''), '[CARRIED FORWARD'),
+  coalesce(items('Loop_Old_Staged_Records')?['pei_impactonevidence'], ''),
+  concat(
+    substring(
+      coalesce(items('Loop_Old_Staged_Records')?['pei_impactonevidence'], ''),
+      0,
+      if(
+        greater(length(coalesce(items('Loop_Old_Staged_Records')?['pei_impactonevidence'], '')), 1900),
+        1900,
+        length(coalesce(items('Loop_Old_Staged_Records')?['pei_impactonevidence'], ''))
       )
-    )
-  ),
-  outputs('AI_Import_Assessment')?['body/responsev2/predictionOutput/text']
+    ),
+    ' [CARRIED FORWARD — originally detected in a previous import cycle that was superseded without review.]'
+  )
 )
