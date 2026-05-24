@@ -1,16 +1,7 @@
-if(
-  contains(coalesce(items('Loop_Old_Staged_Records')?['pei_impactonevidence'], ''), '[CARRIED FORWARD'),
-  coalesce(items('Loop_Old_Staged_Records')?['pei_impactonevidence'], ''),
-  concat(
-    substring(
-      coalesce(items('Loop_Old_Staged_Records')?['pei_impactonevidence'], ''),
-      0,
-      if(
-        greater(length(coalesce(items('Loop_Old_Staged_Records')?['pei_impactonevidence'], '')), 1900),
-        1900,
-        length(coalesce(items('Loop_Old_Staged_Records')?['pei_impactonevidence'], ''))
-      )
-    ),
-    ' [CARRIED FORWARD — originally detected in a previous import cycle that was superseded without review.]'
-  )
-)
+Current line in script:
+
+"Two of these are running today — change review summaries and AI scope classification, which you'll see in a moment. Reuse, anomaly spotting, and assessment query ship through production launch on the same foundation."
+
+Replace with:
+
+"One of these is running today as an AI capability — change review summaries, which you'll see in a moment. The platform's ownership and applicability model is also live in the tenant; the AI layer compounds on top of that foundation. Reuse, anomaly spotting, and assessment query ship through production launch."
