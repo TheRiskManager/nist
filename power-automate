@@ -1,4 +1,4 @@
-Every control and application has to belong to a Business Unit — that's how the platform routes accountability and where audit trails land. In the past, this lived in spreadsheets. The platform replaces that with two one-time setups.
-For business processes — the Risk Manager points each one to a Business Unit. Process zero zero two, Application Engineering. Process zero zero four, Platform Engineering.
-For applications — LeanIX stores a path like Bank slash Wealth slash PlatformOps. The Risk Manager defines a matching pattern — "Wealth slash PlatformOps" — and the platform applies it to every application, every cycle.
+Every control and application has to belong to a Business Unit — that's how the platform routes accountability and where audit trails land. In the past, this lived in spreadsheets. The platform replaces that with two setups — done once, rarely change.
+For business processes — the Risk Manager points each one to a Business Unit. Process zero zero two, Application Engineering. Process zero zero four, Platform Engineering. A handful of mappings, set once.
+For applications — LeanIX stores a path like Bank slash Wealth slash PlatformOps. The Risk Manager defines a matching pattern — "Wealth slash PlatformOps" — and the platform applies it to every application, every cycle. A small set of patterns, set once.
 Each row has a status. Mapped, Unresolved, Ignored. Blank Business Units aren't errors — they're work items the platform surfaces.
