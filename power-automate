@@ -1,1 +1,1 @@
-Select all, bulk-edit, set Reviewed to Yes, save. The queue clears. The Risk Manager moves on.
+Same workflow on Parent Business Processes. Filter by Reviewed equals No. Select the records. Open the bulk-edit panel. Set Reviewed to Yes. Save. The platform processes the change across every selected record at once. Different entity types, same simple gesture. The Risk Manager's confirmation closes the loop.
