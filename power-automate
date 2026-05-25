@@ -1,10 +1,36 @@
-Token	BU
-CustomerExperience	Application Engineering
-Wealth/PlatformOps	Wealth
-PublicMarkets	Public Markets
-Risk/Analytics	Engineering
-Data/Warehouse	Platform Engineering
-Lending	Engineering
-Compliance/AML	Engineering
-Security/IAM	Platform Engineering
-Treasury	Finance
+EMS-RC-101	Awareness and Training Policy	The organization develops, documents, and disseminates a security awareness and training policy that addresses purpose, scope, roles, responsibilities, management commitment, and coordination. Policy is reviewed and updated annually.
+EMS-RC-102	Continuous Monitoring	The organization continuously monitors information systems and assets to identify cybersecurity events and verify the effectiveness of protective measures. Monitoring coverage spans network, endpoint, and cloud surfaces.
+EMS-RC-103	Response Planning	The organization develops, documents, and disseminates an incident response plan that addresses identification, containment, eradication, recovery, and lessons learned. Plan is reviewed and tested annually.
+EMS-RC-104	Data Protection at Rest	The organization protects the confidentiality, integrity, and availability of data at rest through encryption, access controls, and integrity verification. Key management follows approved standards.
+EMS-RC-105	Risk Assessment Program	The organization conducts risk assessments of information systems and processes annually or upon material change. Assessments identify threats, vulnerabilities, likelihood, and impact, and inform risk treatment decisions.
+EMS-RC-106	Information Protection Processes	The organization establishes and maintains processes that protect organizational information assets including configuration management, secure baseline maintenance, and protection of system documentation.
+
+
+
+EMS-BP-201	Enterprise Risk Management	Person_021	Person_026
+EMS-BP-202	Risk Operations	Person_022	Person_029
+EMS-BP-203	Data Governance	Person_022	Person_028
+
+
+
+EMS-CP-301	Annual Security Awareness Training	All employees complete annual cybersecurity awareness training within 30 days of hire and annually thereafter. Training tracked in LMS with completion reports to CISO.	EMS-BP-201	EMS-RC-101	No
+EMS-CP-302	SIEM-Based Continuous Monitoring	Security events from in-scope systems forwarded to SIEM within 5 minutes of generation. SIEM correlates events across sources with documented detection rules. Coverage validated quarterly.	EMS-BP-202	EMS-RC-102	Yes
+EMS-CP-303	Incident Response Plan Execution	Documented incident response procedures activated upon detection of qualifying event. Response includes containment, eradication, recovery, and post-incident review. Plan tested annually via tabletop.	EMS-BP-202	EMS-RC-103	Yes
+EMS-CP-304	Database Encryption at Rest	Production databases configured with AES-256 encryption at rest. Encryption keys managed in HSM-backed key management service with documented rotation schedule.	EMS-BP-203	EMS-RC-104	Yes
+EMS-CP-305	Annual IT Risk Assessment	Annual enterprise-level IT risk assessment covering all in-scope systems and processes. Assessment identifies threats, vulnerabilities, likelihood, and impact. Findings inform annual risk treatment plan.	EMS-BP-201	EMS-RC-105	Yes
+EMS-CP-306	Configuration Management Database	Authoritative inventory of all in-scope information system components maintained in CMDB. Records include hardware, software, configurations, and ownership. Updated through change management workflow.	EMS-BP-203	EMS-RC-106	No
+EMS-CP-307	Vendor Risk Assessment Program	Third-party vendors with access to sensitive data or systems undergo annual risk assessment. Assessment covers security controls, contractual obligations, and incident notification. Findings drive contract terms.	EMS-BP-202	EMS-RC-105	Yes
+EMS-CP-308	Data Loss Prevention Monitoring	DLP controls deployed across email, endpoint, and cloud surfaces. Policy violations alert security operations for triage. Tuning conducted quarterly to balance protection and business operations.	EMS-BP-203	EMS-RC-104	No
+EMS-CP-309	Cloud Configuration Baseline Compliance	Cloud workloads validated against approved configuration baselines. Drift detected within 24 hours triggers automated or manual remediation per severity. Baseline reviewed annually.	EMS-BP-203	EMS-RC-106	No
+EMS-CP-310	Phishing Simulation Program	Quarterly phishing simulation campaigns conducted across all employees. Click rates and reporting rates tracked. Failed users assigned remedial training. Trends reported to CISO monthly.	EMS-BP-201	EMS-RC-101	No
+
+
+
+Regulatory Reporting Engine	EMS-APP-401	EMS-APP-401	Application	Regulatory Reporting Engine	EXT-401	Cloud	Critical	Yes	Confidential	Active	N/A	Person_034	Person_037	Person_034	Person_035	Person_036	Person_038	Active	/Bank/Compliance/AML	owner	Okta	No	Yes	Available	SAML	Public Cloud	Yes	No	No	Yes	Active
+Fraud Detection Platform	EMS-APP-402	EMS-APP-402	Application	Fraud Detection Platform	EXT-402	Cloud	Critical	Yes	Restricted	Active	N/A	Person_028	Person_033	Person_028	Person_029	Person_030	Person_034	Active	/Bank/Risk/Analytics	owner	Okta	No	Yes	Available	OIDC	Public Cloud	No	No	No	Yes	Active
+Wealth Reporting Hub	EMS-APP-403	EMS-APP-403	Application	Wealth Reporting Hub	EXT-403	Hybrid	High	Yes	Confidential	Active	N/A	Person_013	Person_023	Person_013	Person_014	Person_015	Person_024	Active	/Bank/Wealth/PlatformOps	owner	Okta	No	No	Available	SAML	Hybrid	Yes	No	No	Yes	Active
+Customer Onboarding Portal	EMS-APP-404	EMS-APP-404	Application	Customer Onboarding Portal	EXT-404	Cloud	High	Yes	Confidential	Active	N/A	Person_010	Person_021	Person_010	Person_011	Person_012	Person_022	Active	/Bank/CustomerExperience/DigitalChannels	owner	Okta	Yes	Yes	Available	SAML	Public Cloud	Yes	Yes	Yes	Yes	Active
+Treasury Risk Dashboard	EMS-APP-405	EMS-APP-405	Application	Treasury Risk Dashboard	EXT-405	On-Prem	High	No	Internal	Active	N/A	Person_034	Person_037	Person_034	Person_035	Person_036	Person_038	Active	/Bank/Treasury/Ops	owner	RSA SecurID	No	No	Available	Kerberos	On-Premise	No	No	No	Yes	Active
+
+
+
