@@ -1,2 +1,2 @@
-A cycle is how the platform organizes governance work. On a schedule, EMS syncs from source systems — RSA Archer for controls, LeanIX for applications — detects every change, and bundles it as one auditable review event.
-A change that the Risk Manager hasn't reviewed by the time the next cycle runs gets carried forward — it stays visible in the new cycle's queue. The platform never loses work; it surfaces what's still pending.
+A cycle is how the platform organizes governance work. EMS can be set to run cycles on any schedule — daily, weekly, monthly — depending on the org's needs. Each cycle syncs from source systems — RSA Archer for controls, LeanIX for applications — detects every change, and bundles it as one auditable review event.
+A change that the Risk Manager hasn't reviewed by the time the next cycle runs gets carried forward — it stays visible in the new cycle's queue. The platform never loses work; it surfaces what's still pending
