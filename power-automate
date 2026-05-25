@@ -1,1 +1,1 @@
-This is EMS — Evidence Management System — running natively on Microsoft Power Platform. The left sidebar gives you direct access to the platform's core tables: cycles, controls, applications, and business processes
+Cycles are how the platform tracks each review event. Each cycle is dated, scoped, and captures every change since the last one — new controls, updated applications, items still pending review.
