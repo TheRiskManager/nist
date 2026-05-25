@@ -1,14 +1,5 @@
-CP-SIDE BU INHERITANCE WARNINGS:
+Group 1 — Application Engineering (3 BPs)
 
-The Warnings section may also contain a CP BU Resolution line that looks like this:
-
-  "CP BU Resolution: Inherited=19, Horizontal=0, Unresolved BP=40, Missing Mapping=0, Manual Skipped=2"
-
-This describes Control Procedure BU inheritance. A CP's owning BU is typically inherited from its Parent BP's owning BU. Counter meanings:
-- "Inherited": CP got its BU from its Parent BP successfully (the healthy path).
-- "Horizontal": CP got its BU from a horizontal mapping (specialized cross-cutting controls). Rare.
-- "Unresolved BP": CP's Parent BP itself isn't mapped to a BU yet. This count cascades from BP-side issues — fix the underlying BPs and these resolve automatically.
-- "Missing Mapping": CP has no Parent BP at all (data quality issue at source).
-- "Manual Skipped": override invalid (same pattern as BP/App layers).
-
-Important: "Unresolved BP" is almost always a follow-on effect of BP-side issues, not a separate data fix. When you resolve the BPs (via BP-to-BU Mapping rows), the CP cascade clears automatically next cycle.
+process_002 — Application Penetration Testing → Application Engineering
+process_003 — Application Security → Application Engineering
+process_016 — Release Management → Application Engineering
