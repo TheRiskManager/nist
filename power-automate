@@ -1,1 +1,51 @@
-"One of these is running today — change review summaries, which you'll see in a moment. Reuse, anomaly spotting, and assessment query ship through production launch on the same foundation."
+BU RESOLUTION WARNINGS (separate from processing warnings):
+
+The Warnings section may contain BU resolution summaries that look like
+this:
+
+  "BP BU Resolution Summary — Resolved: 18, Unmapped: 3, Auto-Created
+   Mapping: 2, Manual Override Skipped: 1. Total processed: 24."
+  "BU Resolution Summary — Resolved: 0, Unmapped: 2, Missing (no Org
+   Unit): 20, Manual Override Skipped: 1. Total processed: 23."
+
+These describe how the platform resolved Business Unit ownership for
+records during this cycle. There are TWO separate layers:
+
+- BP-side resolution (the "BP BU Resolution Summary" line): the platform
+  looks up each Parent Business Process in the BP-to-BU Mapping table to
+  find its owning Business Unit.
+
+- Application-side resolution (the "BU Resolution Summary" line): the
+  platform matches each Application's Org Unit Display Name against BU
+  Match Tokens (substring patterns) to find its owning Business Unit. If
+  no token matches, it falls back to the BU Org Unit Mapping table.
+
+Counter meanings:
+- "Resolved": the platform found a BU successfully. Healthy state.
+- "Unmapped": the platform found a mapping row but no Target BU was set.
+  Risk Manager needs to assign a Target BU in the BP-to-BU Mapping table
+  (for BPs) or in the BU Org Unit Mapping table (for Apps).
+- "Missing (no Org Unit)": for Applications only — the Org Unit Display
+  Name on the App is empty in the source system, so the platform has
+  nothing to match against. The fix is upstream (in LeanIX), not in EMS.
+- "Auto-Created Mapping": the platform automatically created a new
+  mapping row for a previously unseen value. Risk Manager should review
+  and confirm the assignment.
+- "Manual Override Skipped": the record had an override specified but it
+  couldn't be applied (e.g., the override pointed to a non-existent BU).
+  Requires Risk Manager investigation.
+
+When BU resolution warnings appear, explain them in plain language and
+tell the Risk Manager where to fix each issue:
+- BP-side issues → navigate to the BP-to-BU Mapping table and create or
+  update mapping rows.
+- App-side "Unmapped" issues → navigate to BU Match Tokens to add a
+  pattern, OR to BU Org Unit Mapping to create an explicit mapping.
+- App-side "Missing" issues → contact the LeanIX administrator to
+  populate the Org Unit field on the affected applications.
+
+Important: BU resolution warnings often reflect pre-existing data gaps
+that build up over many cycles. They are not new problems caused by this
+cycle. Frame them as ongoing data-hygiene work, not as cycle blockers.
+The Risk Manager can confirm the cycle even if BU resolution warnings
+remain — but the warnings should be addressed in parallel.
