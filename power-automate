@@ -1,11 +1,47 @@
-Display Name	Application ID	ID	Type	Name	External ID	Hosting Type	Application Criticality	SOX Application	Information Classification	IIQ Status	IIQ App Name or Exception Details	Responsible Business Owner	Responsible IT Owner	Responsible Primary Asset Owner	Responsible Secondary Asset Owner (Delegate)	Responsible Secondary Business Owner	Responsible Secondary IT Owner	Lifecycle Current Lifecycle	Org Unit Display Name	Usage Type	MFA Provider	Partner Facing	Privileged Access	Single-Sign-On - Availability	SSO Pattern	Target Hosting Class	Web Application	URL Is Accessible Externally	Customer Facing	Penetration Testing Required	Status
-Customer Banking Portal	APP-001	APP-001	Application	Customer Banking Portal	EXT-001	Cloud	Critical	Yes	Confidential	Active	N/A	Person_010	Person_021	Person_010	Person_011	Person_012	Person_022	Active	/Bank/CustomerExperience/DigitalChannels	owner	Okta	Yes	Yes	Available	SAML	Public Cloud	Yes	Yes	Yes	Yes	Active
-Mobile Banking App	APP-002	APP-002	Application	Mobile Banking App	EXT-002	Cloud	Critical	Yes	Confidential	Active	N/A	Person_010	Person_021	Person_010	Person_011	Person_012	Person_022	Active	/Bank/CustomerExperience/DigitalChannels	owner	Okta	Yes	Yes	Available	OIDC	Public Cloud	Yes	Yes	Yes	Yes	Active
-Wealth Management Platform	APP-003	APP-003	Application	Wealth Management Platform	EXT-003	Hybrid	Critical	Yes	Confidential	Active	N/A	Person_013	Person_023	Person_013	Person_014	Person_015	Person_024	Active	/Bank/Wealth/PlatformOps	owner	Okta	No	Yes	Available	SAML	Hybrid	Yes	No	No	Yes	Active
-Trade Execution System	APP-004	APP-004	Application	Trade Execution System	EXT-004	On-Prem	Critical	Yes	Restricted	Active	N/A	Person_016	Person_025	Person_016	Person_017	Person_018	Person_026	Active	/Bank/PublicMarkets/Trading	owner	RSA SecurID	No	Yes	Available	Kerberos	On-Premise	No	No	No	Yes	Active
-Risk Analytics Engine	APP-005	APP-005	Application	Risk Analytics Engine	EXT-005	Cloud	High	No	Internal	Active	N/A	Person_019	Person_027	Person_019	Person_020	Person_021	Person_028	Active	/Bank/Risk/Analytics	owner	Okta	No	No	Available	OIDC	Public Cloud	Yes	No	No	No	Active
-Customer Data Warehouse	APP-006	APP-006	Application	Customer Data Warehouse	EXT-006	On-Prem	Critical	Yes	Confidential	Active	N/A	Person_022	Person_029	Person_022	Person_023	Person_024	Person_030	Active	/Bank/Data/Warehouse	owner	RSA SecurID	No	Yes	Available	Kerberos	On-Premise	No	No	No	Yes	Active
-Loan Origination System	APP-007	APP-007	Application	Loan Origination System	EXT-007	Hybrid	High	Yes	Confidential	Active	N/A	Person_025	Person_031	Person_025	Person_026	Person_027	Person_032	Active	/Bank/Lending/Origination	owner	Okta	No	Yes	Available	SAML	Hybrid	Yes	No	No	Yes	Active
-Anti-Money Laundering Monitor	APP-008	APP-008	Application	Anti-Money Laundering Monitor	EXT-008	Cloud	Critical	Yes	Restricted	Active	N/A	Person_028	Person_033	Person_028	Person_029	Person_030	Person_034	Active	/Bank/Compliance/AML	owner	Okta	No	Yes	Available	SAML	Public Cloud	No	No	No	Yes	Active
-Identity & Access Manager	APP-009	APP-009	Application	Identity & Access Manager	EXT-009	Cloud	Critical	Yes	Confidential	Active	N/A	Person_031	Person_035	Person_031	Person_032	Person_033	Person_036	Active	/Bank/Security/IAM	owner	Okta	No	Yes	Available	OIDC	Public Cloud	No	No	No	Yes	Active
-Treasury Operations System	APP-010	APP-010	Application	Treasury Operations System	EXT-010	On-Prem	Critical	Yes	Confidential	Active	N/A	Person_034	Person_037	Person_034	Person_035	Person_036	Person_038	Active	/Bank/Treasury/Ops	owner	RSA SecurID	No	Yes	Available	Kerberos	On-Premise	No	No	No	Yes	Active
+Reference Control ID	Reference Control Title	Reference Control Description
+AC-1	Access Control Policy and Procedures	The organization develops, documents, and disseminates an access control policy that addresses purpose, scope, roles, responsibilities, management commitment, coordination among entities, and compliance. Policy is reviewed and updated annually or upon material change.
+AC-2	Account Management	The organization manages information system accounts including establishment, activation, modification, review, disabling, and removal. Privileged accounts receive enhanced monitoring. Account inventory is maintained.
+IA-2	Identification and Authentication (Multi-Factor)	The information system uniquely identifies and authenticates organizational users through multi-factor authentication for privileged accounts and remote network access. MFA mechanisms must be FIPS 140-2 validated where feasible.
+IA-5	Authenticator Management	The organization manages information system authenticators by verifying initial authenticator content, establishing default content requirements, changing default authenticators upon installation, and establishing maximum and minimum lifetimes.
+AU-2	Audit Events	The organization determines that the information system is capable of auditing security-relevant events. The organization coordinates the security audit function with other organizational entities requiring audit-related information.
+AU-6	Audit Review, Analysis, and Reporting	The organization reviews and analyzes information system audit records weekly or more frequently for indications of inappropriate or unusual activity. Findings are reported to designated personnel.
+SC-7	Boundary Protection	The information system monitors and controls communications at the external boundary of the system and at key internal boundaries within the system. Implements subnetworks for publicly accessible system components.
+SC-13	Cryptographic Protection	The information system implements FIPS-validated or NSA-approved cryptography to protect the confidentiality and integrity of information at rest and in transit.
+SC-28	Protection of Information at Rest	The information system protects the confidentiality and integrity of information at rest including data stored on mobile devices, removable media, and information system storage.
+CM-3	Configuration Change Control	The organization determines the types of changes to the information system that are configuration-controlled, reviews proposed changes, approves or disapproves with explicit consideration for security impact, and documents change decisions.
+CM-7	Least Functionality	The organization configures the information system to provide only essential capabilities and prohibits or restricts the use of non-essential functions, ports, protocols, and services.
+RA-5	Vulnerability Monitoring and Scanning	The organization scans for vulnerabilities in the information system and hosted applications monthly or when new vulnerabilities are identified. Vulnerabilities are remediated within organizationally defined response timelines.
+
+
+
+Business Process ID	Process Name	Business Process Owner	Business Process Manager(s)
+APO13	Managed Security	Person_021	Person_021
+BAI03	Managed Solutions Identification and Build	Person_021	Person_026
+BAI06	Managed IT Changes	Person_021	Person_031
+BAI09	Managed Assets	Person_022	Person_027
+BAI10	Managed Configuration	Person_022	Person_028
+DSS01	Managed Operations	Person_022	Person_029
+DSS05	Managed Security Services	Person_020	Person_027
+MEA02	Managed System of Internal Control	Person_025	Person_025
+
+
+
+Control Procedure ID	Control Procedure Title	Control Procedure Description	Parent Business Process	Reference Controls	SOX
+CP-001	Access Control Policy Implementation	Documented enterprise access control policy reviewed annually and disseminated to all personnel. Policy covers identity provisioning, periodic access reviews, segregation of duties, and termination procedures.	APO13	AC-1	Yes
+CP-002	Privileged Access Account Provisioning	All privileged accounts provisioned through formal approval workflow with documented business justification. Accounts are tagged in IAM platform for enhanced monitoring and quarterly recertification.	DSS05	AC-2	Yes
+CP-003	MFA Enforcement on Admin Accounts	All administrator accounts authenticate through MFA via Okta. Hardware token or push notification required for privileged operations. Bypass approval requires CISO authorization with 30-day expiry.	DSS05	IA-2	Yes
+CP-004	Password Complexity and Rotation	System-wide password policy enforces 14-character minimum, character complexity requirements, 90-day rotation for privileged accounts, and password history of 24 prior values.	DSS05	IA-5	No
+CP-005	Security Event Logging	All in-scope systems generate audit records for authentication, authorization, privileged actions, and data access. Logs are forwarded to centralized SIEM within 5 minutes of event generation.	DSS05	AU-2	Yes
+CP-006	Quarterly Audit Log Review	Designated reviewers conduct quarterly analysis of audit logs from in-scope systems. Findings documented in review records. Anomalies escalate to incident response within 24 hours.	MEA02	AU-6	Yes
+CP-007	Network Boundary Firewall Rules	Firewall rule changes follow CAB approval process. Default-deny inbound at internet boundary. Internal segmentation between production and non-production zones. Annual rule recertification.	DSS05	SC-7	Yes
+CP-008	TLS 1.2+ Enforcement on Endpoints	All in-scope systems configured to accept only TLS 1.2 or higher. Cipher suites restricted to approved algorithms. Annual review of cryptographic configuration baseline.	APO13	SC-13	Yes
+CP-009	Data Encryption at Rest - Customer Data	Customer data stored in databases is encrypted at rest using AES-256. Encryption keys managed in HSM-backed key management service with documented rotation schedule.	APO13	SC-28	Yes
+CP-010	Change Approval via CAB	All production changes route through Change Advisory Board with documented impact analysis, rollback plan, and security review. Emergency changes follow expedited process with post-change CAB review.	BAI06	CM-3	Yes
+CP-011	Standard Baseline Configuration	Production systems built from approved hardened baseline images. Configuration drift monitored continuously; deviations remediated within 7 days. Annual baseline review and refresh.	BAI10	CM-7	No
+CP-012	Monthly Vulnerability Scanning	Authenticated vulnerability scans executed monthly across all in-scope systems. Critical findings remediated within 15 days; high within 30; medium within 90. Exceptions require documented compensating controls.	DSS01	RA-5	Yes
+CP-013	Application Asset Inventory	Authoritative application portfolio maintained in LeanIX. Quarterly attestation by application owners confirms ownership, criticality, hosting, and data classification. New apps onboarded through formal intake.	BAI09		No
+CP-014	Secure SDLC Code Review	All code changes to in-scope applications undergo peer review and automated security scanning before merge. Critical findings block deployment. Annual SDLC training mandatory for engineers.	BAI03		Yes
+CP-015	Security Awareness Training Tracking	All employees complete annual security awareness training within 30 days of hire and annually thereafter. Phishing simulations quarterly. Completion tracked in LMS and reported to CISO monthly.	APO13		No
+
+
+
