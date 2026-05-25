@@ -1,1 +1,2 @@
-Inside the cycle, the platform tracks everything: cycle name, sync date, status. Across the top, a five-stage workflow guides the Risk Manager — review changes, classify controls, map applicability, review evidence, and confirm. Today's cycle is active and at Stage one.
+A cycle is how the platform organizes governance work. On a schedule, EMS syncs from source systems — RSA Archer for controls, LeanIX for applications — detects every change, and bundles it as one auditable review event.
+A change that the Risk Manager hasn't reviewed by the time the next cycle runs gets carried forward — it stays visible in the new cycle's queue. The platform never loses work; it surfaces what's still pending.
