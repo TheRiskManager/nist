@@ -1,1 +1,1 @@
-Master tables are where the Risk Manager confirms what the platform captured. Filter by Reviewed equals No, and the queue surfaces — the records that need attention this cycle. The Risk Manager handles them in bulk
+Select all, bulk-edit, set Reviewed to Yes, save. The queue clears. The Risk Manager moves on.
