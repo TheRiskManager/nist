@@ -1,2 +1,1 @@
-Here is the AI Import Assessment. The platform reads the cycle in context, then produces a written summary in plain language — what happened, what it means, and what the Risk Manager should do next. This is generated automatically every cycle.
-Behind this is an AI Builder prompt running on Microsoft's Azure OpenAI service. The platform passes the cycle's data and a structured prompt — the prompt tells the AI to act as a Risk Manager, explain warnings, and recommend next steps. The AI's output is written back into this field.
+And the same assessment lands in the Risk Manager's inbox automatically. No need to check the app — the platform brings the work to them. Push-to-people delivery, not pull-from-platform.
