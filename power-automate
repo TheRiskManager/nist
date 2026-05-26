@@ -1,7 +1,25 @@
-The foundation is in place. Beyond what you've seen, there's more on the way.
-On the evidence layer — automated evidence collection so control owners receive auto-generated requests and evidence flows back without manual handling. Reuse and freshness logic so evidence collected for one control applies to related ones, with freshness windows tracked automatically. And snapshot capture, so future audits see exactly what the platform saw at the moment of collection — immutable.
-On the engagement layer — formal audit engagements built on top of the evidence base. Auditors define scope, the platform assembles the package, and once an engagement starts its scope is locked — source-system changes don't disrupt audit integrity. Here's the wireframe.
-On the AI and people layer — anomaly detection on attestations to flag issues before audit. An auditor query mode for natural-language search across the platform. And a control owner portal so each person sees their own open work in one place.
-Here's what the control owner portal looks like — personalized request inbox, evidence upload directly from the portal, freshness and deadlines tracked.
-And here's the freshness monitoring view, showing the platform watching evidence age across the whole control landscape.
-Built on native Microsoft Power Platform. One source of truth for evidence, ownership, and audit — from continuous capture to formal engagement.
+PNG 1 — Slide 1 (Evidence + Engagement text cards) — ~28 sec
+
+"The foundation is in place. Beyond what you've seen, there's more on the way.
+On the evidence layer — automated evidence collection, so control owners receive auto-generated requests and evidence flows back without manual handling. Reuse and freshness logic, so evidence collected for one control applies to related ones, with freshness windows tracked automatically. And snapshot capture, so future audits see exactly what the platform saw at the moment of collection.
+On the engagement layer — formal audit engagements with scope locking. Let me show you the wireframe."
+
+PNG 2 — Engagements wireframe — ~18 sec
+
+"This is the Engagements screen. A list of audit engagements with their status, scope, dates, and assigned auditor. Filter by status, drill into any engagement to see the evidence package the platform has assembled — controls, applications, evidence files, all in one place."
+
+PNG 3 — Slide 2 (AI & people text cards) — ~22 sec
+
+"On the AI and people layer — anomaly detection on attestations to flag issues before they hit audit. An auditor query mode for natural-language search across evidence, controls, and applications. And a control owner portal, so each person sees their own open work. Let me show you that one too."
+
+PNG 4 — Control Owner Portal wireframe — ~16 sec
+
+"This is the control owner portal. Personalized for each user — open requests at the top, sorted by urgency. Click any request, drop evidence in the upload area, attach metadata, submit. Past uploads at the bottom for reference."
+
+PNG 5 — Freshness wireframe — ~12 sec
+
+"And this is the freshness monitoring view. The platform watches evidence age across the whole control landscape — what's fresh, what's stale, what's expiring soon — visible across the entire portfolio."
+
+PNG 6 — Closing remark — ~10 sec
+
+"Built on native Microsoft Power Platform. One source of truth for evidence, ownership, and audit — from continuous capture to formal engagement."
