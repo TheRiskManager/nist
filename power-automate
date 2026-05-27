@@ -1,97 +1,15 @@
-1 — Slide 1: Evidence Workflow
-(unchanged — slides describe capabilities, no V1/V2 issue)
+Revised AI Capabilities slide voiceover
 
-"First layer — evidence workflow. The headline: continuous evidence, without continuous chasing."
-"Eight capabilities, organized two ways. The top row is automation — paths where evidence flows in without human action. System-to-system integration pulls directly from source systems where evidence already lives. Carry-forward respects what's still valid. Freshness windows notify before evidence ages out. AI Copilot reads the uploaded file with the reviewer."
-"The bottom row is how the work reaches humans when judgment is required. Power Automate sends a targeted email. The Control Owner Portal shows only their open requests. Upload is drag-and-drop. Approval leaves an auditable trail."
-"What this replaces — owners hunting through email for what's theirs, re-collecting evidence that hasn't aged, finding gaps reactively instead of proactively."
+"Stepping outside the three platform layers — let's talk about AI specifically.
+Just to recap: we walked through evidence workflow — how evidence flows in continuously without continuous chasing. Engagements — how audits, regulator inquiries, and reviews assemble themselves on top of the evidence base. And governance — what keeps the platform tamper-proof and audit-grade.
+Across all three of those — and beyond them — AI is the thread.
+You just saw V3 and V4 prove the AI Hub pattern: prompts are versioned, models are swappable, every judgment leaves an audit trail. That pattern is already in production today — the Import Advisor that explained the import results to the Risk Manager runs on this same foundation. Four capabilities extend it across the platform.
+AI reads with the reviewer — Evidence Copilot Assessment. AI never decides alone. AI flags what looks off — anomaly detection, the early signal before audit. AI finds what probably already exists — reuse suggestions, drastically reducing collection burden. And Risk Manager query mode — natural-language search across the platform."
 
-~38 sec
 
-2 — Wireframe A1: Portal direction
-(04_Wireframe_A1_ControlOwnerPortal_Existing.html)
 
-"Here's one direction for the Control Owner Portal. A per-user worklist. Expand a row to upload. Status flows Gap to Pending to Provided. Simple, focused on the upload moment."
+Slide AI Horizon — unchanged (good closing energy):
 
-~13 sec
-
-3 — Wireframe A2: Portal direction
-(07_Wireframe_A2_ControlOwnerPortal_PowerPages.html)
-
-"And here's another direction — built on Power Pages, browser-based, customer-facing. Same purpose: surface a Control Owner's open work."
-"The email sender is named explicitly: Power Automate. The side panel acknowledges that the workload is lower this quarter because carry-forwards and system pulls handled the rest, outside the Owner's queue."
-
-~22 sec
-
-4 — Slide 2: Engagements
-(unchanged)
-
-"Second layer — engagements. This is how any structured review runs on top of the platform. Not just audits — regulator inquiries, internal reviews, vendor assessments, incident reviews. Audit is one type."
-"Four capabilities. Engagement starts with scope ready — day one is productive work, not preparation. The evidence package builds itself — reviewers review, never chase. Need more evidence mid-engagement? Already routed — same Power Automate pattern, no email chains. And years later, the engagement's view of the world is preserved permanently. When a regulator asks what you did for this control, on this app, in this period — the engagement record is the answer."
-
-~35 sec
-
-5 — Wireframe: Engagements direction
-(05_Wireframe_Engagements_Existing.html)
-
-"Here's one direction for engagements — a list view, with engagement records showing scope and status at a glance."
-
-~10 sec
-
-6 — Wireframe B0: Engagement List direction
-(08_Wireframe_B0_Engagement_List.html)
-
-"And here's another direction. Native to the platform — same look and feel as everything else."
-"The Active Engagements list. Three engagements visible — and they're three very different shapes. A Q2 SOX quarterly review, large scope, three hundred and twelve evidence records. An OSFI inquiry, ad-hoc, smaller scope, eighty-seven records. A vendor risk review, also ad-hoc, smallest of the three at forty-two records."
-"Different types. Different sizes. Different reasons they came in. The platform treats them all the same way — scope is defined, evidence package is assembled, the trail is preserved."
-
-~28 sec
-
-7 — Wireframe B1: Engagement General
-(09_Wireframe_B1_Engagement_General.html)
-
-"Clicking into the Q2 SOX engagement. Identity on the left — title, type, lead auditor, target close date. Scope snapshot on the right — five business units, twenty-eight applications, twenty-four control procedures. Activated June first."
-"Activity log at the bottom. The auditor flagged a gap and accepted it with a compensating control. Requested additional evidence. Accepted submissions. All recorded."
-
-~22 sec
-
-8 — Wireframe B2: Engagement Scope
-(10_Wireframe_B2_Engagement_Scope.html)
-
-"The Scope tab makes it concrete. The five business units. Ten of the twenty-four control procedures — CPROC-0001 through CPROC-0024, including the ones you saw earlier. Five of the twenty-eight applications."
-"Frozen June first, nine-fourteen AM. Source system changes after that timestamp don't modify this scope. The audit you started is the audit you finish."
-
-~22 sec
-
-9 — Wireframe B3: Engagement Evidence Package
-(11_Wireframe_B3_Engagement_EvidencePackage.html)
-
-"And the Evidence Package tab. Three hundred and twelve evidence records, assembled automatically from the scope. Seventy-nine percent already provided. Thirty-eight in review. Twenty-two pending. Four gaps."
-"The auditor doesn't chase any of these. They filter, they review, they accept. Export the package as Word, PDF, or structured data when done."
-
-~22 sec
-
-10 — Wireframe: Evidence Freshness direction
-(06_Wireframe_EvidenceFreshness_Existing.html)
-
-"Touching both layers — evidence freshness. Here's a direction we're considering: a view of what's aging out and when, so nothing expires unnoticed."
-
-~12 sec
-
-11 — Wireframe C: Evidence Record Populated
-(12_Wireframe_C_Evidence_Populated.html)
-
-"And here's a direction for how an evidence record looks after collection and acceptance. CPROC-0010 on Application 0007. Status, Provided. File in SharePoint, indexed by control and application. Submitted by the Control Owner. Reviewed by the Auditor. All locked."
-"But the wow is at the bottom — Snapshot at Collection. Eight fields, frozen at the moment evidence was submitted. The control title. The application's owning business unit. Its hosting type. Its criticality. Its SOX flag."
-"If the source system changes any of these tomorrow, this snapshot doesn't move. The audit record always shows what the world looked like when evidence was collected. That's the immutability story made concrete."
-
-~38 sec
-
-12 — Slide 3: Governance
-(unchanged)
-
-"Third layer — governance. The guardrails. The headline: tamper-proof by design."
-"Three protections. The records can't be hand-edited — master data is locked to source. The platform refuses invalid states — gates can't reverse, cycles can't half-close, evidence flows one direction. And today's record is also tomorrow's record — every snapshot preserved, append-only history."
-"No one — not a panicked Control Owner, not an over-eager Risk Manager, not a malicious actor — can quietly move evidence around the system. That's what makes the platform audit-grade."
-
-~33 sec
+"And the longer-term direction — from tools to agents. Capabilities we're actively considering.
+An audit prep agent. A source-system change watcher. Control-change impact analysis. Evidence authenticity checks. And a conversational Risk Manager workspace where the platform runs the chain end-to-end.
+Each agent augments a human — never replaces a decision. That's the line we hold."
