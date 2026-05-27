@@ -41,8 +41,9 @@
 6 — Wireframe B0: Engagement List direction
 (08_Wireframe_B0_Engagement_List.html)
 
-"And here's another direction. Native to the platform — same look and feel as everything else. Seven engagements visible, across five different types. SOX Quarterly. Regulator Inquiry. Internal Review. Vendor Review. Incident Review."
-"Three of them are marked ad-hoc — they came in unplanned. An OSFI inquiry. A cloud migration vendor review. A configuration drift incident review. Each one defines its own scope, its own evidence package. The platform treats them all the same way."
+"And here's another direction. Native to the platform — same look and feel as everything else."
+"The Active Engagements list. Three engagements visible — and they're three very different shapes. A Q2 SOX quarterly review, large scope, three hundred and twelve evidence records. An OSFI inquiry, ad-hoc, smaller scope, eighty-seven records. A vendor risk review, also ad-hoc, smallest of the three at forty-two records."
+"Different types. Different sizes. Different reasons they came in. The platform treats them all the same way — scope is defined, evidence package is assembled, the trail is preserved."
 
 ~28 sec
 
