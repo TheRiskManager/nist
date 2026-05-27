@@ -1,1 +1,19 @@
-"Everything we've shown so far — the foundation, the cycle, the rules — exists to produce one thing: the evidence inventory. From the navigation, we open Active Evidences. Each row is one piece of audit-time proof the organization tracks — one control, one application, anchored to one cycle. You'll notice the same control appearing many times. That's by design: a single control like Configuration and Change Control applies to many applications, and each application needs its own evidence record. One row per accountability point — one control, one application, one owner. Many rows show Gap. Gap isn't a problem; it's an honest state. Every compliance program has gaps; the platform's job is to make them visible, named, and trackable. We click into one record. This is what makes the data model novel: an evidence record captures the relationship between a control and an application at a specific moment in time. The platform takes a snapshot — the control description, the application attributes, the cycle context — and pins them to this record permanently. Even if the source records change later, the audit trail remembers what they were at the moment of collection. Three years from now, an auditor pulls this cycle's evidence and sees exactly what the control, the application, and the decision looked like at that moment."
+Revised V1 (~28 sec):
+"Rules will drive applicability in production — but the evidence inventory the platform produces is the same shape regardless of how it gets there. We open Active Evidences. Each row is one piece of audit-time proof — one control, applied to one application. You'll notice the same control appearing across many applications. That's because each application needs its own evidence — different logs, different owners, different timing. One row per accountability point. Many show Gap. That isn't a problem; it's honest visibility into what's not yet provided."
+
+
+Revised V2 (~22 sec):
+
+"We click into one record. The evidence record is the working unit: its applicability, its control, its application, its status — currently Gap — and the evidence details: type, description, location, who collected it, when, when it expires. The smallest accountable unit of compliance. Notice the Copilot Analysis tab. It's a surface the platform reserves for AI-assisted review. It isn't powered yet. We'll see why in a moment."
+
+
+Revised V3 (~28 sec):
+
+"Here's the POC's AI running on a real Scope Classification record. We built this to test the AI capability — to prove the prompt pattern works. The platform asked the AI to analyze Vendor Risk Assessment Program and recommend how it should be scoped. The AI returned its work: a recommendation, Low confidence — honestly flagged — its reasoning, suggested evidence, suggested responsible party. Notice the section label: AI Classification, optional. The AI assists; the Risk Manager always decides. Classification itself won't be in the production product — the rule engine takes over scope decisions. But the test of the AI capability is done."
+
+
+Revised V4 (~22 sec):
+
+"Let's pull back the curtain. AI Hub — the platform's prompt registry. Here's the actual prompt the AI uses: defined, version-controlled, auditable. We run it. The AI returns structured output — a recommendation, confidence, reasoning, suggestions. The model is hosted in Azure — the platform's AI runs on enterprise infrastructure, not a black box. The capability is proven; the same pattern can be applied wherever judgment-assist is useful — including the Evidence Copilot Assessment surface you saw earlier."
+
+
