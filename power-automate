@@ -1,59 +1,115 @@
 ═══════════════════════════════════════════════════════════════════
-BLOCK 4 — Create alternate key
-        AK_RuleVersion_Rule_VersionNumber
-        on (pei_rule + pei_versionnumber)
+BLOCK 6 — Generate Main form sections + All Rule Versions view
 ═══════════════════════════════════════════════════════════════════
 
-WHERE: Power Apps maker → Tables → pei_ruleversion
-       → Keys (left rail of the table editor; if you don't see
-         "Keys" directly, it may be under "... More" or under the
-         "Schema" section depending on the portal layout)
-       → + New key
+Two sub-steps: (A) configure the Main form sections, (B) create
+the default view.
 
 
-─── KEY DEFINITION ──────────────────────────────────────────────
+─── STEP 6A: MAIN FORM — sections ──────────────────────────────
 
-Display name:        Rule + Version Number
-                     (human-readable label for the key)
+WHERE: Power Apps maker → Tables → pei_ruleversion → Forms
+       → there should already be an auto-generated "Information"
+         form (the default Main form). If not, click "+ New form"
+         → Main form → name it "Information"
+       → Open the Information form in the form designer
 
-Name (schema):       AK_RuleVersion_Rule_VersionNumber
-                     (verify — should read exactly this; the portal
-                      may auto-derive a different name from the
-                      display name. Override it if needed.)
-
-Columns:             Add BOTH of these (order matters less than
-                     completeness, but pick Rule first then
-                     Version Number to match the spec line 71):
-
-                     1. Rule  (the pei_rule lookup column)
-                     2. Version Number  (pei_versionnumber)
-
-                     ★ Use the column picker — both columns must
-                       appear in the "Selected columns" list before
-                       you save. If either is missing, the key
-                       won't enforce uniqueness on the pair.
+By default the auto-generated form has one "General" section with
+all columns dropped in. We need to restructure it into THREE
+labeled sections per spec line 76-78.
 
 
-─── SAVE ────────────────────────────────────────────────────────
+For each section below: in the form designer, drag a new
+1-column Section onto the form canvas, set its Display Name in
+the right-rail Properties, and drag the listed fields INTO it
+from the left-rail "Table columns" list. Delete the original
+auto-generated "General" section once its fields have been moved.
 
-Click Save.
 
-★ Wait for index provisioning to COMPLETE before moving on.
-  The portal usually shows a status like "Active" or a spinner
-  that resolves to a green check. This can take 30-90 seconds
-  for a new alternate key (Dataverse provisions a unique index
-  in SQL behind the scenes). Don't proceed until status = Active
-  (or equivalent "ready" indicator).
+  SECTION 1 — Identity
+    Display name:  Identity
+    Fields (in order):
+      1. Version Label       (pei_versionlabel — primary column)
+      2. Rule                (pei_rule lookup)
+      3. Version Number      (pei_versionnumber)
 
-  If the key shows "Failed" or stays "In progress" for over 2-3
-  minutes, STOP and tell me — we'll diagnose before continuing.
+  SECTION 2 — Lifecycle
+    Display name:  Lifecycle
+    Fields (in order):
+      1. Effective From      (pei_effectivefrom)
+      2. Effective To        (pei_effectiveto)
+      3. Changed By          (pei_changedby)
+      4. Change Reason       (pei_changereason)
+
+  SECTION 3 — Snapshot
+    Display name:  Snapshot
+    Fields (in order):
+      1. Conditions JSON Snapshot   (pei_conditionsjsonsnapshot)
+      2. Output Snapshot            (pei_outputsnapshot)
+
+
+  ★ Read-only enforcement note:
+    The spec says the form is "read-only-by-design for non-System
+    users" but enforces this VIA THE SECURITY ROLE (INF-A02), NOT
+    via form properties. Do NOT set fields to read-only on the
+    form itself — leave them editable. The security role will
+    deny write at the table level for non-System users; System
+    (us, now) needs write to seed the smoke-test row in Block 8.
+
+
+Click Save, then Publish (top-right of the form designer).
+
+
+─── STEP 6B: ALL RULE VERSIONS VIEW ────────────────────────────
+
+WHERE: Power Apps maker → Tables → pei_ruleversion → Views
+       → there may be an auto-generated "Active Rule Versions" or
+         similar default view. We need a view named exactly:
+
+             All Rule Versions
+
+       → If a view with that name already exists, open it.
+         Otherwise click "+ New view" → name it "All Rule Versions"
+         → view type = "Public view".
+
+In the view designer:
+
+  COLUMNS (in this order, left to right):
+    1. Version Label       (pei_versionlabel)
+    2. Rule                (pei_rule lookup)
+    3. Version Number      (pei_versionnumber)
+    4. Effective From      (pei_effectivefrom)
+    5. Effective To        (pei_effectiveto)
+    6. Changed By          (pei_changedby)
+
+  SORT (the "Sort" panel — usually right rail):
+    Primary sort:    Rule           — ascending
+    Secondary sort:  Version Number — DESCENDING
+                     (newest version per rule appears first)
+
+  FILTER:
+    NONE — no filter. This view shows ALL Rule Versions,
+    every status.
+
+  ★ Make this the DEFAULT view for pei_ruleversion:
+    In the view designer's "..." / "Set as default" menu (location
+    varies by portal version), set "All Rule Versions" as the
+    default view that opens when a user lands on the table.
+
+
+Click Save, then Publish.
 
 
 ═══════════════════════════════════════════════════════════════════
 VERIFY BEFORE REPORTING:
 
-  [ ] Key created with name AK_RuleVersion_Rule_VersionNumber
-  [ ] Columns on the key = (pei_rule, pei_versionnumber) — both
-  [ ] Status = Active (index provisioned successfully)
+  [ ] Main form "Information" has 3 labeled sections:
+      Identity (3 fields), Lifecycle (4 fields), Snapshot (2 fields)
+  [ ] Form Saved AND Published
+  [ ] View "All Rule Versions" exists with 6 columns in spec order
+  [ ] Sort = Rule asc, Version Number desc
+  [ ] No filter applied
+  [ ] View set as default
+  [ ] View Saved AND Published
 
 ═══════════════════════════════════════════════════════════════════
