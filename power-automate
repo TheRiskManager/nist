@@ -1,60 +1,39 @@
-🧱 B01 — BLOCK 1 of 8 — Create table + primary column
-What to do in the maker portal (make.powerapps.com → your dev environment):
+🧱 B01 — BLOCK 2 of 8 — Create three local option sets (Choices)
+Important terminology check first. Modern Power Platform calls these Choices (singular per column, with "Choices" as the entity type). Old terminology = "Option Sets" / "Local Option Set" / "Global Option Set". Same thing.
+There are two scoping flavors:
 
-Left nav → Tables → + New table → New table (the "Start from blank" option, NOT "Set advanced properties" first — the dialog has the primary column tab inline).
-Properties tab of the new-table dialog:
+Global Choices (created at solution level, reusable across tables)
+Local Choices (embedded in a single column, not reusable)
 
-Display name: Rule
-Plural name: Rules  (should auto-fill; confirm)
-Description: paste this verbatim →
-Applicability rule — a single statement of when a control procedure applies, with its binary verdict, collection scope, priority, terminating flag, JSON expression, and plain-English rendering. Lifecycle: Draft → Active → (soft-delete to) Inactive. Versioning lives on the related pei_ruleversion table.
-Schema name: confirm it auto-derived to pei_rule (the pei_ prefix is your publisher's default). If it shows anything else (e.g., new_rule), the publisher context is wrong — STOP and fix the publisher before proceeding.
+For B01/B02 we want GLOBAL Choices, because pei_ruleoutput will be reused on the pei_ruleversion Output Snapshot column in B02. Creating them global once means a single source of truth for the binary Applicable/Not Applicable verdict across both tables. (The other two — pei_rulecollectionscope and pei_rulestatus — could be local since they're only used on pei_rule, but creating them global keeps the pattern consistent and costs nothing.)
+Where to create them in the maker portal:
+Solutions → Evidence Management System (your solution, visible in the breadcrumb in Image 2) → + New → More → Choice.
+Create each in turn. After the third, return here.
 
+Choice 1 — pei_ruleoutput
+PropertyValueDisplay nameRule OutputSchema namepei_ruleoutput  ← verify before clicking SaveDescriptionBinary applicability verdict for a Rule. Reused by pei_rule.pei_output and pei_ruleversion.pei_outputsnapshot. Single source of truth for Applicable / Not Applicable.Sync with global option setleave at default
+Items (click + New choice for each):
+LabelValueApplicable890920000Not Applicable890920001
+The Value is the integer code. The maker portal auto-suggests the next available integer in the publisher's range; override the suggestion and type the exact values above. The 890920000+ range is the EMS publisher convention (your existing pei_applicability field uses 890920000/890920001 for the same binary verdict — we're aligning with that exactly).
+Save.
 
-Advanced options (expand the section if collapsed):
+Choice 2 — pei_rulecollectionscope
+PropertyValueDisplay nameRule Collection ScopeSchema namepei_rulecollectionscope  ← verifyDescriptionCollection Scope of a Rule per KDD-002 D-04. Identity-level property of pei_rule (not versioned). Drives whether the rule evaluates per-app universally, per-app within the same BU, or per-BU/BP.
+Items — labels are verbatim from KDD-002 D-04, em-dash literal (U+2014, not a hyphen -):
+LabelValuePer app — all890920000Per app — same BU890920001Per BU/BP890920002
+To type an em-dash on Windows: Alt + 0151 on the numeric keypad, or copy from here → —. (If you'd rather avoid em-dashes entirely and use -- or a hyphen, say so — I'll re-spec the labels and we'll keep the same integer values. Architecturally fine either way; KDD-002 used em-dash so the spec reflected that.)
+Save.
 
-Type: Standard (NOT Activity, NOT Virtual)
-Record ownership: User or team (NOT Organization)
-Choose properties:
+Choice 3 — pei_rulestatus
+PropertyValueDisplay nameRule StatusSchema namepei_rulestatus  ← verifyDescriptionLifecycle status of a Rule per KDD-002 D-07 (soft-delete only). Inactive rules are excluded from new cycle evaluation but remain queryable indefinitely.
+Items — values are explicit in KDD-002 D-07, no inference:
+LabelValueDraft890920000Active890920001Inactive890920002
+Save.
 
-✅ Enable attachments (notes) — leave ON
-❌ Activities — leave OFF
-✅ Quick Create form — leave ON (we'll generate the form in Block 7)
-✅ Audit changes — turn ON
-(Other toggles like "Allow connections", "Allow feedback" — leave at defaults)
+Per-step verbatim checks for the sidecar:
 
+Check B01-4 — Were all three Choices created with schema names pei_ruleoutput, pei_rulecollectionscope, pei_rulestatus (not pei_<default>)? (yes / no / partial — describe)
+Check B01-5 — Do the integer values match exactly: Output (890920000 / 890920001); Scope (890920000 / 890920001 / 890920002); Status (890920000 / 890920001 / 890920002)? (yes / no / partial — describe)
+Check B01-6 — Are the labels for Collection Scope exactly Per app — all, Per app — same BU, Per BU/BP? (or if you chose a non-em-dash variant, describe what you typed) (yes / no / partial — describe)
 
-
-
-★ CRITICAL — Primary column tab (top of the dialog). Click into it BEFORE Save:
-
-Display name: Rule Name
-Watch the schema name field auto-derive to pei_rulename.
-If the schema name shows pei_name or anything other than pei_rulename, edit it directly in the schema name field to pei_rulename and confirm before Save.
-Data type: Single line of text (the default — Text)
-Required: Business required
-Maximum character count: 100 (default)
-Searchable: leave ON (default)
-
-
-Verify before clicking Save:
-
-Display name reads Rule
-Schema name reads pei_rule
-Primary column display reads Rule Name
-Primary column schema reads pei_rulename  ← this is the one that locks at save
-Ownership = User or team
-Audit changes = ON
-
-
-Click Save. Wait for the table-creation spinner to finish and the new-table page to open.
-
-Why this matters: Once the table is saved, the primary column's logical/schema name cannot be renamed — only dropped-and-recreated by dropping the table. The L1-A02 anti-pattern (pei_Name on pei_buorgunitmapping) was exactly this slip. Getting pei_rulename set BEFORE Save is the entire purpose of this block.
-
-Per-step verbatim checks I'll ask after you complete this block (these become the sidecar entries):
-
-Check B01-1: Was the table created with display Rule and schema pei_rule? (yes / no / partial — describe)
-Check B01-2: Did the primary column save with display Rule Name AND schema pei_rulename (NOT pei_name)? (yes / no / partial — describe)
-Check B01-3: Are Notes enabled, Activities disabled, Audit ON, Ownership = User or team? (yes / no / partial — describe)
-
-Reply OK when Block 1 is complete (and confirm the three checks), or describe any divergence (different schema name landed, audit toggle not where I said, etc.) and I'll adjust before we move to Block 2 (option sets).
+Reply with the char-count decision (keep 850 or reset to 100) and then once Block 2 is built, reply OK plus the three verbatim check answers.
