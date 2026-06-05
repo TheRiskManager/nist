@@ -1,106 +1,64 @@
-🧱 B01 — BLOCK 3 of 8 — Add columns 1–7 to pei_rule
-Where: Solutions → Evidence Management System → Tables → Rule → Columns → + New column (or + Column depending on the maker portal version). Add the 7 columns below, in order.
-General notes that apply to every column in this block:
+🧱 B01 — BLOCK 4 of 8 — Add columns 8–11 to pei_rule
+Same place: Tables → Rule → Columns → + New column. Four more to add.
 
-Schema name should auto-derive from the display name. Verify the schema name BEFORE clicking Save on each column. Schema name locks at first save.
-Required level: where the spec says "Required" → set to Business required. Where it says "Optional" → leave at Optional (the default).
-Leave Searchable ON (default).
-Leave Description empty unless you want to add one (not a blocker).
-
-
-Column 1 — Description
+Column 8 — Status
 Display name:
-Description
-Schema name (verify):
-pei_description
-Data type: Multiple lines of text
-Format: Text
-Maximum character count:
-2000
-Required: Optional
-Save.
-
-Column 2 — Conditions JSON
-Display name:
-Conditions JSON
-Schema name (verify):
-pei_conditionsjson
-Data type: Multiple lines of text
-Format: Text
-Maximum character count:
-100000
-Required: Business required
-Save.
-(Note: if the maker portal caps Multiple lines of text at 1,048,576 chars — fine, that's the platform max. 100,000 is well under it. If for some reason it caps below 100,000, tell me what limit you hit and we'll adjust.)
-
-Column 3 — Plain-English Rendering
-Display name:
-Plain-English Rendering
-Schema name (verify — the auto-derive may strip the hyphen; if you see pei_plainenglishrendering that's fine, but the spec calls for pei_plainenglish. Override the schema name field to the value below before Save):
-pei_plainenglish
-Data type: Multiple lines of text
-Format: Text
-Maximum character count:
-4000
-Required: Optional
-Save.
-
-Column 4 — Output
-Display name:
-Output
-Schema name (verify):
-pei_output
-Data type: Choice
-When the data type is set to Choice, a "Sync this choice with:" picker appears. Select the existing global choice you created in Block 2:
-Rule Output
-(schema pei_ruleoutput)
-Do NOT create a new choice inline; pick the existing one. The maker portal sometimes defaults to "New choice" — switch to "Sync this choice with" and select the existing Rule Output.
-Default value: leave blank (no default).
-Required: Business required
-Save.
-
-Column 5 — Collection Scope
-Display name:
-Collection Scope
-Schema name (verify):
-pei_collectionscope
+Status
+Schema name (verify — auto-derive will likely give pei_status; override to):
+pei_rulestatus
+(Why the override: pei_status is a generic name that other tables may also want. pei_rulestatus matches the choice's schema and is unambiguous in flow expressions, plain-English rendering, and audit queries. This matches the spec exactly.)
 Data type: Choice
 Sync this choice with the existing global choice:
-Rule Collection Scope
-(schema pei_rulecollectionscope)
+Rule Status
+(schema pei_rulestatus)
+Default value:
+Draft
+Required: Business required
+Save.
+
+Column 9 — Effective From
+Display name:
+Effective From
+Schema name (verify):
+pei_effectivefrom
+Data type: Date and time
+Format: Date and time (NOT Date only)
+Behavior: User local (NOT Date only / Time-zone independent)
 Default value: leave blank.
 Required: Business required
 Save.
 
-Column 6 — Priority
+Column 10 — Effective To
 Display name:
-Priority
+Effective To
 Schema name (verify):
-pei_priority
+pei_effectiveto
+Data type: Date and time
+Format: Date and time
+Behavior: User local
+Default value: leave blank.
+Required: Optional
+(Spec note: a null Effective To means the rule is open-ended.)
+Save.
+
+Column 11 — Current Version
+Display name:
+Current Version
+Schema name (verify):
+pei_currentversion
 Data type: Whole number
-Format: None (the default — NOT Duration, Time zone, or Language)
+Format: None
 Minimum value:
-0
-Maximum value:
-999999
+1
+Maximum value: leave blank or use the platform default (2,147,483,647).
 Default value:
-10
+1
 Required: Business required
 Save.
 
-Column 7 — Terminating
-Display name:
-Terminating
-Schema name (verify):
-pei_terminating
-Data type: Yes/No (in some maker-portal versions this shows as "Choice" with two values, or "Boolean" — pick the simple two-options one; do NOT pick a multi-value Choice)
-Default value: No
-Required: Business required
-Save.
-
-Verbatim checks for the sidecar (once Block 3 is done)
-Check B01-7 — Were all 7 columns created with the exact schema names: pei_description, pei_conditionsjson, pei_plainenglish, pei_output, pei_collectionscope, pei_priority, pei_terminating? (yes / no / partial — describe)
-Check B01-8 — Did the Output and Collection Scope columns successfully sync to the existing global choices (Rule Output and Rule Collection Scope) — not create local duplicates? (yes / no / partial — describe)
-Check B01-9 — Are the Required levels correct: Description=Optional, Conditions JSON=Business required, Plain-English Rendering=Optional, Output=Business required, Collection Scope=Business required, Priority=Business required, Terminating=Business required? (yes / no / partial — describe)
-Check B01-10 — Priority column: Min=0, Max=999999, Default=10? (yes / no / partial — describe)
-Reply with the four verbatim answers and I'll give you Block 4 (the remaining 4 columns: Status, Effective From, Effective To, Current Version).
+Verbatim checks for the sidecar (once Block 4 is done)
+Check B01-11 — Were all 4 columns created with the exact schema names: pei_rulestatus, pei_effectivefrom, pei_effectiveto, pei_currentversion? (yes / no / partial — describe)
+Check B01-12 — Status column: synced to the existing Rule Status global choice (not a local duplicate), Default = Draft, Required = Business required? (yes / no / partial — describe)
+Check B01-13 — Effective From and Effective To: both Date and time with Behavior = User local; Effective From = Business required, Effective To = Optional? (yes / no / partial — describe)
+Check B01-14 — Current Version: Whole number, Min=1, Default=1, Required=Business required? (yes / no / partial — describe)
+Reply with the four verbatim answers and I'll give you Block 5 (the alternate key AK_Rule_Name on pei_rulename).
