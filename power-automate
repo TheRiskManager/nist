@@ -1,39 +1,79 @@
-🧱 B01 — BLOCK 2 of 8 — Create three local option sets (Choices)
-Important terminology check first. Modern Power Platform calls these Choices (singular per column, with "Choices" as the entity type). Old terminology = "Option Sets" / "Local Option Set" / "Global Option Set". Same thing.
-There are two scoping flavors:
+🧱 B01 — BLOCK 2 of 8 — Create three Choices
+Where: Solutions → Evidence Management System → + New → More → Choice.
+Create all three. The "Sync with global choice" toggle: leave at default for all three.
 
-Global Choices (created at solution level, reusable across tables)
-Local Choices (embedded in a single column, not reusable)
-
-For B01/B02 we want GLOBAL Choices, because pei_ruleoutput will be reused on the pei_ruleversion Output Snapshot column in B02. Creating them global once means a single source of truth for the binary Applicable/Not Applicable verdict across both tables. (The other two — pei_rulecollectionscope and pei_rulestatus — could be local since they're only used on pei_rule, but creating them global keeps the pattern consistent and costs nothing.)
-Where to create them in the maker portal:
-Solutions → Evidence Management System (your solution, visible in the breadcrumb in Image 2) → + New → More → Choice.
-Create each in turn. After the third, return here.
-
-Choice 1 — pei_ruleoutput
-PropertyValueDisplay nameRule OutputSchema namepei_ruleoutput  ← verify before clicking SaveDescriptionBinary applicability verdict for a Rule. Reused by pei_rule.pei_output and pei_ruleversion.pei_outputsnapshot. Single source of truth for Applicable / Not Applicable.Sync with global option setleave at default
-Items (click + New choice for each):
-LabelValueApplicable890920000Not Applicable890920001
-The Value is the integer code. The maker portal auto-suggests the next available integer in the publisher's range; override the suggestion and type the exact values above. The 890920000+ range is the EMS publisher convention (your existing pei_applicability field uses 890920000/890920001 for the same binary verdict — we're aligning with that exactly).
+Choice 1 of 3 — Rule Output
+Display name (paste into Display name field):
+Rule Output
+Schema name — verify this auto-derived correctly before clicking Save:
+pei_ruleoutput
+Description (paste into Description field):
+Binary applicability verdict for a Rule. Reused by pei_rule.pei_output and pei_ruleversion.pei_outputsnapshot. Single source of truth for Applicable / Not Applicable.
+Items — click + New choice for each. Override the auto-suggested Value with the exact integer below.
+Choice item 1:
+Label:
+Applicable
+Value:
+890920000
+Choice item 2:
+Label:
+Not Applicable
+Value:
+890920001
 Save.
 
-Choice 2 — pei_rulecollectionscope
-PropertyValueDisplay nameRule Collection ScopeSchema namepei_rulecollectionscope  ← verifyDescriptionCollection Scope of a Rule per KDD-002 D-04. Identity-level property of pei_rule (not versioned). Drives whether the rule evaluates per-app universally, per-app within the same BU, or per-BU/BP.
-Items — labels are verbatim from KDD-002 D-04, em-dash literal (U+2014, not a hyphen -):
-LabelValuePer app — all890920000Per app — same BU890920001Per BU/BP890920002
-To type an em-dash on Windows: Alt + 0151 on the numeric keypad, or copy from here → —. (If you'd rather avoid em-dashes entirely and use -- or a hyphen, say so — I'll re-spec the labels and we'll keep the same integer values. Architecturally fine either way; KDD-002 used em-dash so the spec reflected that.)
+Choice 2 of 3 — Rule Collection Scope
+Display name:
+Rule Collection Scope
+Schema name (verify before Save):
+pei_rulecollectionscope
+Description:
+Collection Scope of a Rule per KDD-002 D-04. Identity-level property of pei_rule (not versioned). Drives whether the rule evaluates per-app universally, per-app within the same BU, or per-BU/BP.
+Items — labels contain em-dash (—, U+2014). Copy directly from the code blocks below; do NOT retype with hyphens.
+Choice item 1:
+Label:
+Per app — all
+Value:
+890920000
+Choice item 2:
+Label:
+Per app — same BU
+Value:
+890920001
+Choice item 3:
+Label:
+Per BU/BP
+Value:
+890920002
 Save.
 
-Choice 3 — pei_rulestatus
-PropertyValueDisplay nameRule StatusSchema namepei_rulestatus  ← verifyDescriptionLifecycle status of a Rule per KDD-002 D-07 (soft-delete only). Inactive rules are excluded from new cycle evaluation but remain queryable indefinitely.
-Items — values are explicit in KDD-002 D-07, no inference:
-LabelValueDraft890920000Active890920001Inactive890920002
+Choice 3 of 3 — Rule Status
+Display name:
+Rule Status
+Schema name (verify before Save):
+pei_rulestatus
+Description:
+Lifecycle status of a Rule per KDD-002 D-07 (soft-delete only). Inactive rules are excluded from new cycle evaluation but remain queryable indefinitely.
+Items:
+Choice item 1:
+Label:
+Draft
+Value:
+890920000
+Choice item 2:
+Label:
+Active
+Value:
+890920001
+Choice item 3:
+Label:
+Inactive
+Value:
+890920002
 Save.
 
-Per-step verbatim checks for the sidecar:
-
-Check B01-4 — Were all three Choices created with schema names pei_ruleoutput, pei_rulecollectionscope, pei_rulestatus (not pei_<default>)? (yes / no / partial — describe)
+Verbatim checks for the sidecar (once Block 2 is done)
+Check B01-4 — Were all three Choices created with schema names exactly pei_ruleoutput, pei_rulecollectionscope, pei_rulestatus? (yes / no / partial — describe)
 Check B01-5 — Do the integer values match exactly: Output (890920000 / 890920001); Scope (890920000 / 890920001 / 890920002); Status (890920000 / 890920001 / 890920002)? (yes / no / partial — describe)
-Check B01-6 — Are the labels for Collection Scope exactly Per app — all, Per app — same BU, Per BU/BP? (or if you chose a non-em-dash variant, describe what you typed) (yes / no / partial — describe)
-
-Reply with the char-count decision (keep 850 or reset to 100) and then once Block 2 is built, reply OK plus the three verbatim check answers.
+Check B01-6 — Did the em-dash characters paste cleanly into the Scope labels? (yes / no / partial — describe)
+Reply with the answers + your call on the char-count (keep 850 or reset to 100) and I'll give you Block 3 (the first 7 columns on the Rule table).
