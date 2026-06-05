@@ -1,15 +1,60 @@
-Revised AI Capabilities slide voiceover
+🧱 B01 — BLOCK 1 of 8 — Create table + primary column
+What to do in the maker portal (make.powerapps.com → your dev environment):
 
-"Stepping outside the three platform layers — let's talk about AI specifically.
-Just to recap: we walked through evidence workflow — how evidence flows in continuously without continuous chasing. Engagements — how audits, regulator inquiries, and reviews assemble themselves on top of the evidence base. And governance — what keeps the platform tamper-proof and audit-grade.
-Across all three of those — and beyond them — AI is the thread.
-You just saw V3 and V4 prove the AI Hub pattern: prompts are versioned, models are swappable, every judgment leaves an audit trail. That pattern is already in production today — the Import Advisor that explained the import results to the Risk Manager runs on this same foundation. Four capabilities extend it across the platform.
-AI reads with the reviewer — Evidence Copilot Assessment. AI never decides alone. AI flags what looks off — anomaly detection, the early signal before audit. AI finds what probably already exists — reuse suggestions, drastically reducing collection burden. And Risk Manager query mode — natural-language search across the platform."
+Left nav → Tables → + New table → New table (the "Start from blank" option, NOT "Set advanced properties" first — the dialog has the primary column tab inline).
+Properties tab of the new-table dialog:
+
+Display name: Rule
+Plural name: Rules  (should auto-fill; confirm)
+Description: paste this verbatim →
+Applicability rule — a single statement of when a control procedure applies, with its binary verdict, collection scope, priority, terminating flag, JSON expression, and plain-English rendering. Lifecycle: Draft → Active → (soft-delete to) Inactive. Versioning lives on the related pei_ruleversion table.
+Schema name: confirm it auto-derived to pei_rule (the pei_ prefix is your publisher's default). If it shows anything else (e.g., new_rule), the publisher context is wrong — STOP and fix the publisher before proceeding.
+
+
+Advanced options (expand the section if collapsed):
+
+Type: Standard (NOT Activity, NOT Virtual)
+Record ownership: User or team (NOT Organization)
+Choose properties:
+
+✅ Enable attachments (notes) — leave ON
+❌ Activities — leave OFF
+✅ Quick Create form — leave ON (we'll generate the form in Block 7)
+✅ Audit changes — turn ON
+(Other toggles like "Allow connections", "Allow feedback" — leave at defaults)
 
 
 
-Slide AI Horizon — unchanged (good closing energy):
 
-"And the longer-term direction — from tools to agents. Capabilities we're actively considering.
-An audit prep agent. A source-system change watcher. Control-change impact analysis. Evidence authenticity checks. And a conversational Risk Manager workspace where the platform runs the chain end-to-end.
-Each agent augments a human — never replaces a decision. That's the line we hold."
+★ CRITICAL — Primary column tab (top of the dialog). Click into it BEFORE Save:
+
+Display name: Rule Name
+Watch the schema name field auto-derive to pei_rulename.
+If the schema name shows pei_name or anything other than pei_rulename, edit it directly in the schema name field to pei_rulename and confirm before Save.
+Data type: Single line of text (the default — Text)
+Required: Business required
+Maximum character count: 100 (default)
+Searchable: leave ON (default)
+
+
+Verify before clicking Save:
+
+Display name reads Rule
+Schema name reads pei_rule
+Primary column display reads Rule Name
+Primary column schema reads pei_rulename  ← this is the one that locks at save
+Ownership = User or team
+Audit changes = ON
+
+
+Click Save. Wait for the table-creation spinner to finish and the new-table page to open.
+
+Why this matters: Once the table is saved, the primary column's logical/schema name cannot be renamed — only dropped-and-recreated by dropping the table. The L1-A02 anti-pattern (pei_Name on pei_buorgunitmapping) was exactly this slip. Getting pei_rulename set BEFORE Save is the entire purpose of this block.
+
+Per-step verbatim checks I'll ask after you complete this block (these become the sidecar entries):
+
+Check B01-1: Was the table created with display Rule and schema pei_rule? (yes / no / partial — describe)
+Check B01-2: Did the primary column save with display Rule Name AND schema pei_rulename (NOT pei_name)? (yes / no / partial — describe)
+Check B01-3: Are Notes enabled, Activities disabled, Audit ON, Ownership = User or team? (yes / no / partial — describe)
+
+Reply OK when Block 1 is complete (and confirm the three checks), or describe any divergence (different schema name landed, audit toggle not where I said, etc.) and I'll adjust before we move to Block 2 (option sets).
