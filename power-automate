@@ -1,98 +1,59 @@
 ═══════════════════════════════════════════════════════════════════
-BLOCK 3 — Add columns 5-8
-        (Effective From · Effective To · Changed By · Change Reason)
+BLOCK 4 — Create alternate key
+        AK_RuleVersion_Rule_VersionNumber
+        on (pei_rule + pei_versionnumber)
 ═══════════════════════════════════════════════════════════════════
 
-WHERE: Still in the column editor for pei_ruleversion.
-       Click "+ New column" for each below, one at a time.
+WHERE: Power Apps maker → Tables → pei_ruleversion
+       → Keys (left rail of the table editor; if you don't see
+         "Keys" directly, it may be under "... More" or under the
+         "Schema" section depending on the portal layout)
+       → + New key
 
 
-─── COLUMN 5: Effective From ────────────────────────────────────
+─── KEY DEFINITION ──────────────────────────────────────────────
 
-Display name:        Effective From
-Schema name:         pei_effectivefrom
-                     (verify — should read pei_effectivefrom)
-Data type:           Date and time
-                     (NOT "Date only" — we need time component)
-Format:              Date and time
-Behavior:            User local
-                     (★ Advanced options → Behavior — important;
-                      "Date only" or "Time-zone independent" are
-                      WRONG. Behavior is set ONCE at create and
-                      cannot be changed later.)
-Column requirement:  Business required
-Searchable:          Yes
+Display name:        Rule + Version Number
+                     (human-readable label for the key)
 
-Click Save.
+Name (schema):       AK_RuleVersion_Rule_VersionNumber
+                     (verify — should read exactly this; the portal
+                      may auto-derive a different name from the
+                      display name. Override it if needed.)
+
+Columns:             Add BOTH of these (order matters less than
+                     completeness, but pick Rule first then
+                     Version Number to match the spec line 71):
+
+                     1. Rule  (the pei_rule lookup column)
+                     2. Version Number  (pei_versionnumber)
+
+                     ★ Use the column picker — both columns must
+                       appear in the "Selected columns" list before
+                       you save. If either is missing, the key
+                       won't enforce uniqueness on the pair.
 
 
-─── COLUMN 6: Effective To ──────────────────────────────────────
-
-Display name:        Effective To
-Schema name:         pei_effectiveto
-Data type:           Date and time
-Format:              Date and time
-Behavior:            User local
-Column requirement:  Optional
-                     (★ NOT Required — null = currently-effective
-                      version; this is spec-required behavior)
-Searchable:          Yes
+─── SAVE ────────────────────────────────────────────────────────
 
 Click Save.
 
+★ Wait for index provisioning to COMPLETE before moving on.
+  The portal usually shows a status like "Active" or a spinner
+  that resolves to a green check. This can take 30-90 seconds
+  for a new alternate key (Dataverse provisions a unique index
+  in SQL behind the scenes). Don't proceed until status = Active
+  (or equivalent "ready" indicator).
 
-─── COLUMN 7: Changed By ────────────────────────────────────────
-
-Display name:        Changed By
-Schema name:         pei_changedby
-                     (verify — pei_changedby, not pei_changed_by)
-Data type:           Lookup
-Related table:       User (systemuser)
-                     ← search the dropdown for "User" — the table
-                       you want is the system User table (the one
-                       Dataverse calls SystemUser internally).
-                       NOT "Owner", NOT "Team", NOT a custom user
-                       table.
-Column requirement:  Business required
-Searchable:          Yes
-
-  ★ When you Save and get the relationship-behavior dialog
-    (like Column 1):
-
-       Type of behavior:  Referential
-       Delete:            Remove Link
-
-    (Leave defaults — DO NOT set Restrict here. Spec doesn't
-     ask for restrict on Changed By; we don't want to block
-     SystemUser deletes/disables on account of audit-trail
-     references. Referential / Remove Link is correct.)
-
-  Click Done.
-
-
-─── COLUMN 8: Change Reason ─────────────────────────────────────
-
-Display name:        Change Reason
-Schema name:         pei_changereason
-Data type:           Multiple lines of text
-Format:              Text (Plain)
-Maximum character count:  2000
-Column requirement:  Optional
-                     (★ NOT Required — human-authored note,
-                      may be blank)
-Searchable:          Yes
-
-Click Save.
+  If the key shows "Failed" or stays "In progress" for over 2-3
+  minutes, STOP and tell me — we'll diagnose before continuing.
 
 
 ═══════════════════════════════════════════════════════════════════
 VERIFY BEFORE REPORTING:
 
-  [ ] pei_effectivefrom · DateTime · Behavior=User local · Required
-  [ ] pei_effectiveto   · DateTime · Behavior=User local · Optional
-  [ ] pei_changedby     · Lookup to User (SystemUser) · Required
-                          · Type of behavior = Referential
-                          · Delete = Remove Link (NOT Restrict)
-  [ ] pei_changereason  · Multi-line text · 2,000 max · Optional
+  [ ] Key created with name AK_RuleVersion_Rule_VersionNumber
+  [ ] Columns on the key = (pei_rule, pei_versionnumber) — both
+  [ ] Status = Active (index provisioned successfully)
 
 ═══════════════════════════════════════════════════════════════════
