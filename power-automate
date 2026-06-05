@@ -1,51 +1,96 @@
 ═══════════════════════════════════════════════════════════════════
-BLOCK 1 — Create pei_ruleversion table + primary column
+BLOCK 2 — Add columns 1-4
+        (Rule lookup · Version Number · Conditions JSON Snapshot
+         · Output Snapshot)
 ═══════════════════════════════════════════════════════════════════
 
-WHERE: make.powerapps.com → dev environment → Tables → + New table
-       → "Set advanced properties" (use the full dialog, NOT quick "New table")
-
-─── PROPERTIES PANE ───────────────────────────────────────────────
-
-Display name:        Rule Version
-Plural name:         Rule Versions
-Schema name:         pei_ruleversion
-                     (publisher prefix pei_ should lock in from the
-                      solution; verify the rest reads exactly
-                      "ruleversion" — no caps, no underscores)
-
-Description:
-Immutable per-Activate snapshot of a Rule. One row per (Rule, Version Number) pair. Stores the Conditions JSON and Output that were in effect at the moment the version was activated. Cycles pin to a specific Rule Version row (per ADR-054) to make 'what did this rule say when this cycle ran' answerable for the life of the platform.
-
-Ownership:           User or team
-Enable attachments:  OFF
-Enable mobile offline: OFF
-Enable notes:        ON
-Enable activities:   OFF
-Enable Quick Create form: OFF   ← ★ AC requirement, must be off
-Track changes (audit): ON  (if shown here; else we set it at Block 5)
+WHERE: You should now be in the table editor for pei_ruleversion.
+       Click "+ New column" for each column below, one at a time.
 
 
-─── PRIMARY COLUMN TAB ───  ★ SET BEFORE FIRST SAVE  ★ ───────────
+─── COLUMN 1: Rule (lookup to pei_rule) ──────────────────────────
 
-Display name:        Version Label
-Schema name:         pei_versionlabel
-                     ← verify this reads EXACTLY pei_versionlabel
-                       (lowercase L, no "New_column" fallback,
-                       no "VersionLabel" with caps)
-Data type:           Single line of text
-Format:              Text
-Maximum length:      200
-Required:            Required (business required)
+Display name:        Rule
+Schema name:         pei_rule
+                     (verify — the dialog auto-derives from display
+                      name; should read exactly pei_rule)
+Data type:           Lookup
+Related table:       Rule (pei_rule)        ← select from B01
+Column requirement:  Business required
 Searchable:          Yes
 
+  ★ Advanced options → Relationship behavior:
+     Type:            Configurable cascading
+     Delete:          Restrict
+                      (★ per spec line 49 — D-07 soft-delete only:
+                       a Rule with versions cannot be hard-deleted)
+     Reparent / Share / Assign / Merge: leave defaults (Cascade None
+       or whatever the portal sets — these are not delete behavior)
 
-─── PRE-SAVE CHECKLIST ───  verify all three BEFORE clicking Save:
+Click Save.
 
-  [ ] Properties: schema name = pei_ruleversion
-  [ ] Properties: Quick Create form = OFF
-  [ ] Primary column: schema = pei_versionlabel  ← the B01 trap
 
-Then click Save. Wait ~10-30s for provisioning to complete.
+─── COLUMN 2: Version Number ────────────────────────────────────
+
+Display name:        Version Number
+Schema name:         pei_versionnumber
+Data type:           Whole Number
+Format:              None (integer)
+Minimum value:       1
+Maximum value:       (leave default — typically 2,147,483,647)
+Column requirement:  Business required
+Searchable:          Yes
+
+Click Save.
+
+
+─── COLUMN 3: Conditions JSON Snapshot ──────────────────────────
+
+Display name:        Conditions JSON Snapshot
+Schema name:         pei_conditionsjsonsnapshot
+Data type:           Multiple lines of text
+Format:              Text (Plain)
+Maximum character count:  100000
+Column requirement:  Business required
+Searchable:          Yes
+
+Click Save.
+
+
+─── COLUMN 4: Output Snapshot (reuse pei_ruleoutput) ────────────
+
+Display name:        Output Snapshot
+Schema name:         pei_outputsnapshot
+Data type:           Choice
+                     (NOT "Choices" plural — single-select)
+
+  ★ Sync this choice with: (★ THIS IS THE REUSE STEP — DO NOT SKIP)
+     → Click the dropdown / "Sync this choice with a new or
+       existing choice"
+     → Select EXISTING choice: pei_ruleoutput
+       (the global Choice you created in B01 with values
+        Applicable=890920000, Not Applicable=890920001)
+     → Do NOT create a new local Choice.
+
+  If the maker portal blocks reuse (rare — usually it allows
+  picking any global Choice), STOP and tell me. We will NOT silently
+  create a duplicate local Choice — that breaks single-source-of-
+  truth for the binary verdict.
+
+Default value:       (none — leave unset)
+Column requirement:  Business required
+Searchable:          Yes
+
+Click Save.
+
+
+═══════════════════════════════════════════════════════════════════
+VERIFY BEFORE REPORTING:
+
+  [ ] pei_rule lookup created · target = Rule (pei_rule) · Delete = Restrict
+  [ ] pei_versionnumber created · Whole Number · Min 1 · Required
+  [ ] pei_conditionsjsonsnapshot created · Multi-line text · 100,000 max · Required
+  [ ] pei_outputsnapshot created · Choice · synced to existing
+      global pei_ruleoutput (NOT a new local Choice) · Required
 
 ═══════════════════════════════════════════════════════════════════
