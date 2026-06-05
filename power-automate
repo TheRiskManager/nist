@@ -1,24 +1,66 @@
-🧱 B01 — BLOCK 5 of 8 — Create alternate key on pei_rulename
-Where: Solutions → Evidence Management System → Tables → Rule → Keys (left-side panel; in some maker-portal versions it's under "Properties → Keys" or in a tab next to Columns).
-Click + New key.
-Fields:
-Display name:
-AK Rule Name
-Name (auto-derives from display; verify):
-pei_AK_Rule_Name
-(Some versions show the schema with the pei_ prefix, some without. If yours shows just AK_Rule_Name, that's fine — both work. The display name AK Rule Name is what matters for human recognition.)
-Columns (the columns picker — add ONE column):
-Rule Name
-(The display name. The picker may show schema names in parentheses — confirm pei_rulename is the underlying schema.)
+🧱 B01 — BLOCK 8 of 8 — Smoke test on a real record
+This block does five things at once: creates a record, exercises Notes, exercises the alternate key, verifies audit captured the change, and reads the views back. If all five land cleanly, B01 flips to Done.
+
+8.1 — Create the smoke-test Rule record
+Where: open the Active Rules view → + New (top toolbar). The Main form opens.
+Field values — copy each block:
+Rule Name:
+Smoke_R1_HostingTypeCloud_Applicable
+Description:
+Smoke test rule — applicability when hosting type is Cloud.
+Conditions JSON:
+{"op":"eq","field":"Application.pei_hostingtype","value":"Cloud"}
+Plain-English Rendering:
+When Application Hosting Type is Cloud, this control is Applicable.
+Output:
+Applicable
+Collection Scope:
+Per app — all
+Priority:
+10
+Terminating:
+No
+Status:
+Draft
+Effective From: pick today's date at 00:00 (midnight). Most date-time pickers default to current time — clear it and set 12:00 AM if needed.
+Effective To: leave blank.
+Current Version:
+1
+Click Save (or Save & Close).
+
+8.2 — Add a Note (verifies attachments work — this resolves the deferred Block 6 check)
+After save, open the record (if it closed). Look for the Notes / Timeline / Related area on the form. Find + New note (or click into the Notes pane).
+Note title (or just the body text):
+Smoke test note — confirms attachments enabled on pei_rule.
+Save the note.
+
+8.3 — Trigger an audit entry by editing one field
+In the open record, change Description to:
+Smoke test rule — applicability when hosting type is Cloud. (edited)
 Save.
 
-What happens after Save:
-The maker portal kicks off an async index-provisioning job. The Keys list will show the new key with a Status column — initial value is usually In progress or Pending. It refreshes to Active (or Completed) once Dataverse has built the supporting unique index on pei_rulename.
-Wait for status = Active before moving on. This usually takes 30 seconds to 2 minutes. Refresh the Keys list to check. If it stalls in Pending for more than 5 minutes, tell me and I'll talk through diagnostics — but it almost always succeeds quickly on a small empty table.
+8.4 — Open Audit History on the record
+From the record form: Related tab → Audit History (or in the command bar: ⋯ → Related → Audit History).
+You should see at minimum two audit entries:
 
-Verbatim checks for the sidecar (once status = Active)
-Check B01-15 — Was the alternate key created with display name AK Rule Name on column pei_rulename? (yes / no / partial — describe)
-Check B01-16 — Did the key reach status Active / Completed (not stuck Pending)? (yes / no / partial — describe)
-Optional reassurance check B01-17 — Try to create a SECOND Rule row with Rule Name = (something already used, e.g., your B01 smoke-test name "Smoke_R1_HostingTypeCloud_Applicable") and confirm the platform rejects it. You haven't created the first smoke-test row yet, so skip this for now — we'll cover it during Block 8 smoke test instead. Don't act on this yet.
-(Note: B01-17 is logged in the sidecar but will be answered later, after Block 8 creates the first Rule. We'll come back to it.)
-Reply with the two verbatim answers (B01-15 and B01-16) once the key is Active, and I'll give you Block 6 (enable Audit at table level — a fast one).
+A Create event (the initial save)
+An Update event with Description field change captured (showing old value → new value)
+
+If a third entry appears for the note creation, that's normal.
+
+8.5 — Test the alternate key (uniqueness rejection) — answers the deferred B01-17
+Open the Active Rules view OR All Rules view (the Draft record is in All Rules since the Active filter excludes Drafts). + New again. In the new form:
+Rule Name (intentionally duplicate):
+Smoke_R1_HostingTypeCloud_Applicable
+Fill in the other required fields with anything (e.g., copy the same values from 8.1). Click Save.
+Expected: Dataverse rejects the save with an error message containing words like "duplicate" / "alternate key" / "already exists". The exact wording varies, but the save MUST fail.
+After confirming the rejection, cancel/discard the second record (don't try to bypass; don't save with a different name to "make it work"). The rejection IS the success state.
+
+8.6 — View verification
+Navigate to Active Rules view. Confirm:
+
+Your smoke record does NOT appear (because Status=Draft, filter is Active-only).
+
+Navigate to All Rules view. Confirm:
+
+Your smoke record DOES appear with all the expected columns populated.
