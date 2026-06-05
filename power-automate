@@ -1,66 +1,51 @@
-🧱 B01 — BLOCK 8 of 8 — Smoke test on a real record
-This block does five things at once: creates a record, exercises Notes, exercises the alternate key, verifies audit captured the change, and reads the views back. If all five land cleanly, B01 flips to Done.
+═══════════════════════════════════════════════════════════════════
+BLOCK 1 — Create pei_ruleversion table + primary column
+═══════════════════════════════════════════════════════════════════
 
-8.1 — Create the smoke-test Rule record
-Where: open the Active Rules view → + New (top toolbar). The Main form opens.
-Field values — copy each block:
-Rule Name:
-Smoke_R1_HostingTypeCloud_Applicable
+WHERE: make.powerapps.com → dev environment → Tables → + New table
+       → "Set advanced properties" (use the full dialog, NOT quick "New table")
+
+─── PROPERTIES PANE ───────────────────────────────────────────────
+
+Display name:        Rule Version
+Plural name:         Rule Versions
+Schema name:         pei_ruleversion
+                     (publisher prefix pei_ should lock in from the
+                      solution; verify the rest reads exactly
+                      "ruleversion" — no caps, no underscores)
+
 Description:
-Smoke test rule — applicability when hosting type is Cloud.
-Conditions JSON:
-{"op":"eq","field":"Application.pei_hostingtype","value":"Cloud"}
-Plain-English Rendering:
-When Application Hosting Type is Cloud, this control is Applicable.
-Output:
-Applicable
-Collection Scope:
-Per app — all
-Priority:
-10
-Terminating:
-No
-Status:
-Draft
-Effective From: pick today's date at 00:00 (midnight). Most date-time pickers default to current time — clear it and set 12:00 AM if needed.
-Effective To: leave blank.
-Current Version:
-1
-Click Save (or Save & Close).
+Immutable per-Activate snapshot of a Rule. One row per (Rule, Version Number) pair. Stores the Conditions JSON and Output that were in effect at the moment the version was activated. Cycles pin to a specific Rule Version row (per ADR-054) to make 'what did this rule say when this cycle ran' answerable for the life of the platform.
 
-8.2 — Add a Note (verifies attachments work — this resolves the deferred Block 6 check)
-After save, open the record (if it closed). Look for the Notes / Timeline / Related area on the form. Find + New note (or click into the Notes pane).
-Note title (or just the body text):
-Smoke test note — confirms attachments enabled on pei_rule.
-Save the note.
+Ownership:           User or team
+Enable attachments:  OFF
+Enable mobile offline: OFF
+Enable notes:        ON
+Enable activities:   OFF
+Enable Quick Create form: OFF   ← ★ AC requirement, must be off
+Track changes (audit): ON  (if shown here; else we set it at Block 5)
 
-8.3 — Trigger an audit entry by editing one field
-In the open record, change Description to:
-Smoke test rule — applicability when hosting type is Cloud. (edited)
-Save.
 
-8.4 — Open Audit History on the record
-From the record form: Related tab → Audit History (or in the command bar: ⋯ → Related → Audit History).
-You should see at minimum two audit entries:
+─── PRIMARY COLUMN TAB ───  ★ SET BEFORE FIRST SAVE  ★ ───────────
 
-A Create event (the initial save)
-An Update event with Description field change captured (showing old value → new value)
+Display name:        Version Label
+Schema name:         pei_versionlabel
+                     ← verify this reads EXACTLY pei_versionlabel
+                       (lowercase L, no "New_column" fallback,
+                       no "VersionLabel" with caps)
+Data type:           Single line of text
+Format:              Text
+Maximum length:      200
+Required:            Required (business required)
+Searchable:          Yes
 
-If a third entry appears for the note creation, that's normal.
 
-8.5 — Test the alternate key (uniqueness rejection) — answers the deferred B01-17
-Open the Active Rules view OR All Rules view (the Draft record is in All Rules since the Active filter excludes Drafts). + New again. In the new form:
-Rule Name (intentionally duplicate):
-Smoke_R1_HostingTypeCloud_Applicable
-Fill in the other required fields with anything (e.g., copy the same values from 8.1). Click Save.
-Expected: Dataverse rejects the save with an error message containing words like "duplicate" / "alternate key" / "already exists". The exact wording varies, but the save MUST fail.
-After confirming the rejection, cancel/discard the second record (don't try to bypass; don't save with a different name to "make it work"). The rejection IS the success state.
+─── PRE-SAVE CHECKLIST ───  verify all three BEFORE clicking Save:
 
-8.6 — View verification
-Navigate to Active Rules view. Confirm:
+  [ ] Properties: schema name = pei_ruleversion
+  [ ] Properties: Quick Create form = OFF
+  [ ] Primary column: schema = pei_versionlabel  ← the B01 trap
 
-Your smoke record does NOT appear (because Status=Draft, filter is Active-only).
+Then click Save. Wait ~10-30s for provisioning to complete.
 
-Navigate to All Rules view. Confirm:
-
-Your smoke record DOES appear with all the expected columns populated.
+═══════════════════════════════════════════════════════════════════
