@@ -1,64 +1,24 @@
-🧱 B01 — BLOCK 4 of 8 — Add columns 8–11 to pei_rule
-Same place: Tables → Rule → Columns → + New column. Four more to add.
-
-Column 8 — Status
+🧱 B01 — BLOCK 5 of 8 — Create alternate key on pei_rulename
+Where: Solutions → Evidence Management System → Tables → Rule → Keys (left-side panel; in some maker-portal versions it's under "Properties → Keys" or in a tab next to Columns).
+Click + New key.
+Fields:
 Display name:
-Status
-Schema name (verify — auto-derive will likely give pei_status; override to):
-pei_rulestatus
-(Why the override: pei_status is a generic name that other tables may also want. pei_rulestatus matches the choice's schema and is unambiguous in flow expressions, plain-English rendering, and audit queries. This matches the spec exactly.)
-Data type: Choice
-Sync this choice with the existing global choice:
-Rule Status
-(schema pei_rulestatus)
-Default value:
-Draft
-Required: Business required
+AK Rule Name
+Name (auto-derives from display; verify):
+pei_AK_Rule_Name
+(Some versions show the schema with the pei_ prefix, some without. If yours shows just AK_Rule_Name, that's fine — both work. The display name AK Rule Name is what matters for human recognition.)
+Columns (the columns picker — add ONE column):
+Rule Name
+(The display name. The picker may show schema names in parentheses — confirm pei_rulename is the underlying schema.)
 Save.
 
-Column 9 — Effective From
-Display name:
-Effective From
-Schema name (verify):
-pei_effectivefrom
-Data type: Date and time
-Format: Date and time (NOT Date only)
-Behavior: User local (NOT Date only / Time-zone independent)
-Default value: leave blank.
-Required: Business required
-Save.
+What happens after Save:
+The maker portal kicks off an async index-provisioning job. The Keys list will show the new key with a Status column — initial value is usually In progress or Pending. It refreshes to Active (or Completed) once Dataverse has built the supporting unique index on pei_rulename.
+Wait for status = Active before moving on. This usually takes 30 seconds to 2 minutes. Refresh the Keys list to check. If it stalls in Pending for more than 5 minutes, tell me and I'll talk through diagnostics — but it almost always succeeds quickly on a small empty table.
 
-Column 10 — Effective To
-Display name:
-Effective To
-Schema name (verify):
-pei_effectiveto
-Data type: Date and time
-Format: Date and time
-Behavior: User local
-Default value: leave blank.
-Required: Optional
-(Spec note: a null Effective To means the rule is open-ended.)
-Save.
-
-Column 11 — Current Version
-Display name:
-Current Version
-Schema name (verify):
-pei_currentversion
-Data type: Whole number
-Format: None
-Minimum value:
-1
-Maximum value: leave blank or use the platform default (2,147,483,647).
-Default value:
-1
-Required: Business required
-Save.
-
-Verbatim checks for the sidecar (once Block 4 is done)
-Check B01-11 — Were all 4 columns created with the exact schema names: pei_rulestatus, pei_effectivefrom, pei_effectiveto, pei_currentversion? (yes / no / partial — describe)
-Check B01-12 — Status column: synced to the existing Rule Status global choice (not a local duplicate), Default = Draft, Required = Business required? (yes / no / partial — describe)
-Check B01-13 — Effective From and Effective To: both Date and time with Behavior = User local; Effective From = Business required, Effective To = Optional? (yes / no / partial — describe)
-Check B01-14 — Current Version: Whole number, Min=1, Default=1, Required=Business required? (yes / no / partial — describe)
-Reply with the four verbatim answers and I'll give you Block 5 (the alternate key AK_Rule_Name on pei_rulename).
+Verbatim checks for the sidecar (once status = Active)
+Check B01-15 — Was the alternate key created with display name AK Rule Name on column pei_rulename? (yes / no / partial — describe)
+Check B01-16 — Did the key reach status Active / Completed (not stuck Pending)? (yes / no / partial — describe)
+Optional reassurance check B01-17 — Try to create a SECOND Rule row with Rule Name = (something already used, e.g., your B01 smoke-test name "Smoke_R1_HostingTypeCloud_Applicable") and confirm the platform rejects it. You haven't created the first smoke-test row yet, so skip this for now — we'll cover it during Block 8 smoke test instead. Don't act on this yet.
+(Note: B01-17 is logged in the sidecar but will be answered later, after Block 8 creates the first Rule. We'll come back to it.)
+Reply with the two verbatim answers (B01-15 and B01-16) once the key is Active, and I'll give you Block 6 (enable Audit at table level — a fast one).
