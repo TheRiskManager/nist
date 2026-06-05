@@ -1,79 +1,106 @@
-🧱 B01 — BLOCK 2 of 8 — Create three Choices
-Where: Solutions → Evidence Management System → + New → More → Choice.
-Create all three. The "Sync with global choice" toggle: leave at default for all three.
+🧱 B01 — BLOCK 3 of 8 — Add columns 1–7 to pei_rule
+Where: Solutions → Evidence Management System → Tables → Rule → Columns → + New column (or + Column depending on the maker portal version). Add the 7 columns below, in order.
+General notes that apply to every column in this block:
 
-Choice 1 of 3 — Rule Output
-Display name (paste into Display name field):
+Schema name should auto-derive from the display name. Verify the schema name BEFORE clicking Save on each column. Schema name locks at first save.
+Required level: where the spec says "Required" → set to Business required. Where it says "Optional" → leave at Optional (the default).
+Leave Searchable ON (default).
+Leave Description empty unless you want to add one (not a blocker).
+
+
+Column 1 — Description
+Display name:
+Description
+Schema name (verify):
+pei_description
+Data type: Multiple lines of text
+Format: Text
+Maximum character count:
+2000
+Required: Optional
+Save.
+
+Column 2 — Conditions JSON
+Display name:
+Conditions JSON
+Schema name (verify):
+pei_conditionsjson
+Data type: Multiple lines of text
+Format: Text
+Maximum character count:
+100000
+Required: Business required
+Save.
+(Note: if the maker portal caps Multiple lines of text at 1,048,576 chars — fine, that's the platform max. 100,000 is well under it. If for some reason it caps below 100,000, tell me what limit you hit and we'll adjust.)
+
+Column 3 — Plain-English Rendering
+Display name:
+Plain-English Rendering
+Schema name (verify — the auto-derive may strip the hyphen; if you see pei_plainenglishrendering that's fine, but the spec calls for pei_plainenglish. Override the schema name field to the value below before Save):
+pei_plainenglish
+Data type: Multiple lines of text
+Format: Text
+Maximum character count:
+4000
+Required: Optional
+Save.
+
+Column 4 — Output
+Display name:
+Output
+Schema name (verify):
+pei_output
+Data type: Choice
+When the data type is set to Choice, a "Sync this choice with:" picker appears. Select the existing global choice you created in Block 2:
 Rule Output
-Schema name — verify this auto-derived correctly before clicking Save:
-pei_ruleoutput
-Description (paste into Description field):
-Binary applicability verdict for a Rule. Reused by pei_rule.pei_output and pei_ruleversion.pei_outputsnapshot. Single source of truth for Applicable / Not Applicable.
-Items — click + New choice for each. Override the auto-suggested Value with the exact integer below.
-Choice item 1:
-Label:
-Applicable
-Value:
-890920000
-Choice item 2:
-Label:
-Not Applicable
-Value:
-890920001
+(schema pei_ruleoutput)
+Do NOT create a new choice inline; pick the existing one. The maker portal sometimes defaults to "New choice" — switch to "Sync this choice with" and select the existing Rule Output.
+Default value: leave blank (no default).
+Required: Business required
 Save.
 
-Choice 2 of 3 — Rule Collection Scope
+Column 5 — Collection Scope
 Display name:
+Collection Scope
+Schema name (verify):
+pei_collectionscope
+Data type: Choice
+Sync this choice with the existing global choice:
 Rule Collection Scope
-Schema name (verify before Save):
-pei_rulecollectionscope
-Description:
-Collection Scope of a Rule per KDD-002 D-04. Identity-level property of pei_rule (not versioned). Drives whether the rule evaluates per-app universally, per-app within the same BU, or per-BU/BP.
-Items — labels contain em-dash (—, U+2014). Copy directly from the code blocks below; do NOT retype with hyphens.
-Choice item 1:
-Label:
-Per app — all
-Value:
-890920000
-Choice item 2:
-Label:
-Per app — same BU
-Value:
-890920001
-Choice item 3:
-Label:
-Per BU/BP
-Value:
-890920002
+(schema pei_rulecollectionscope)
+Default value: leave blank.
+Required: Business required
 Save.
 
-Choice 3 of 3 — Rule Status
+Column 6 — Priority
 Display name:
-Rule Status
-Schema name (verify before Save):
-pei_rulestatus
-Description:
-Lifecycle status of a Rule per KDD-002 D-07 (soft-delete only). Inactive rules are excluded from new cycle evaluation but remain queryable indefinitely.
-Items:
-Choice item 1:
-Label:
-Draft
-Value:
-890920000
-Choice item 2:
-Label:
-Active
-Value:
-890920001
-Choice item 3:
-Label:
-Inactive
-Value:
-890920002
+Priority
+Schema name (verify):
+pei_priority
+Data type: Whole number
+Format: None (the default — NOT Duration, Time zone, or Language)
+Minimum value:
+0
+Maximum value:
+999999
+Default value:
+10
+Required: Business required
 Save.
 
-Verbatim checks for the sidecar (once Block 2 is done)
-Check B01-4 — Were all three Choices created with schema names exactly pei_ruleoutput, pei_rulecollectionscope, pei_rulestatus? (yes / no / partial — describe)
-Check B01-5 — Do the integer values match exactly: Output (890920000 / 890920001); Scope (890920000 / 890920001 / 890920002); Status (890920000 / 890920001 / 890920002)? (yes / no / partial — describe)
-Check B01-6 — Did the em-dash characters paste cleanly into the Scope labels? (yes / no / partial — describe)
-Reply with the answers + your call on the char-count (keep 850 or reset to 100) and I'll give you Block 3 (the first 7 columns on the Rule table).
+Column 7 — Terminating
+Display name:
+Terminating
+Schema name (verify):
+pei_terminating
+Data type: Yes/No (in some maker-portal versions this shows as "Choice" with two values, or "Boolean" — pick the simple two-options one; do NOT pick a multi-value Choice)
+Default value: No
+Required: Business required
+Save.
+
+Verbatim checks for the sidecar (once Block 3 is done)
+Check B01-7 — Were all 7 columns created with the exact schema names: pei_description, pei_conditionsjson, pei_plainenglish, pei_output, pei_collectionscope, pei_priority, pei_terminating? (yes / no / partial — describe)
+Check B01-8 — Did the Output and Collection Scope columns successfully sync to the existing global choices (Rule Output and Rule Collection Scope) — not create local duplicates? (yes / no / partial — describe)
+Check B01-9 — Are the Required levels correct: Description=Optional, Conditions JSON=Business required, Plain-English Rendering=Optional, Output=Business required, Collection Scope=Business required, Priority=Business required, Terminating=Business required? (yes / no / partial — describe)
+Check B01-10 — Priority column: Min=0, Max=999999, Default=10? (yes / no / partial — describe)
+Reply with the four verbatim answers and I'll give you Block 4 (the remaining 4 columns: Status, Effective From, Effective To, Current Version).
