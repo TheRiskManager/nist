@@ -1,84 +1,85 @@
 ═══════════════════════════════════════════════════════════════════
-BLOCK 2 — Add columns 1-4
-        (Rule lookup · Version Number · Conditions JSON Snapshot
-         · Output Snapshot)
+BLOCK 3 — Add columns 5-8
+        (Effective From · Effective To · Changed By · Change Reason)
 ═══════════════════════════════════════════════════════════════════
 
-WHERE: You should now be in the table editor for pei_ruleversion.
-       Click "+ New column" for each column below, one at a time.
+WHERE: Still in the column editor for pei_ruleversion.
+       Click "+ New column" for each below, one at a time.
 
 
-─── COLUMN 1: Rule (lookup to pei_rule) ──────────────────────────
+─── COLUMN 5: Effective From ────────────────────────────────────
 
-Display name:        Rule
-Schema name:         pei_rule
-                     (verify — the dialog auto-derives from display
-                      name; should read exactly pei_rule)
+Display name:        Effective From
+Schema name:         pei_effectivefrom
+                     (verify — should read pei_effectivefrom)
+Data type:           Date and time
+                     (NOT "Date only" — we need time component)
+Format:              Date and time
+Behavior:            User local
+                     (★ Advanced options → Behavior — important;
+                      "Date only" or "Time-zone independent" are
+                      WRONG. Behavior is set ONCE at create and
+                      cannot be changed later.)
+Column requirement:  Business required
+Searchable:          Yes
+
+Click Save.
+
+
+─── COLUMN 6: Effective To ──────────────────────────────────────
+
+Display name:        Effective To
+Schema name:         pei_effectiveto
+Data type:           Date and time
+Format:              Date and time
+Behavior:            User local
+Column requirement:  Optional
+                     (★ NOT Required — null = currently-effective
+                      version; this is spec-required behavior)
+Searchable:          Yes
+
+Click Save.
+
+
+─── COLUMN 7: Changed By ────────────────────────────────────────
+
+Display name:        Changed By
+Schema name:         pei_changedby
+                     (verify — pei_changedby, not pei_changed_by)
 Data type:           Lookup
-Related table:       Rule (pei_rule)        ← select from B01
+Related table:       User (systemuser)
+                     ← search the dropdown for "User" — the table
+                       you want is the system User table (the one
+                       Dataverse calls SystemUser internally).
+                       NOT "Owner", NOT "Team", NOT a custom user
+                       table.
 Column requirement:  Business required
 Searchable:          Yes
 
-  ★ Advanced options → Relationship behavior:
-     Type:            Configurable cascading
-     Delete:          Restrict
-                      (★ per spec line 49 — D-07 soft-delete only:
-                       a Rule with versions cannot be hard-deleted)
-     Reparent / Share / Assign / Merge: leave defaults (Cascade None
-       or whatever the portal sets — these are not delete behavior)
+  ★ When you Save and get the relationship-behavior dialog
+    (like Column 1):
 
-Click Save.
+       Type of behavior:  Referential
+       Delete:            Remove Link
 
+    (Leave defaults — DO NOT set Restrict here. Spec doesn't
+     ask for restrict on Changed By; we don't want to block
+     SystemUser deletes/disables on account of audit-trail
+     references. Referential / Remove Link is correct.)
 
-─── COLUMN 2: Version Number ────────────────────────────────────
-
-Display name:        Version Number
-Schema name:         pei_versionnumber
-Data type:           Whole Number
-Format:              None (integer)
-Minimum value:       1
-Maximum value:       (leave default — typically 2,147,483,647)
-Column requirement:  Business required
-Searchable:          Yes
-
-Click Save.
+  Click Done.
 
 
-─── COLUMN 3: Conditions JSON Snapshot ──────────────────────────
+─── COLUMN 8: Change Reason ─────────────────────────────────────
 
-Display name:        Conditions JSON Snapshot
-Schema name:         pei_conditionsjsonsnapshot
+Display name:        Change Reason
+Schema name:         pei_changereason
 Data type:           Multiple lines of text
 Format:              Text (Plain)
-Maximum character count:  100000
-Column requirement:  Business required
-Searchable:          Yes
-
-Click Save.
-
-
-─── COLUMN 4: Output Snapshot (reuse pei_ruleoutput) ────────────
-
-Display name:        Output Snapshot
-Schema name:         pei_outputsnapshot
-Data type:           Choice
-                     (NOT "Choices" plural — single-select)
-
-  ★ Sync this choice with: (★ THIS IS THE REUSE STEP — DO NOT SKIP)
-     → Click the dropdown / "Sync this choice with a new or
-       existing choice"
-     → Select EXISTING choice: pei_ruleoutput
-       (the global Choice you created in B01 with values
-        Applicable=890920000, Not Applicable=890920001)
-     → Do NOT create a new local Choice.
-
-  If the maker portal blocks reuse (rare — usually it allows
-  picking any global Choice), STOP and tell me. We will NOT silently
-  create a duplicate local Choice — that breaks single-source-of-
-  truth for the binary verdict.
-
-Default value:       (none — leave unset)
-Column requirement:  Business required
+Maximum character count:  2000
+Column requirement:  Optional
+                     (★ NOT Required — human-authored note,
+                      may be blank)
 Searchable:          Yes
 
 Click Save.
@@ -87,10 +88,11 @@ Click Save.
 ═══════════════════════════════════════════════════════════════════
 VERIFY BEFORE REPORTING:
 
-  [ ] pei_rule lookup created · target = Rule (pei_rule) · Delete = Restrict
-  [ ] pei_versionnumber created · Whole Number · Min 1 · Required
-  [ ] pei_conditionsjsonsnapshot created · Multi-line text · 100,000 max · Required
-  [ ] pei_outputsnapshot created · Choice · synced to existing
-      global pei_ruleoutput (NOT a new local Choice) · Required
+  [ ] pei_effectivefrom · DateTime · Behavior=User local · Required
+  [ ] pei_effectiveto   · DateTime · Behavior=User local · Optional
+  [ ] pei_changedby     · Lookup to User (SystemUser) · Required
+                          · Type of behavior = Referential
+                          · Delete = Remove Link (NOT Restrict)
+  [ ] pei_changereason  · Multi-line text · 2,000 max · Optional
 
 ═══════════════════════════════════════════════════════════════════
