@@ -1,115 +1,75 @@
 ═══════════════════════════════════════════════════════════════════
-BLOCK 6 — Generate Main form sections + All Rule Versions view
+BLOCK 7 — Add pei_ruleversion to the EMS Model-Driven App
+        + publish the app                                 [BL-121]
 ═══════════════════════════════════════════════════════════════════
 
-Two sub-steps: (A) configure the Main form sections, (B) create
-the default view.
+★ This is the step omitted from the original B01 spec — discovered
+  during smoke test, then made permanent via BL-121 (Resolved at
+  v58 — template + B01 spec retroactively + B02 spec proactively).
+  Without this block, the form generated in Block 6 is NOT
+  user-reachable.
 
 
-─── STEP 6A: MAIN FORM — sections ──────────────────────────────
+─── STEP 7A: Open the EMS Model-Driven App in app designer ──────
 
-WHERE: Power Apps maker → Tables → pei_ruleversion → Forms
-       → there should already be an auto-generated "Information"
-         form (the default Main form). If not, click "+ New form"
-         → Main form → name it "Information"
-       → Open the Information form in the form designer
-
-By default the auto-generated form has one "General" section with
-all columns dropped in. We need to restructure it into THREE
-labeled sections per spec line 76-78.
+WHERE: Power Apps maker → Apps (left rail)
+       → find the EMS Model-Driven App
+         (the same MDA that hosts pei_rule from B01)
+       → "..." menu next to the app name → Edit
+       → this opens the modern app designer
 
 
-For each section below: in the form designer, drag a new
-1-column Section onto the form canvas, set its Display Name in
-the right-rail Properties, and drag the listed fields INTO it
-from the left-rail "Table columns" list. Delete the original
-auto-generated "General" section once its fields have been moved.
+─── STEP 7B: Add pei_ruleversion to the app's data ──────────────
+
+In the app designer:
+
+  → Left rail: "Pages" or "Tables" panel (depending on portal
+    version — the modern designer calls it "Pages")
+  → Click "+ Add page" (or "+ Add table" in older UI)
+  → Page type:  Dataverse table
+  → Select table:  Rule Version (pei_ruleversion)
+  → Show in navigation:  ON (default; verify the toggle is on)
+  → Click "Add"
+
+  ★ Suggested navigation placement: under the same nav group as
+    Rule from B01 (the L1-B Rule Engine grouping). The Rule
+    Version page should appear alongside the Rule page in the
+    left nav.
+
+  ★ Optional refinement (NOT required by spec — informational):
+    If your app uses nav groups, you can rename the group to
+    something like "Rule Engine" to host both Rule and Rule
+    Version. Skip if the existing grouping already makes sense.
 
 
-  SECTION 1 — Identity
-    Display name:  Identity
-    Fields (in order):
-      1. Version Label       (pei_versionlabel — primary column)
-      2. Rule                (pei_rule lookup)
-      3. Version Number      (pei_versionnumber)
+─── STEP 7C: Verify the page picks up the right form + view ─────
 
-  SECTION 2 — Lifecycle
-    Display name:  Lifecycle
-    Fields (in order):
-      1. Effective From      (pei_effectivefrom)
-      2. Effective To        (pei_effectiveto)
-      3. Changed By          (pei_changedby)
-      4. Change Reason       (pei_changereason)
+In the app designer, click on the newly added Rule Version page:
+  → Right rail shows the page's form binding
+  → Form: Information  ← should be selected (the Main form
+                          from Block 6)
+  → View: All Rule Versions  ← should be selected (the default
+                                view from Block 6)
 
-  SECTION 3 — Snapshot
-    Display name:  Snapshot
-    Fields (in order):
-      1. Conditions JSON Snapshot   (pei_conditionsjsonsnapshot)
-      2. Output Snapshot            (pei_outputsnapshot)
+  If either is wrong, change it via the right-rail dropdown.
 
 
-  ★ Read-only enforcement note:
-    The spec says the form is "read-only-by-design for non-System
-    users" but enforces this VIA THE SECURITY ROLE (INF-A02), NOT
-    via form properties. Do NOT set fields to read-only on the
-    form itself — leave them editable. The security role will
-    deny write at the table level for non-System users; System
-    (us, now) needs write to seed the smoke-test row in Block 8.
+─── STEP 7D: Save + Publish the app ─────────────────────────────
 
+  → Top-right of the app designer: click Save
+  → Then click Publish
 
-Click Save, then Publish (top-right of the form designer).
-
-
-─── STEP 6B: ALL RULE VERSIONS VIEW ────────────────────────────
-
-WHERE: Power Apps maker → Tables → pei_ruleversion → Views
-       → there may be an auto-generated "Active Rule Versions" or
-         similar default view. We need a view named exactly:
-
-             All Rule Versions
-
-       → If a view with that name already exists, open it.
-         Otherwise click "+ New view" → name it "All Rule Versions"
-         → view type = "Public view".
-
-In the view designer:
-
-  COLUMNS (in this order, left to right):
-    1. Version Label       (pei_versionlabel)
-    2. Rule                (pei_rule lookup)
-    3. Version Number      (pei_versionnumber)
-    4. Effective From      (pei_effectivefrom)
-    5. Effective To        (pei_effectiveto)
-    6. Changed By          (pei_changedby)
-
-  SORT (the "Sort" panel — usually right rail):
-    Primary sort:    Rule           — ascending
-    Secondary sort:  Version Number — DESCENDING
-                     (newest version per rule appears first)
-
-  FILTER:
-    NONE — no filter. This view shows ALL Rule Versions,
-    every status.
-
-  ★ Make this the DEFAULT view for pei_ruleversion:
-    In the view designer's "..." / "Set as default" menu (location
-    varies by portal version), set "All Rule Versions" as the
-    default view that opens when a user lands on the table.
-
-
-Click Save, then Publish.
+  Wait for the publish operation to complete (the toast/banner
+  will say "App published successfully" or similar).
 
 
 ═══════════════════════════════════════════════════════════════════
 VERIFY BEFORE REPORTING:
 
-  [ ] Main form "Information" has 3 labeled sections:
-      Identity (3 fields), Lifecycle (4 fields), Snapshot (2 fields)
-  [ ] Form Saved AND Published
-  [ ] View "All Rule Versions" exists with 6 columns in spec order
-  [ ] Sort = Rule asc, Version Number desc
-  [ ] No filter applied
-  [ ] View set as default
-  [ ] View Saved AND Published
+  [ ] EMS Model-Driven App opened in designer
+  [ ] Rule Version page added · Show in navigation = ON
+  [ ] Page Form binding = Information
+  [ ] Page View binding = All Rule Versions
+  [ ] App Saved AND Published successfully
 
 ═══════════════════════════════════════════════════════════════════
